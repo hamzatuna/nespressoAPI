@@ -1,2 +1,3 @@
-nespresso/settings.py
 *__pycache__
+nespressoAPI/migrations/*
+*db
