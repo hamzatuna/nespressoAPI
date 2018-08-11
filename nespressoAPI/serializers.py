@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Sales,Machines
+from .models import Sales,Machines,Personnels,Managers,Supervisors,Locations
 
 class SalesSerializer(serializers.ModelSerializer):
-    #Machine = serializers.ForeignKey(Machines,on_delete=serializers.CASCADE)
-    #Personnel = serializers.ForeignKey(Personnels,on_delete=serializers.CASCADE)
-    SerialNumber = serializers.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
+    PersonnelId = serializers.PrimaryKeyRelatedField(read_only=True)
+    MachineId = serializers.PrimaryKeyRelatedField(read_only=True)
+    #SerialNumber = serializers.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
     CustomerName = serializers.CharField(max_length=200)
     CustomerSurname = serializers.CharField(max_length=200)
     CustomerPhoneNumber = serializers.CharField(max_length=30)

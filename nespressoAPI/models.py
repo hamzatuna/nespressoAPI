@@ -16,7 +16,7 @@ class Locations(models.Model):
         db_table = "Locations"
 
 class Personnels(models.Model):
-    Location = models.ForeignKey(Locations,on_delete=models.CASCADE)
+    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,db_column='LocationId')
     Name = models.CharField(max_length=200)
     Surname = models.CharField(max_length=200)
     Email = models.EmailField(max_length=200)
@@ -46,9 +46,9 @@ class Supervisors(models.Model):
         db_table = "Supervisors"
     
 class Sales(models.Model):
-    Machine = models.ForeignKey(Machines,on_delete=models.CASCADE)
-    Personnel = models.ForeignKey(Personnels,on_delete=models.CASCADE)
-    SerialNumber = models.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
+    MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId')
+    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId')
+    #SerialNumber = models.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
     CustomerName = models.CharField(max_length=200)
     CustomerSurname = models.CharField(max_length=200)
     CustomerPhoneNumber = models.CharField(max_length=30)
