@@ -3,7 +3,7 @@ from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
-from .serializers import SalesSerializer,MachinesSerializer
+from .serializers import SalesSerializer,MachinesSerializer, UserSerializer
 from .models import Managers,Locations,Personnels,Machines,Supervisors,Sales
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -14,6 +14,16 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
+
+@api_view(['POST'])
+@permission_classes((permissions.AllowAny, ))
+def register_user(request):
+    newuser = request.data
+    serializer = UserSerializer(data=newuser)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_sales(request):
