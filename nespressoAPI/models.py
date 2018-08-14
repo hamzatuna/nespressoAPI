@@ -56,3 +56,28 @@ class Sales(models.Model):
     IsCampaign = models.BooleanField()
     class Meta:
         db_table = "Sales"
+
+#Yoğun saatler tablosu
+class IntensiveHours(models.Model):
+    IntensiveHour = models.CharField(max_length=100) #Veritabanında 12.00-14.00 şeklinde kayıtlı olacak.
+    class Meta:
+        db_table = "IntensiveHours"
+
+class MachineConditions(models.Model):
+    MachineCondition = models.CharField(max_length=300)
+    class Meta:
+        db_table = "MachineConditions"
+
+
+class TastingInformations(models.Model):
+    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId')
+    MachineConditionId = models.ForeignKey(MachineConditions,on_delete=models.CASCADE,db_column='MachineConditionId')
+    IntensiveHoursId = models.ForeignKey(IntensiveHours,on_delete=models.CASCADE,db_column='IntensiveHoursId')
+
+    TotalEspressoRecipe = models.IntegerField() #Yapılan toplam espresso tarif
+    TotalMilkyRecipe = models.IntegerField() #Yapılan toplam sütlü tarif
+    DailyCoffeeComsumption = models.IntegerField() #Günlük tüketilen kahve adedi
+    DailyShopCoffeeConsumption = models.IntegerField() #Günlük mağazanın kullandığı kahve adeti
+    DailyMilkBoxConsumption = models.IntegerField() #Günlük kullanılan süt (kutu)
+    class Meta:
+        db_table = "TastingInformations"
