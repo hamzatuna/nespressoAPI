@@ -20,8 +20,18 @@ from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from .models import Managers,Locations,Personnels,Machines,Supervisors,Sales,TastingInformations,IntensiveHours,MachineConditions
 
+@api_view(['GET'])
+def home(request):
+    return render(request,'home.html')
+
+# class SalesViewSet(viewsets.ModelViewSet):
+#     queryset = Sales.objects.all()
+#     serializer_class = SalesSerializer
+
+##############
 @api_view(['POST'])
 @permission_classes((permissions.AllowAny, ))
 def register_user(request):
