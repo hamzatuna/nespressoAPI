@@ -146,3 +146,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Asagidaki ifade django'ya,belirli bir app'e bagli olmayan static dosyalar
+#icin nereye bakması gerektigini soyluyor
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+#asagidaki satir collectstatic komutu calistirildiginda statik dosyalarin
+#nereye toplanacagini belirtiyor.Bu ifadeye gore app'lerin disinda staticfiles
+#diye bir klasore toplanacak.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
