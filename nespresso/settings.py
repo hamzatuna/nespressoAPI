@@ -25,7 +25,7 @@ SECRET_KEY = 'ks(opa&#&l0i&99%!lm4()r9#@$i(imu2dg-r!n#p+yqc&=vt_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["lanetliyer.com", "www.lanetliyer.com", "https://www.lanetliyer.com", "https://lanetliyer.com"]
 
 
 # Application definition
