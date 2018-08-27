@@ -18,5 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^',include('nespressoAPI.urls'))
+    re_path(r"^",include('nespressoAPI.urls'))
 ]
