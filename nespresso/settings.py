@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_datatables',
     'nespressoAPI'
 ]
 
@@ -109,6 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # REST FRAMEWORK CONFIGURATIONS
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -117,7 +119,14 @@ REST_FRAMEWORK = {
     # ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-    )
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework_datatables.renderers.DatatablesRenderer',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework_datatables.filters.DatatablesFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
+    'PAGE_SIZE': 50,
 }
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -137,3 +146,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Asagidaki ifade django'ya,belirli bir app'e bagli olmayan static dosyalar
+#icin nereye bakması gerektigini soyluyor
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+#asagidaki satir collectstatic komutu calistirildiginda statik dosyalarin
+#nereye toplanacagini belirtiyor.Bu ifadeye gore app'lerin disinda staticfiles
+#diye bir klasore toplanacak.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
