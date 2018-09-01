@@ -25,7 +25,15 @@ SECRET_KEY = 'ks(opa&#&l0i&99%!lm4()r9#@$i(imu2dg-r!n#p+yqc&=vt_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["lanetliyer.com", "www.lanetliyer.com", "https://www.lanetliyer.com", "https://lanetliyer.com", "http://www.lanetliyer.com", "https://www.lanetliyer.com"]
+ALLOWED_HOSTS = [
+    "lanetliyer.com", 
+    "www.lanetliyer.com", 
+    "https://www.lanetliyer.com", 
+    "https://lanetliyer.com", 
+    "http://www.lanetliyer.com", 
+    "https://www.lanetliyer.com",
+    "127.0.0.1"
+    ]
 
 
 # Application definition
