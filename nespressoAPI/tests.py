@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 
 
-class RegisterUserTestCases(TestCase):
+class RegisterUserTestCases(APITestCase):
     url = '/users/register/'
 
     def set_up(self):
@@ -25,3 +25,6 @@ class RegisterUserTestCases(TestCase):
 
         # expect user is added successfully
         self.assertEqual(1, len(users))
+        
+        # check data is 
+        self.assertEqual(users[0].username, 'testUser')

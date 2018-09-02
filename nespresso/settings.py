@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -93,7 +94,10 @@ DATABASES = {
         'PASSWORD':'1234',
         'HOST':'localhost',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'TEST': {
+            'NAME': 'postgresTestDb',
+        },
+    },
 }
 
 
