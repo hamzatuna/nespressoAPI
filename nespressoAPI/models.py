@@ -1,15 +1,29 @@
 from django.db import models
 from django.db.models.signals import post_save
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 
+class User(AbstractUser):
+    USER_TYPE_CHOICES = (
+        (1, 'Manager'),
+        (2, 'Personnel'),
+        (3, 'Supervisor')
+    )
+
+    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
 
 
 class Managers(models.Model):
     Name = models.CharField(max_length=200)
     Surname = models.CharField(max_length=200)
-    #Meta sınıfı olmadan modeli migrate ettigimizde django appname_tablename şeklinde isimlendiriyor. Bunun önüne geçmek için Meta sınıfıyla tabloya isim veriyoruz.
+    
+    # foreign keys
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+    # Meta sınıfı olmadan modeli migrate ettigimizde
+    #  django appname_tablename şeklinde isimlendiriyor. 
+    # Bunun önüne geçmek için Meta sınıfıyla tabloya isim veriyoruz.
     class Meta:
         db_table = "Managers"
 
@@ -36,6 +50,7 @@ class Personnels(models.Model):
         Locations, 
         on_delete=models.CASCADE,
         db_column='LocationId')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     class Meta:
         db_table = "Personnels"
@@ -61,6 +76,7 @@ class Supervisors(models.Model):
     
     # foreign keys
     Location = models.ForeignKey(Locations,on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     
     class Meta:
         db_table = "Supervisors"
@@ -128,7 +144,7 @@ class TastingInformations(models.Model):
 
 
 # This receiver handles token creation immediately a new user is created.
-@receiver(post_save, sender=User)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_auth_token(sender, instance=None, created=False, **kwargs):
+#     if created:
+#         Token.objects.create(user=instance)
