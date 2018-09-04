@@ -1,11 +1,11 @@
 import logging
 from django.test import TestCase
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
+from .models import User
 
 
 class RegisterUserTestCases(APITestCase):
-    url = '/users/register/'
+    url = '/register'
 
     def set_up(self):
         User.objects.all().delete()
@@ -15,6 +15,7 @@ class RegisterUserTestCases(APITestCase):
             'username': 'testUser',
             'email': 'test@test.com',
             'password': 'test.test',
+            'user_type': 1
         })
 
         # get all users

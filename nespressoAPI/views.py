@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -7,7 +6,11 @@ from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
-from .serializers import SalesSerializer,MachinesSerializer, TastingInformationsSerializer
+from .serializers import (
+    SalesSerializer,
+    MachinesSerializer, 
+    TastingInformationsSerializer,
+    UserSerializer)
 from .models import Managers,Locations,Personnels,Machines,Supervisors,Sales
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -21,7 +24,17 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework import viewsets
-from .models import Managers,Locations,Personnels,Machines,Supervisors,Sales,TastingInformations,IntensiveHours,MachineConditions
+from .models import (
+    Managers,
+    Locations,
+    Personnels,
+    Machines,
+    Supervisors,
+    Sales,
+    TastingInformations,
+    IntensiveHours,
+    MachineConditions,
+    User)
 
 @api_view(['GET'])
 def home(request):
@@ -41,6 +54,11 @@ def home(request):
 #         serializer.save()
 #         return Response(serializer.data, status=status.HTTP_201_CREATED)
 #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RegisterUser(CreateAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
 
 @api_view(['GET'])
 def get_sales(request):
