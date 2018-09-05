@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from .models import Sales,Machines,Personnels,Managers,Supervisors,Locations,TastingInformations,IntensiveHours,MachineConditions
+from .models import *
 from django.contrib.auth import get_user_model
 from django.core import exceptions
 import django.contrib.auth.password_validation as validators
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
+import logging
 
 UserModel = get_user_model()
 
@@ -51,18 +52,22 @@ class UserSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = ('username', 'email', 'password','is_active')
 
-class SalesSerializer(serializers.ModelSerializer):
-    def create(self, validated_data):
-        return Sales.objects.create(**validated_data)
+class DateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Sales
-        exclude = ()
+        exclude=()
 
-#
-#class AdminSalesSerializer(serializers.ModelSerializer):
+class LocationSerializer(serializers.ModelSerializer):
+    def create(self,validated_data):
+        return Locations.objects.create(**validated_data)
+    class Meta:
+        model=Locations
+        exclude=()
 
-#
-
+class MachineConditionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=MachineConditions
+        exclude=()
 
 class MachinesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -71,9 +76,45 @@ class MachinesSerializer(serializers.ModelSerializer):
         model=Machines
         exclude=()
 
-class TastingInformationsSerializer(serializers.ModelSerializer):
+
+class PersonnelsSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
-        return TastingInformations.objects.create(**validated_data)
+        return Personnels.objects.create(**validated_data)
     class Meta:
-        model = TastingInformations
+        model=Personnels
         exclude=()
+
+
+class SalesSerializer(serializers.ModelSerializer):
+    #Serializer Constructoru içerisine örneğin source='LocationId' ekleyip,serializer'dan
+    #dönen field'ın ismini Location olarak değiştirebiliyoruz. Bu durumda API oluşturduğu
+    #JSON içerisinde LocationId değil Location başlığı veriyor. Bununla beraber datatables
+    #ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
+    #tablosundaki asli isimleriyle yolluyoruz.
+    LocationId = LocationSerializer(many=False,required=True)
+    MachineId = MachinesSerializer(many=False,required=True)
+    PersonnelId =PersonnelsSerializer(many=False,required=True)
+
+    class Meta:
+        model=Sales
+        exclude=()
+
+
+class IntensiveHoursSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=IntensiveHours
+        exclude=()
+
+class TastingInformationsSerializer(serializers.ModelSerializer):
+    LocationId = LocationSerializer(many=False,required=True)
+    MachineConditionId = MachineConditionsSerializer(many=False,required=True)
+    IntensiveHourId = IntensiveHoursSerializer(many=False,required=True)
+    PersonnelId = PersonnelsSerializer(many=False,required=True)
+
+    #def create(self, validated_data):
+    #    return TastingInformations.objects.create(**validated_data)
+    class Meta:
+        model=TastingInformations
+        exclude=()
+
+

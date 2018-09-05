@@ -6,10 +6,17 @@ from django.views.generic import TemplateView
 
 
 urlpatterns = [
-    path('get_sales',views.get_sales,name="get_sales"),
-    path('insert_sales', views.insert_sales, name="insert_sales"),
+    #path('get_sales',views.get_sales,name="get_sales"),
+    #path('insert_sales', views.insert_sales, name="insert_sales"),
+    path('get_sales',views.SalesListCreate.as_view(),name="sales_list"),
+    path('insert_sales', views.SalesListCreate.as_view(), name="sales_create"),
     path('insert_tastinginfo',views.TastingInformationsList.as_view(),name='tasting_list'),
-    path('admin_get_sales',views.get_sales, name="get_sales"),
+
+    path('admin_get_sales',views.SalesListCreate.as_view(), name="get_sales"),
+    path('admin_get_tasting_informations',views.TastingInformationsList.as_view(),name='tasting_list'),
+
+    path('get_sales_count',views.get_sales_count,name="get_sales_count"),
+
     path('users/register/', views.register_user, name="register"),
     #path('insert_machines', views.machines, name="insert_machines"),
     path('auth', include('rest_framework.urls', namespace='rest_framework')),

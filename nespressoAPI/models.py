@@ -3,6 +3,9 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
+from datetime import datetime
+#from django.utils.timezone import now
+
 
 
 
@@ -22,7 +25,13 @@ class Locations(models.Model):
         db_table = "Locations"
 
 class Personnels(models.Model):
-    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,db_column='LocationId')
+    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,db_column='LocationId',related_name='%(class)s_Location')
+
+    # Hakkında konuşulmalı.
+    RegisteredLocationLatitude = models.FloatField()
+    RegisteredLocationLongtitude = models.FloatField()
+    #
+
     Name = models.CharField(max_length=200)
     Surname = models.CharField(max_length=200)
     Email = models.EmailField(max_length=200)
@@ -46,15 +55,17 @@ class Supervisors(models.Model):
     Surname = models.CharField(max_length=200)
     Email = models.EmailField(max_length=200)
     PhoneNumber = models.CharField(max_length=30)
-    Location = models.ForeignKey(Locations,on_delete=models.CASCADE)
+    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,related_name='%(class)s_Location')
     IsActive = models.BooleanField()
     class Meta:
         db_table = "Supervisors"
     
 class Sales(models.Model):
-    MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId')
-    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId')
+    MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId',related_name='%(class)s_Machine')
+    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
+    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,db_column='LocationId',related_name='%(class)s_Location')
     #SerialNumber = models.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
+    Date = models.DateTimeField(default=datetime.now,blank=True)
     CustomerName = models.CharField(max_length=200)
     CustomerSurname = models.CharField(max_length=200)
     CustomerPhoneNumber = models.CharField(max_length=30)
@@ -76,13 +87,14 @@ class MachineConditions(models.Model):
 
 
 class TastingInformations(models.Model):
-    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId')
-    MachineConditionId = models.ForeignKey(MachineConditions,on_delete=models.CASCADE,db_column='MachineConditionId')
-    IntensiveHoursId = models.ForeignKey(IntensiveHours,on_delete=models.CASCADE,db_column='IntensiveHoursId')
-
+    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
+    MachineConditionId = models.ForeignKey(MachineConditions,on_delete=models.CASCADE,db_column='MachineConditionId',related_name='%(class)s_MachineCondition')
+    IntensiveHourId = models.ForeignKey(IntensiveHours,on_delete=models.CASCADE,db_column='IntensiveHourId',related_name='%(class)s_IntensiveHour')
+    Date = models.DateTimeField(default=datetime.now,blank=True)
+    LocationId = models.ForeignKey(Locations, on_delete=models.CASCADE, db_column='LocationId',related_name='%(class)s_Location')
     TotalEspressoRecipe = models.IntegerField() #Yapılan toplam espresso tarif
     TotalMilkyRecipe = models.IntegerField() #Yapılan toplam sütlü tarif
-    DailyCoffeeComsumption = models.IntegerField() #Günlük tüketilen kahve adedi
+    DailyCoffeeConsumption = models.IntegerField() #Günlük tüketilen kahve adedi
     DailyShopCoffeeConsumption = models.IntegerField() #Günlük mağazanın kullandığı kahve adeti
     DailyMilkBoxConsumption = models.IntegerField() #Günlük kullanılan süt (kutu)
     class Meta:
