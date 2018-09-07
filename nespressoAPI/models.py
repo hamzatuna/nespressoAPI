@@ -19,7 +19,7 @@ class Managers(models.Model):
 
 class Locations(models.Model):
     Latitude = models.FloatField()
-    Longtitude = models.FloatField()
+    Longitude = models.FloatField()
     LocationName = models.CharField(max_length=1000)
     class Meta:
         db_table = "Locations"
