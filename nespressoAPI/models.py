@@ -29,7 +29,7 @@ class Personnels(models.Model):
 
     # Hakkında konuşulmalı.
     RegisteredLocationLatitude = models.FloatField()
-    RegisteredLocationLongtitude = models.FloatField()
+    RegisteredLocationLongitude = models.FloatField()
     #
 
     Name = models.CharField(max_length=200)
