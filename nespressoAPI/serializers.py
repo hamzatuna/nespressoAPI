@@ -12,6 +12,7 @@ from .models import (
     User,
     PersonnelLocation)
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.core import exceptions
 import django.contrib.auth.password_validation as validators
 from rest_framework.validators import UniqueValidator
@@ -90,9 +91,10 @@ class PersonnelSerializer(serializers.ModelSerializer):
             'location_id')
     
     def create(self,  validated_data):
-        user_data = validated_data.pop('user')
-        user = User.objects.create(**user_data)
-        return Personnels.objects.create(user=user, **validated_data)
+        with transaction.atomic():
+            user_data = validated_data.pop('user')
+            user = User.objects.create(**user_data)
+            return Personnels.objects.create(user=user, **validated_data)
 
 
 class SalesSerializer(serializers.ModelSerializer):
