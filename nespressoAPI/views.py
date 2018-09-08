@@ -54,12 +54,6 @@ class RegisterPersonnel(CreateAPIView):
     serializer_class = PersonnelSerializer
     queryset = Personnels.objects.all()
 
-@api_view(['GET'])
-def get_sales(request):
-    sales = Sales.objects.all()
-    serializer = SalesSerializer(sales,many=True)
-    return Response(serializer.data)
-
 @api_view(['POST'])
 def insert_sales(request):
     sales = Sales()
@@ -84,23 +78,3 @@ class TastingInformationsList(generics.ListCreateAPIView):
 class PersonnelsListCreate(generics.ListCreateAPIView):
     serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
-
-
-
-# @api_view(['GET','POST'])
-# def machines(request):
-#     if request.method=='GET':
-#         machines = Machines.objects.all()
-#         serializer = MachinesSerializer(machines,many=True)
-#         return Response(serializer.data)
-#     elif request.method=='POST':
-#         try:
-#             machines = Machines()
-#             serializer = MachinesSerializer(machines, data=request.data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response(serializer.data)
-#             else:
-#                 return Response(serializer.errors)
-#         except KeyError:
-#             return Response(KeyError)
