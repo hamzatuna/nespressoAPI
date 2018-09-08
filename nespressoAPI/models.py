@@ -1,18 +1,32 @@
 from django.db import models
 from django.db.models.signals import post_save
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 from datetime import datetime
 #from django.utils.timezone import now
 
 
+class User(AbstractUser):
+    USER_TYPE_CHOICES = (
+        (1, 'Manager'),
+        (2, 'Personnel'),
+        (3, 'Supervisor')
+    )
+
+    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
 
 
 class Managers(models.Model):
     Name = models.CharField(max_length=200)
     Surname = models.CharField(max_length=200)
-    #Meta sınıfı olmadan modeli migrate ettigimizde django appname_tablename şeklinde isimlendiriyor. Bunun önüne geçmek için Meta sınıfıyla tabloya isim veriyoruz.
+
+    # foreign keys
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+    # Meta sınıfı olmadan modeli migrate ettigimizde
+    #  django appname_tablename şeklinde isimlendiriyor.
+    # Bunun önüne geçmek için Meta sınıfıyla tabloya isim veriyoruz.
     class Meta:
         db_table = "Managers"
 
@@ -21,27 +35,42 @@ class Locations(models.Model):
     Latitude = models.FloatField()
     Longtitude = models.FloatField()
     LocationName = models.CharField(max_length=1000)
+
     class Meta:
         db_table = "Locations"
 
 class Personnels(models.Model):
-    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,db_column='LocationId',related_name='%(class)s_Location')
+    name = models.CharField(max_length=200)
+    surname = models.CharField(max_length=200)
+    birthday = models.DateField(null=True)
+    phone_number = models.CharField(max_length=30, null=True)
+    wage = models.DecimalField(max_digits=10, decimal_places=6, null=True)
 
-    Name = models.CharField(max_length=200)
-    Surname = models.CharField(max_length=200)
-    Email = models.EmailField(max_length=200)
-    Birthday = models.DateField()
-    PhoneNumber = models.CharField(max_length=30)
-    Wage = models.DecimalField(max_digits=10,decimal_places=6)
-    IsActive = models.BooleanField()    
+    # foreign keys
+    location_id = models.ForeignKey(
+        Locations,
+        on_delete=models.CASCADE,
+        db_column='LocationId',
+        null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
     class Meta:
         db_table = "Personnels"
 
+class PersonnelLocation(models.Model):
+
+    #foreign keys
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    location = models.OneToOneField(Locations, on_delete=models.CASCADE)
 
 class Machines(models.Model):
     Name = models.CharField(max_length=200)
     SerialNumber = models.CharField(max_length=1000)
-    Fee = models.DecimalField(max_digits=10,decimal_places=3) # max_digits noktadan sonrayla beraber toplam kaç sayı olabilir, decimal_places ise noktadan önceki ondalık kısımda max kaç sayı olabilir.
+
+    # max_digits noktadan sonrayla beraber toplam kaç sayı olabilir,
+    # decimal_places ise noktadan önceki ondalık kısımda max kaç sayı olabilir.
+    Fee = models.DecimalField(max_digits=10,decimal_places=3)
+
     class Meta:
         db_table = "Machines"
 
@@ -50,8 +79,12 @@ class Supervisors(models.Model):
     Surname = models.CharField(max_length=200)
     Email = models.EmailField(max_length=200)
     PhoneNumber = models.CharField(max_length=30)
-    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,related_name='%(class)s_Location')
     IsActive = models.BooleanField()
+
+    # foreign keys
+    Location = models.ForeignKey(Locations,on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
     class Meta:
         db_table = "Supervisors"
     
@@ -71,12 +104,15 @@ class Sales(models.Model):
 
 #Yoğun saatler tablosu
 class IntensiveHours(models.Model):
-    IntensiveHour = models.CharField(max_length=100) #Veritabanında 12.00-14.00 şeklinde kayıtlı olacak.
+    #Veritabanında 12.00-14.00 şeklinde kayıtlı olacak.
+    IntensiveHour = models.CharField(max_length=100)
+
     class Meta:
         db_table = "IntensiveHours"
 
 class MachineConditions(models.Model):
     MachineCondition = models.CharField(max_length=300)
+
     class Meta:
         db_table = "MachineConditions"
 

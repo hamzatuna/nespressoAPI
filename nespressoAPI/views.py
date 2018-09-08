@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -47,20 +46,13 @@ def get_sales_count(request):
 def home(request):
     return render(request,'home.html')
 
-# class SalesViewSet(viewsets.ModelViewSet):
-#     queryset = Sales.objects.all()
-#     serializer_class = SalesSerializer
+class RegisterUser(CreateAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
-##############
-@api_view(['POST'])
-@permission_classes((permissions.AllowAny, ))
-def register_user(request):
-    newuser = request.data
-    serializer = UserSerializer(data=newuser)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class RegisterPersonnel(CreateAPIView):
+    serializer_class = PersonnelSerializer
+    queryset = Personnels.objects.all()
 
 @api_view(['GET'])
 def get_sales(request):

@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import sys
+
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +28,15 @@ SECRET_KEY = 'ks(opa&#&l0i&99%!lm4()r9#@$i(imu2dg-r!n#p+yqc&=vt_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "lanetliyer.com", 
+    "www.lanetliyer.com", 
+    "https://www.lanetliyer.com", 
+    "https://lanetliyer.com", 
+    "http://www.lanetliyer.com", 
+    "https://www.lanetliyer.com",
+    "127.0.0.1"
+    ]
 
 
 # Application definition
@@ -79,13 +90,16 @@ WSGI_APPLICATION = 'nespresso.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':'django.db.backends.postgresql',
-        'NAME':'nespressoDB',
+        'ENGINE':'django.db.backends.postgresql_psycopg2',
+        'NAME':'postgres',
         'USER':'postgres',
         'PASSWORD':'1234',
         'HOST':'localhost',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'TEST': {
+            'NAME': 'postgresTestDb',
+        },
+    },
 }
 
 
@@ -157,3 +171,5 @@ STATICFILES_DIRS = (
 #nereye toplanacagini belirtiyor.Bu ifadeye gore app'lerin disinda staticfiles
 #diye bir klasore toplanacak.
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+AUTH_USER_MODEL = "nespressoAPI.User"

@@ -1,25 +1,30 @@
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.core import exceptions
 import django.contrib.auth.password_validation as validators
-from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 import logging
 
-UserModel = get_user_model()
+# UserModel = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, max_length=128)
-    email = serializers.EmailField(allow_blank=False, label='Email address', max_length=254, required=True, validators=[UniqueValidator(queryset=User.objects.all())])
+    email = serializers.EmailField(
+        allow_blank=False,
+        label='Email address',
+        max_length=254,
+        required=True, validators=[UniqueValidator(queryset=User.objects.all())])
 
     def create(self, validated_data):
 
-        user = UserModel.objects.create(
+        user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
-            is_active=validated_data['is_active']
+            is_active=validated_data['is_active'],
+            user_type=validated_data['user_type']
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -49,8 +54,38 @@ class UserSerializer(serializers.ModelSerializer):
          return super(UserSerializer, self).validate(data)
 
     class Meta:
-        model = UserModel
-        fields = ('username', 'email', 'password','is_active')
+        model = User
+        fields = (
+            'username',
+            'email',
+            'password',
+            'is_active',
+            'user_type'
+        )
+class LocationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Locations
+        fields = '__all__'
+
+class PersonnelSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Personnels
+        fields = (
+            'name',
+            'wage',
+            'phone_number',
+            'user',
+            'location_id')
+
+    def create(self,  validated_data):
+        with transaction.atomic():
+            user_data = validated_data.pop('user')
+            user = User.objects.create(**user_data)
+            return Personnels.objects.create(user=user, **validated_data)
+
 
 class DateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -116,5 +151,3 @@ class TastingInformationsSerializer(serializers.ModelSerializer):
     class Meta:
         model=TastingInformations
         exclude=()
-
-

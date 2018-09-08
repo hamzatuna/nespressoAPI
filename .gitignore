@@ -2,3 +2,4 @@
 nespressoAPI/migrations/*
 *db
 nespresso/settings.py
+nespressoenv

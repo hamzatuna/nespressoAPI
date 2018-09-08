@@ -6,6 +6,17 @@ from django.views.generic import TemplateView
 
 
 urlpatterns = [
+    path('get_sales', views.get_sales,name="get_sales"),
+    path('register', views.RegisterUser.as_view()),
+    path('register/personnel', views.RegisterPersonnel.as_view()),
+    path('insert_sales', views.insert_sales, name="insert_sales"),
+    path(
+        'insert_tastinginfo',
+        views.TastingInformationsList.as_view(),
+        name='tasting_list'
+    ),
+    path('admin_get_sales', views.get_sales, name="get_sales"),
+    # path('users/register/', views.register_user, name="register"),
     #path('get_sales',views.get_sales,name="get_sales"),
     #path('insert_sales', views.insert_sales, name="insert_sales"),
     path('get_sales',views.SalesListCreate.as_view(), name="sales_list"),
