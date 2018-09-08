@@ -8,7 +8,7 @@ from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
-from .serializers import SalesSerializer,MachinesSerializer, UserSerializer,TastingInformationsSerializer
+from .serializers import *
 from rest_framework.generics import CreateAPIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
@@ -89,6 +89,9 @@ class TastingInformationsList(generics.ListCreateAPIView):
     serializer_class = TastingInformationsSerializer
     queryset = TastingInformations.objects.all()
 
+class PersonnelsListCreate(generics.ListCreateAPIView):
+    serializer_class = PersonnelsSerializer
+    queryset = Personnels.objects.all()
 
 
 

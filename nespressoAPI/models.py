@@ -27,11 +27,6 @@ class Locations(models.Model):
 class Personnels(models.Model):
     LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,db_column='LocationId',related_name='%(class)s_Location')
 
-    # Hakkında konuşulmalı.
-    RegisteredLocationLatitude = models.FloatField()
-    RegisteredLocationLongtitude = models.FloatField()
-    #
-
     Name = models.CharField(max_length=200)
     Surname = models.CharField(max_length=200)
     Email = models.EmailField(max_length=200)
