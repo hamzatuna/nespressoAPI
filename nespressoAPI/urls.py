@@ -29,7 +29,6 @@ urlpatterns = [
     path('get_sales_count',views.get_sales_count,name="get_sales_count"),
 
     path('get_personnels',views.PersonnelsListCreate.as_view(),name="get_personnels"),
-    path('users/register/', views.register_user, name="register"),
     #path('insert_machines', views.machines, name="insert_machines"),
     path('auth', include('rest_framework.urls', namespace='rest_framework')),
     path('get-token', obtain_auth_token),
