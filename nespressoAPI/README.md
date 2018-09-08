@@ -14,6 +14,25 @@ body ornek:
     "user_type": 1
 }
 ```
+
+```
+/register POST
+```
+body ornek:
+```
+{
+    "name": "test-name",
+    "wage": null,
+    "phone_number": null,
+    "user": {
+        "username": "test-user-name5",
+        "email": "a5@a.com",
+        "is_active": true,
+        "user_type": 1
+    },
+    "location_id": null
+}
+```
 ## 2-) Token Alma
 
 ```
