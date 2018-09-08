@@ -9,7 +9,8 @@ from .models import (
     TastingInformations,
     IntensiveHours,
     MachineConditions,
-    User)
+    User,
+    PersonnelLocation)
 from django.contrib.auth import get_user_model
 from django.core import exceptions
 import django.contrib.auth.password_validation as validators
@@ -70,6 +71,29 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active',
             'user_type'
         )
+class LocationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Locations
+        fields = '__all__'
+
+class PersonnelSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Personnels
+        fields = (
+            'name', 
+            'wage',
+            'phone_number',
+            'user',
+            'location_id')
+    
+    def create(self,  validated_data):
+        user_data = validated_data.pop('user')
+        user = User.objects.create(**user_data)
+        return Personnels.objects.create(user=user, **validated_data)
+
 
 class SalesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):

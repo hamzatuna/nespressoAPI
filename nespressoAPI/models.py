@@ -37,24 +37,28 @@ class Locations(models.Model):
         db_table = "Locations"
 
 class Personnels(models.Model):
-    Name = models.CharField(max_length=200)
-    Surname = models.CharField(max_length=200)
-    Email = models.EmailField(max_length=200)
-    Birthday = models.DateField()
-    PhoneNumber = models.CharField(max_length=30)
-    Wage = models.DecimalField(max_digits=10,decimal_places=6)
-    IsActive = models.BooleanField()
+    name = models.CharField(max_length=200)
+    surname = models.CharField(max_length=200)
+    birthday = models.DateField(null=True)
+    phone_number = models.CharField(max_length=30, null=True)
+    wage = models.DecimalField(max_digits=10, decimal_places=6, null=True)
 
     # foreign keys
-    LocationId = models.ForeignKey(
+    location_id = models.ForeignKey(
         Locations, 
         on_delete=models.CASCADE,
-        db_column='LocationId')
+        db_column='LocationId',
+        null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     class Meta:
         db_table = "Personnels"
 
+class PersonnelLocation(models.Model):
+    
+    #foreign keys
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    location = models.OneToOneField(Locations, on_delete=models.CASCADE)
 
 class Machines(models.Model):
     Name = models.CharField(max_length=200)

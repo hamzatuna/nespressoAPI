@@ -29,3 +29,6 @@ class RegisterUserTestCases(APITestCase):
         
         # check data is 
         self.assertEqual(users[0].username, 'testUser')
+
+class RegisterPersonnelTestCases(APITestCase):
+    url = '/register/personnel'
