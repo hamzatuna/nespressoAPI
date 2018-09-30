@@ -82,8 +82,12 @@ class PersonnelSerializer(serializers.ModelSerializer):
 
     def create(self,  validated_data):
         with transaction.atomic():
+            
             user_data = validated_data.pop('user')
-            user = User.objects.create(**user_data)
+            user = User(**user_data)
+            user.set_password(user_data['password'])
+            user.save()
+
             return Personnels.objects.create(user=user, **validated_data)
 
 
