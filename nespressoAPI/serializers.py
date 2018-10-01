@@ -82,12 +82,12 @@ class PersonnelSerializer(serializers.ModelSerializer):
 
     def create(self,  validated_data):
         with transaction.atomic():
-            
             user_data = validated_data.pop('user')
             user = User(**user_data)
             user.set_password(user_data['password'])
             user.save()
-
+            user.user_type = 1
+            
             return Personnels.objects.create(user=user, **validated_data)
 
 
@@ -125,11 +125,11 @@ class PersonnelsSerializer(serializers.ModelSerializer):
 
 
 class SalesSerializer(serializers.ModelSerializer):
-    #Serializer Constructoru içerisine örneğin source='LocationId' ekleyip,serializer'dan
-    #dönen field'ın ismini Location olarak değiştirebiliyoruz. Bu durumda API oluşturduğu
-    #JSON içerisinde LocationId değil Location başlığı veriyor. Bununla beraber datatables
-    #ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
-    #tablosundaki asli isimleriyle yolluyoruz.
+    # Serializer Constructoru içerisine örneğin source='LocationId' ekleyip,serializer'dan
+    # dönen field'ın ismini Location olarak değiştirebiliyoruz. Bu durumda API oluşturduğu
+    # JSON içerisinde LocationId değil Location başlığı veriyor. Bununla beraber datatables
+    # ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
+    # tablosundaki asli isimleriyle yolluyoruz.
     LocationId = LocationSerializer(many=False,required=True)
     MachineId = MachinesSerializer(many=False,required=True)
     PersonnelId =PersonnelsSerializer(many=False,required=True)
