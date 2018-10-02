@@ -51,3 +51,44 @@ Sonuc:
     "token": "feb077537b9225af583b1c10b31dda77d88379a5"
 }
 ```
+
+## 3-) Personel ekleme
+
+```
+/register/personnel POST
+```
+authtication olmak icin header`a:
+```
+"Authorization: Token 241389a7b0e2f30668f8e71ce2bdff9a4a47d5c3(giriste alinan token)"
+```
+body ornek:
+```
+{
+   "user": {
+	"username": "test6",
+	"password": "12345678.",
+	"email": "a7@a.com",
+	"is_active": true,
+	"user_type": 1
+   },
+   
+   "name": "test-name1",
+   "surname": "test-surname",
+   "email": "a1@a.com"
+}
+```
+Sonuc: olusturulan personel bilgileri doner
+```
+{
+   "user": {
+	"username": "test6",
+	"email": "a7@a.com",
+	"is_active": true,
+	"user_type": 1
+   },
+   
+   "name": "test-name1",
+   "surname": "test-surname",
+   "email": "a1@a.com"
+}
+```

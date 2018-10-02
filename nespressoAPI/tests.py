@@ -1,6 +1,8 @@
 import logging
 from django.test import TestCase
 from rest_framework.test import APITestCase
+from rest_framework.authtoken.models import Token
+
 from .models import (
         User,
         Personnels,
@@ -10,7 +12,7 @@ from .models import (
 class RegisterUserTestCases(APITestCase):
     url = '/register'
 
-    def set_up(self):
+    def setUp(self):
         User.objects.all().delete()
 
     def test_register_success(self):
@@ -49,9 +51,29 @@ class RegisterPersonnelTestCases(APITestCase):
         "email": "a1@a.com"
     }
 
-    def set_up(self):
+    def setUp(self):
         User.objects.all().delete()
         Personnels.objects.all().delete()
+        Token.objects.all().delete()
+        
+        # add test user
+        test_user_data = {
+            "username": "test-user",
+            "password": "12345678.",
+            "email": "a5@a.com",
+            "is_active": True,
+            "user_type": 1
+        }
+
+        test_user = User(**test_user_data)
+        test_user.save()
+        
+        self.token,_ = Token.objects.get_or_create(user=test_user)
+
+        self.api_authentication()
+
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
     
     def test_register_success(self):
         response = self.client.post(self.url, self.personnel_data, format='json')
@@ -59,12 +81,9 @@ class RegisterPersonnelTestCases(APITestCase):
         # get all personnels
         personnels = Personnels.objects.all()
 
-        # get all users
-        users = User.objects.all()
     
         # expect to status code ok
         self.assertEqual(201, response.status_code)
 
-        # expect user is added successfully
+        # expect personel is added successfully
         self.assertEqual(1, len(personnels))
-        self.assertEqual(1, len(users))
