@@ -44,6 +44,12 @@ def get_sales_count(request):
     #weekly_sales_count =
 
 
+
+
+
+
+
+
 @api_view(['GET'])
 def home(request):
     return render(request,'home.html')
