@@ -92,3 +92,19 @@ Sonuc: olusturulan personel bilgileri doner
    "email": "a1@a.com"
 }
 ```
+
+# Endpoitlere Permission ekleme
+
+fonksiyona ekleme:
+```
+@manager_required
+@api_view(['GET'])
+def get_sales_count(request):
+```
+class`a ekleme:
+```
+class RegisterPersonnel(CreateAPIView):
+    serializer_class = PersonnelSerializer
+    queryset = Personnels.objects.all()
+    permission_classes = (IsManeger,)
+```
