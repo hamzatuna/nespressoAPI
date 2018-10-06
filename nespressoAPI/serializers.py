@@ -62,8 +62,8 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active',
             'user_type'
         )
-class LocationSerializer(serializers.ModelSerializer):
 
+class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Locations
         fields = '__all__'
