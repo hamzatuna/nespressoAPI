@@ -16,6 +16,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework import viewsets
 from .models import *
+from .decorators import manager_required
+from .permissions import IsManeger
 import json
 from django.core import serializers
 from datetime import datetime,date,timedelta
@@ -53,6 +55,7 @@ class RegisterUser(CreateAPIView):
 class RegisterPersonnel(CreateAPIView):
     serializer_class = PersonnelSerializer
     queryset = Personnels.objects.all()
+    permission_classes = (IsManeger,)
 
 @api_view(['POST'])
 def insert_sales(request):
