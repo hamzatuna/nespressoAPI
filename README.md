@@ -30,7 +30,7 @@ create database postgresTestDb;
 ```
 tablolari olusturma
 ```
-python manage.py makemigrations nespressoAPI
+python manage.py makemigrations nespressoAPI  
 python manage.py migrate
 ```
 test etme: 
