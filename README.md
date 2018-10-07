@@ -18,6 +18,12 @@ postgre terminalinde sifre degistirme
 ```
 alter user postgres with password '1234';
 ```
+```
+database olusturma
+```
+create database nespressoDB;
+```
+
 test database olusturma
 ```
 create database postgresTestDb;
