@@ -21,7 +21,7 @@ alter user postgres with password '1234';
 ```
 database olusturma
 ```
-create database nespressoDB;
+create database "nespressoDB";
 ```
 
 test database olusturma
