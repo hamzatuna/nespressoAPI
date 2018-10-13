@@ -93,6 +93,41 @@ Sonuc: olusturulan personel bilgileri doner
 }
 ```
 
+## 4-) Satış Ekleme
+
+```
+/insert_sales POST
+```
+body ornek:
+```       
+{
+    "LocationId":"1",
+    "MachineId":"1",
+    "PersonnelId" : "4",
+    "Date": "2018-09-10T01:32:12.922000Z",
+    "CustomerName": "YEPSYENI7",
+    "CustomerSurname": "ADAM7",
+    "CustomerPhoneNumber": "05672348294",
+    "CustomerEmail": "ADAMLIQUE7@gmail.com",
+    "IsCampaign": false
+}
+```
+Sonuc:
+```
+{
+    "id": 14,
+    "Date": "2018-09-10T01:32:12.922000Z",
+    "CustomerName": "YEPSYENI7",
+    "CustomerSurname": "ADAM7",
+    "CustomerPhoneNumber": "05672348294",
+    "CustomerEmail": "ADAMLIQUE7@gmail.com",
+    "IsCampaign": false,
+    "MachineId": 1,
+    "PersonnelId": 4,
+    "LocationId": 1
+}
+```
+
 # Endpoitlere Permission ekleme
 
 fonksiyona ekleme:
