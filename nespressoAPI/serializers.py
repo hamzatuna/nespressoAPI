@@ -85,8 +85,8 @@ class PersonnelSerializer(serializers.ModelSerializer):
             user_data = validated_data.pop('user')
             user = User(**user_data)
             user.set_password(user_data['password'])
-            user.save()
             user.user_type = 2
+            user.save()
             
             return Personnels.objects.create(user=user, **validated_data)
 
