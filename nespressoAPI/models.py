@@ -101,9 +101,21 @@ class Locations(models.Model):
     Latitude = models.FloatField()
     Longitude = models.FloatField()
     LocationName = models.CharField(max_length=1000)
+    stock = models.IntegerField(default=0)
 
     class Meta:
         db_table = "Locations"
+
+class LocationHistory(models.Model):
+    stock = models.IntegerField(default=0)
+    date = models.DateTimeField(default=datetime.now,blank=True)
+    
+    # foreign keys
+    location_id = models.ForeignKey(
+        Locations,
+        on_delete=models.CASCADE,
+        db_column='LocationId',
+        null=True)
 
 class Personnels(models.Model):
     name = models.CharField(max_length=200)

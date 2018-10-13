@@ -132,7 +132,7 @@ class SalesSerializer(serializers.ModelSerializer):
     # tablosundaki asli isimleriyle yolluyoruz.
     LocationId = LocationSerializer(many=False,required=True)
     MachineId = MachinesSerializer(many=False,required=True)
-    PersonnelId =PersonnelsSerializer(many=False,required=True)
+    PersonnelId = PersonnelsSerializer(many=False,required=True)
 
     class Meta:
         model=Sales
