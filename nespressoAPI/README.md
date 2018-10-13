@@ -42,7 +42,7 @@ body ornek:
 ```
 {
     "username": "test2",
-    "password": "test2",
+    "password": "test2"
 }
 ```
 Sonuc:
