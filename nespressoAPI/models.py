@@ -35,7 +35,6 @@ class Locations(models.Model):
     Latitude = models.FloatField()
     Longitude = models.FloatField()
     LocationName = models.CharField(max_length=1000)
-
     class Meta:
         db_table = "Locations"
 

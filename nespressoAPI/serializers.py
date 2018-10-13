@@ -6,6 +6,7 @@ from django.core import exceptions
 import django.contrib.auth.password_validation as validators
 from rest_framework.validators import UniqueValidator
 import logging
+from django.contrib.auth.hashers import make_password
 
 # UserModel = get_user_model()
 
@@ -82,8 +83,13 @@ class PersonnelSerializer(serializers.ModelSerializer):
 
     def create(self,  validated_data):
         with transaction.atomic():
+            print(validated_data,type(validated_data))
             user_data = validated_data.pop('user')
+            user_data["password"]=make_password(user_data["password"])
+            print("USER DATA" , user_data)
+            #user_data.set_password(user_data.password)
             user = User.objects.create(**user_data)
+            print("USER", user)
             return Personnels.objects.create(user=user, **validated_data)
 
 

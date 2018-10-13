@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
 from .serializers import *
+from .forms import *
 from rest_framework.generics import CreateAPIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
@@ -20,9 +21,67 @@ import json
 from django.core import serializers
 from datetime import datetime,date,timedelta
 from django.db import connection
+import requests
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render_to_response,redirect
+from django.template import RequestContext
+from django.http import *
+from django.urls import reverse
+
 
 def to_json(objects):
     return serializers.serialize('json', objects)
+
+@api_view(['GET'])
+def dashboard_main(request):
+    try:
+        context = {}
+        context["daily_sales_count"] = Sales.objects.filter(Date__year=date.today().year,
+                                                      Date__month=date.today().month,
+                                                      Date__day=date.today().day).count()
+        context["weekly_sales_count"] = Sales.objects.filter(Date__gte=datetime.now() - timedelta(days=7)).count()
+        return render(request,'dashboard_main.html',context)
+    except KeyError:
+        return Response(KeyError)
+
+@api_view(['GET','POST'])
+def dashboard_add_location(request):
+    try:
+        if request.method == "GET":
+            form_context = {}
+            form_context["locations_form"] = LocationsForm()
+            print(form_context)
+            return render(request,'dashboard_add_location.html',form_context)
+        elif request.method == "POST":
+            locations_form = LocationsForm(request.POST)
+            if locations_form.is_valid():
+                location = locations_form.save()
+                form_context = {}
+                form_context["locations_form"] = LocationsForm()
+                return render(request,'dashboard_add_location.html',form_context)
+    except KeyError:
+        return Response(KeyError)
+
+
+
+
+@api_view(['POST'])
+def login_site(request):
+    try:
+        logout(request)
+        if request.POST:
+            username = request.POST['username']
+            password = request.POST['password']
+
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return HttpResponseRedirect(reverse('dashboard_main'))
+        return HttpResponseRedirect(reverse("login"))
+    except KeyError:
+        return Response(KeyError)
 
 @api_view(['GET','POST'])
 def get_filtered_sales(request):
@@ -35,8 +94,6 @@ def get_filtered_sales(request):
         #query = '''select "SL"."CustomerName","SL"."CustomerSurname","SL"."CustomerName","SL"."CustomerPhoneNumber","SL"."CustomerEmail","MC"."Name","LC"."LocationName" from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."PersonnelId" = "PL"."user_id")     INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."LocationId" = "LC"."id") '''
         query = '''select * from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."PersonnelId" = "PL"."user_id") INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."LocationId" = "LC"."id") '''
         if request.method=='POST':
-            print("BURADA")
-
             if request.data['personnel_name'] and request.data['personnel_name'] is not None:
                 personnel_name = request.data['personnel_name']
                 condition = '''WHERE "PL"."name" = '{0}' '''.format(personnel_name)
