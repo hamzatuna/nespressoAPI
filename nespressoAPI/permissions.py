@@ -11,7 +11,7 @@ class IsManeger(permissions.BasePermission):
         # check user is auttenticated and manager
         return  request.user.is_authenticated and (request.user.user_type==1)
 
-class IsPersonnel(permissions.BasePermission):
+class IsPersonnelorManager(permissions.BasePermission):
 
     def has_permission(self, request, view):
         # check user is auttenticated and manager

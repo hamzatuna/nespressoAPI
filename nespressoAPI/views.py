@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from .models import *
 from .decorators import manager_required
-from .permissions import IsManeger, IsPersonnel
+from .permissions import IsManeger, IsPersonnelorManager
 import json
 from django.core import serializers
 from datetime import datetime,date,timedelta
@@ -85,11 +85,10 @@ class PersonnelsListCreate(generics.ListCreateAPIView):
 class LocationListCreate(generics.ListCreateAPIView):
     serializer_class = LocationSerializer
     queryset = Locations.objects.all()
-    permission_classes = (IsPersonnel,)
-
+    permission_classes = (IsPersonnelorManager,)
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LocationSerializer
     queryset = Locations.objects.all()
-    permission_classes = (IsPersonnel,)
+    permission_classes = (IsPersonnelorManager,)
 

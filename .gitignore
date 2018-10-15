@@ -2,3 +2,4 @@
 nespressoAPI/migrations/*
 *db
 nespressoenv
+.vscode
