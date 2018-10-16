@@ -97,6 +97,16 @@ class Managers(models.Model):
     class Meta:
         db_table = "Managers"
 
+class Machines(models.Model):
+    Name = models.CharField(max_length=200)
+    SerialNumber = models.CharField(max_length=1000)
+
+    # max_digits noktadan sonrayla beraber toplam kaç sayı olabilir,
+    # decimal_places ise noktadan önceki ondalık kısımda max kaç sayı olabilir.
+    Fee = models.DecimalField(max_digits=10,decimal_places=3)
+
+    class Meta:
+        db_table = "Machines"
 
 class Locations(models.Model):
     Latitude = models.FloatField()
@@ -104,6 +114,12 @@ class Locations(models.Model):
     LocationName = models.CharField(max_length=1000)
     stock = models.IntegerField(default=0)
 
+    # foreign keys
+    machine = models.ForeignKey(
+        Machines,
+        null=True,
+        on_delete=models.PROTECT,
+        default=None)
     class Meta:
         db_table = "Locations"
 
@@ -141,17 +157,6 @@ class PersonnelLocation(models.Model):
     #foreign keys
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     location = models.OneToOneField(Locations, on_delete=models.CASCADE)
-
-class Machines(models.Model):
-    Name = models.CharField(max_length=200)
-    SerialNumber = models.CharField(max_length=1000)
-
-    # max_digits noktadan sonrayla beraber toplam kaç sayı olabilir,
-    # decimal_places ise noktadan önceki ondalık kısımda max kaç sayı olabilir.
-    Fee = models.DecimalField(max_digits=10,decimal_places=3)
-
-    class Meta:
-        db_table = "Machines"
 
 class Supervisors(models.Model):
     Name = models.CharField(max_length=200)
