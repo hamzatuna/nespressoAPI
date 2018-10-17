@@ -19,6 +19,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework import viewsets
 from .models import *
+from .decorators import manager_required
+from .permissions import IsManeger, IsPersonnelorManager
 import json
 from django.core import serializers
 from datetime import datetime,date,timedelta
@@ -200,12 +202,6 @@ def get_sales_count(request):
     #weekly_sales_count =
 
 
-
-
-
-
-
-
 @api_view(['GET'])
 def home(request):
     return render(request,'home.html')
@@ -217,6 +213,7 @@ class RegisterUser(CreateAPIView):
 class RegisterPersonnel(CreateAPIView):
     serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
+    permission_classes = (IsManeger,)
 
 @api_view(['POST'])
 def insert_sales(request):
@@ -234,13 +231,14 @@ def insert_sales(request):
 class SalesListCreate(generics.ListCreateAPIView):
     serializer_class = SalesSerializer
     queryset = Sales.objects.all()
+    permission_classes = (IsPersonnelorManager,)
 
 class TastingInformationsList(generics.ListCreateAPIView):
     serializer_class = TastingInformationsSerializer
     queryset = TastingInformations.objects.all()
 
 class PersonnelsListCreate(generics.ListCreateAPIView):
-    serializer_class = GetPersonnelsSerializer
+    serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
 
 class MachinesListCreate(generics.ListCreateAPIView):
@@ -250,3 +248,10 @@ class MachinesListCreate(generics.ListCreateAPIView):
 class LocationsListCreate(generics.ListCreateAPIView):
     serializer_class = LocationsSerializer
     queryset = Locations.objects.all()
+    permission_classes = (IsPersonnelorManager,)
+
+class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LocationSerializer
+    queryset = Locations.objects.all()
+    permission_classes = (IsPersonnelorManager,)
+

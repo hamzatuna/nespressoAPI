@@ -1,5 +1,5 @@
 *__pycache__
 nespressoAPI/migrations/*
 *db
-nespresso/settings.py
 nespressoenv
+.vscode

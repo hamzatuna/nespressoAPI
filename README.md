@@ -18,16 +18,22 @@ postgre terminalinde sifre degistirme
 ```
 alter user postgres with password '1234';
 ```
+
+database olusturma
+```
+create database "nespressoDB";
+```
+
 test database olusturma
 ```
 create database postgresTestDb;
 ```
 tablolari olusturma
 ```
- python manage.py makemigrations nespressoAPI
- python manage.py migrate
- ```
- test etme: 
- ```
- python manage.py test
- ```
+python manage.py makemigrations nespressoAPI  
+python manage.py migrate
+```
+test etme: 
+```
+python manage.py test
+```

@@ -64,18 +64,13 @@ class UserSerializer(serializers.ModelSerializer):
             'user_type'
         )
 
-
-class LocationsSerializer(serializers.ModelSerializer):
+class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Locations
-        #fields = '__all__'
-        exclude = ()
+        fields = '__all__'
 
-class GetPersonnelsSerializer(serializers.ModelSerializer):
-    LocationId = LocationsSerializer(many=False,required=False)
-    class Meta:
-        model = Personnels
-        exclude = ()
+class PersonnelSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
 
 
 class PersonnelsSerializer(serializers.ModelSerializer):
@@ -89,16 +84,19 @@ class PersonnelsSerializer(serializers.ModelSerializer):
             'user',
             'location_id')
 
-        #exclude = ('user',)
     def create(self,  validated_data):
         with transaction.atomic():
-            print(validated_data,type(validated_data))
             user_data = validated_data.pop('user')
             user_data["password"]=make_password(user_data["password"])
             print("USER DATA" , user_data)
             #user_data.set_password(user_data.password)
             user = User.objects.create(**user_data)
             print("USER", user)
+            user = User(**user_data)
+            user.set_password(user_data['password'])
+            user.user_type = 2
+            user.save()
+
             return Personnels.objects.create(user=user, **validated_data)
 
 
@@ -107,6 +105,13 @@ class DateSerializer(serializers.ModelSerializer):
         model=Sales
         exclude=()
 
+class LocationSerializer(serializers.ModelSerializer):
+    def create(self,validated_data):
+        return Locations.objects.create(**validated_data)
+
+    class Meta:
+        model=Locations
+        exclude=()
 
 class MachineConditionsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -130,23 +135,39 @@ class PersonnelsSerializer(serializers.ModelSerializer):
 
 
 class SalesSerializer(serializers.ModelSerializer):
-    #Serializer Constructoru içerisine örneğin source='LocationId' ekleyip,serializer'dan
-    #dönen field'ın ismini Location olarak değiştirebiliyoruz. Bu durumda API oluşturduğu
-    #JSON içerisinde LocationId değil Location başlığı veriyor. Bununla beraber datatables
-    #ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
-    #tablosundaki asli isimleriyle yolluyoruz.
-
-    LocationId = LocationsSerializer(many=False,required=False)
-    MachineId = MachinesSerializer(many=False,required=False)
-    PersonnelId =PersonnelsSerializer(many=False,required=False)
+    # Serializer Constructoru içerisine örneğin source='LocationId' ekleyip,serializer'dan
+    # dönen field'ın ismini Location olarak değiştirebiliyoruz. Bu durumda API oluşturduğu
+    # JSON içerisinde LocationId değil Location başlığı veriyor. Bununla beraber datatables
+    # ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
+    # tablosundaki asli isimleriyle yolluyoruz.
 
     def create(self, validated_data):
-        print("VD",validated_data)
-        return Sales.objects.create(**validated_data)
+        personnel = Personnels.objects.get(pk=validated_data['PersonnelId'])
+
+        # personel yoksa hata don
+        if not personnel:
+            raise serializers.ValidationError('Personel bulunamadi')
+
+        location = personnel.location_id
+
+        # location yoksa hata don
+        if not location:
+            raise serializers.ValidationError('lokasyon bulunamadi')
+
+        machine = location.machine
+
+        # machine yoksa hata don
+        if not machine:
+            raise serializers.ValidationError('Personel bulunamadi')
+
+        return Sales.objects.create(
+            **validated_data,
+            MachineId=machine,
+            LocationId=location)
 
     class Meta:
         model=Sales
-        exclude=()
+        exclude=('MachineId', 'LocationId')
 
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):
