@@ -102,15 +102,12 @@ body ornek:
 Satis eklemeden once personel icin lokasyon tanimlanmis olmasi lazimdir ve lokasyona ait bir de makine olmasi lazimdir
 ```       
 {
-    "LocationId":"1",
-    "MachineId":"1",
-    "PersonnelId" : "4",
-    "Date": "2018-09-10T01:32:12.922000Z",
-    "CustomerName": "YEPSYENI7",
-    "CustomerSurname": "ADAM7",
-    "CustomerPhoneNumber": "05672348294",
-    "CustomerEmail": "ADAMLIQUE7@gmail.com",
-    "IsCampaign": false
+	"PersonnelId": 4,
+	"CustomerName": "testName",
+	"CustomerSurname": "CustomerSurname",
+	"CustomerPhoneNumber": "23233232323",
+	"CustomerEmail": "aawdaw@a.com",
+	"IsCampaign": true
 }
 ```
 Sonuc:
