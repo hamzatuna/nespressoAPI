@@ -3,7 +3,7 @@
 {% load static %}
 
 
-{% block document_js_codes_add_location %}
+{% block document_js_codes_add_machine %}
 
     <script src="{% static 'assets/node_modules/jquery/jquery-3.2.1.min.js' %}"></script>
     <!-- Bootstrap tether Core JavaScript -->
@@ -51,9 +51,11 @@
         $('#locations').DataTable({
             dom: 'Bfrtip',
             'serverSide': true,
-            'ajax': '/get_locations?format=datatables',
+            'ajax': '/get_machines?format=datatables',
             'columns': [
-                {'data': 'LocationName'}
+                {'data': 'SerialNumber'},
+                {'data': 'Name'},
+                {'data': 'Fee'},
             ],
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -61,4 +63,4 @@
         });
     </script>
 
-{% endblock document_js_codes_add_location %}
+{% endblock document_js_codes_add_machine %}

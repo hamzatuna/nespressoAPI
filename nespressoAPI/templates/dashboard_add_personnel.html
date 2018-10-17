@@ -1,4 +1,4 @@
-{% extends 'document_js_codes_add_location.html' %}
+{% extends 'document_js_codes_add_personnel.html' %}
 
 {% load static %}
 
@@ -8,14 +8,14 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Lokasyon Ekle</h4>
+                    <h4 class="card-title">Personel Ekle</h4>
 
-                    <form action="/dashboard_add_location" method="post">
+                    <form action="/dashboard_add_personnel" method="post">
                         <div class="col-md-6">
                             {% csrf_token %}
-                            {% for field in locations_form %}
+                            {% for field in personnels_form %}
                                 <div class="form-group">
-                                    {{ field.label_tag }} {{ field }} <br>
+                                    {{ field.label_tag }} {{ field }}
                                 </div>
                             {% endfor %}
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Kaydet
@@ -23,15 +23,17 @@
                         </div>
                     </form>
 
-
                     <div class="table-responsive m-t-40">
-                        <table id="locations" class="display nowrap table table-hover table-striped table-bordered"
+                        <table id="personnels" class="display nowrap table table-hover table-striped table-bordered"
                                cellspacing="0" style="width:100%"
                                data-server-side="true"
                         >
                             <thead>
                             <tr>
-                                <th>Lokasyon Adı</th>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                                <th>Lokasyon</th>
+                                <th>Telefon Numarası</th>
                             </tr>
                             </thead>
                         </table>

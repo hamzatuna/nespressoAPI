@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('register', views.RegisterUser.as_view()),
     path('register/personnel', views.RegisterPersonnel.as_view()),
-    path('insert_sales', views.insert_sales, name="insert_sales"),
+    #path('insert_sales', views.insert_sales, name="insert_sales"),
     path(
         'insert_tastinginfo',
         views.TastingInformationsList.as_view(),
@@ -29,13 +29,15 @@ urlpatterns = [
     path('get_filtered_sales', views.get_filtered_sales, name="get_filtered_sales"),
 
     path('auth', include('rest_framework.urls', namespace='rest_framework')),
-    path('get-token', obtain_auth_token, name="get-token"),
+    path('get-token', views.CustomObtainAuthToken.as_view(), name="get-token"),
 
     path('home',views.home,name="home"),
     #path('dashboard', TemplateView.as_view(template_name='dashboard_main.html'), name="dashboard_main"),
     path('dashboard', views.dashboard_main, name="dashboard_main"),
     path('dashboard_sales_tab',TemplateView.as_view(template_name='dashboard_sales_tab.html'),name="dashboard_sales_tab"),
     path('dashboard_add_location', views.dashboard_add_location, name="dashboard_add_location"),
+    path('dashboard_add_machine', views.dashboard_add_machine, name="dashboard_add_machine"),
+    path('dashboard_add_personnel', views.dashboard_add_personnel, name="dashboard_add_personnel"),
     path('dashboard_add_sales_target', TemplateView.as_view(template_name='dashboard_add_sales_target.html'),name="dashboard_add_sales_target"),
 
     path('dashboard_tasting_tab',TemplateView.as_view(template_name='dashboard_tasting_tab.html'),name="dashboard_tasting_tab")

@@ -7,6 +7,8 @@ from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 from .serializers import *
 from .forms import *
 from rest_framework.generics import CreateAPIView
@@ -51,6 +53,7 @@ def dashboard_add_location(request):
         if request.method == "GET":
             form_context = {}
             form_context["locations_form"] = LocationsForm()
+            form_context["locations_form"].fields['LocationName'].widget.attrs = {'class': 'form-control'}
             print(form_context)
             return render(request,'dashboard_add_location.html',form_context)
         elif request.method == "POST":
@@ -64,7 +67,46 @@ def dashboard_add_location(request):
         return Response(KeyError)
 
 
+@api_view(['GET','POST'])
+def dashboard_add_machine(request):
+    try:
+        if request.method == "GET":
+            form_context = {}
+            form_context["machines_form"] = MachinesForm()
+            return render(request,'dashboard_add_machine.html',form_context)
+        elif request.method == "POST":
+            machines_form = MachinesForm(request.POST)
+            if machines_form.is_valid():
+                location = machines_form.save()
+                form_context = {}
+                form_context["machines_form"] = MachinesForm()
+                return render(request,'dashboard_add_machine.html',form_context)
+    except KeyError:
+        return Response(KeyError)
 
+@api_view(['GET','POST'])
+def dashboard_add_personnel(request):
+    try:
+        if request.method == "GET":
+            form_context = {}
+            form_context["personnels_form"] = PersonnelsForm()
+            return render(request,'dashboard_add_personnel.html',form_context)
+        elif request.method == "POST":
+            personnels_form = PersonnelsForm(request.POST)
+            if personnels_form.is_valid():
+                location = personnels_form.save()
+                form_context = {}
+                form_context["personnels_form"] = PersonnelsForm()
+                return render(request,'dashboard_add_personnel.html',form_context)
+    except KeyError:
+        return Response(KeyError)
+
+
+class CustomObtainAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
+        token = Token.objects.get(key=response.data['token'])
+        return Response({'token': token.key, 'id': token.user_id})
 
 @api_view(['POST'])
 def login_site(request):
@@ -173,7 +215,7 @@ class RegisterUser(CreateAPIView):
     queryset = User.objects.all()
 
 class RegisterPersonnel(CreateAPIView):
-    serializer_class = PersonnelSerializer
+    serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
 
 @api_view(['POST'])
@@ -198,7 +240,7 @@ class TastingInformationsList(generics.ListCreateAPIView):
     queryset = TastingInformations.objects.all()
 
 class PersonnelsListCreate(generics.ListCreateAPIView):
-    serializer_class = PersonnelsSerializer
+    serializer_class = GetPersonnelsSerializer
     queryset = Personnels.objects.all()
 
 class MachinesListCreate(generics.ListCreateAPIView):
@@ -206,5 +248,5 @@ class MachinesListCreate(generics.ListCreateAPIView):
     queryset = Machines.objects.all()
 
 class LocationsListCreate(generics.ListCreateAPIView):
-    serializer_class = LocationSerializer
+    serializer_class = LocationsSerializer
     queryset = Locations.objects.all()

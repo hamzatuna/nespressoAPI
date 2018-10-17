@@ -64,14 +64,22 @@ class UserSerializer(serializers.ModelSerializer):
             'user_type'
         )
 
-class LocationSerializer(serializers.ModelSerializer):
+
+class LocationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Locations
-        fields = '__all__'
+        #fields = '__all__'
+        exclude = ()
 
-class PersonnelSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+class GetPersonnelsSerializer(serializers.ModelSerializer):
+    LocationId = LocationsSerializer(many=False,required=False)
+    class Meta:
+        model = Personnels
+        exclude = ()
 
+
+class PersonnelsSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False,required=False)
     class Meta:
         model = Personnels
         fields = (
@@ -81,6 +89,7 @@ class PersonnelSerializer(serializers.ModelSerializer):
             'user',
             'location_id')
 
+        #exclude = ('user',)
     def create(self,  validated_data):
         with transaction.atomic():
             print(validated_data,type(validated_data))
@@ -98,12 +107,6 @@ class DateSerializer(serializers.ModelSerializer):
         model=Sales
         exclude=()
 
-class LocationSerializer(serializers.ModelSerializer):
-    def create(self,validated_data):
-        return Locations.objects.create(**validated_data)
-    class Meta:
-        model=Locations
-        exclude=()
 
 class MachineConditionsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -132,9 +135,14 @@ class SalesSerializer(serializers.ModelSerializer):
     #JSON içerisinde LocationId değil Location başlığı veriyor. Bununla beraber datatables
     #ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
     #tablosundaki asli isimleriyle yolluyoruz.
-    LocationId = LocationSerializer(many=False,required=True)
-    MachineId = MachinesSerializer(many=False,required=True)
-    PersonnelId =PersonnelsSerializer(many=False,required=True)
+
+    LocationId = LocationsSerializer(many=False,required=False)
+    MachineId = MachinesSerializer(many=False,required=False)
+    PersonnelId =PersonnelsSerializer(many=False,required=False)
+
+    def create(self, validated_data):
+        print("VD",validated_data)
+        return Sales.objects.create(**validated_data)
 
     class Meta:
         model=Sales
@@ -147,7 +155,7 @@ class IntensiveHoursSerializer(serializers.ModelSerializer):
         exclude=()
 
 class TastingInformationsSerializer(serializers.ModelSerializer):
-    LocationId = LocationSerializer(many=False,required=True)
+    LocationId = LocationsSerializer(many=False,required=True)
     MachineConditionId = MachineConditionsSerializer(many=False,required=True)
     IntensiveHourId = IntensiveHoursSerializer(many=False,required=True)
     PersonnelId = PersonnelsSerializer(many=False,required=True)

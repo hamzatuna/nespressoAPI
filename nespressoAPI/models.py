@@ -32,8 +32,8 @@ class Managers(models.Model):
 
 
 class Locations(models.Model):
-    Latitude = models.FloatField()
-    Longitude = models.FloatField()
+    Latitude = models.FloatField(null=True)
+    Longitude = models.FloatField(null=True)
     LocationName = models.CharField(max_length=1000)
     class Meta:
         db_table = "Locations"
@@ -46,7 +46,7 @@ class Personnels(models.Model):
     wage = models.DecimalField(max_digits=10, decimal_places=6, null=True)
 
     # foreign keys
-    location_id = models.ForeignKey(
+    LocationId = models.ForeignKey(
         Locations,
         on_delete=models.CASCADE,
         db_column='LocationId',
