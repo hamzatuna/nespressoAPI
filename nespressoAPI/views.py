@@ -207,7 +207,7 @@ def home(request):
     return render(request,'home.html')
 
 class RegisterUser(CreateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UsersSerializer
     queryset = User.objects.all()
 
 class RegisterPersonnel(CreateAPIView):
@@ -251,7 +251,7 @@ class LocationsListCreate(generics.ListCreateAPIView):
     permission_classes = (IsPersonnelorManager,)
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = LocationSerializer
+    serializer_class = LocationsSerializer
     queryset = Locations.objects.all()
     permission_classes = (IsPersonnelorManager,)
 

@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import make_password
 
 # UserModel = get_user_model()
 
-class UserSerializer(serializers.ModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, max_length=128)
     email = serializers.EmailField(
@@ -52,7 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
          if errors:
              raise serializers.ValidationError(errors)
 
-         return super(UserSerializer, self).validate(data)
+         return super(UsersSerializer, self).validate(data)
 
     class Meta:
         model = User
@@ -64,17 +64,17 @@ class UserSerializer(serializers.ModelSerializer):
             'user_type'
         )
 
-class LocationSerializer(serializers.ModelSerializer):
+class LocationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Locations
         fields = '__all__'
 
-class PersonnelSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+class PersonnelsSerializer(serializers.ModelSerializer):
+    user = UsersSerializer()
 
 
 class PersonnelsSerializer(serializers.ModelSerializer):
-    user = UserSerializer(many=False,required=False)
+    user = UsersSerializer(many=False,required=False)
     class Meta:
         model = Personnels
         fields = (
@@ -105,7 +105,7 @@ class DateSerializer(serializers.ModelSerializer):
         model=Sales
         exclude=()
 
-class LocationSerializer(serializers.ModelSerializer):
+class LocationsSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         return Locations.objects.create(**validated_data)
 
