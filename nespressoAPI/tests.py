@@ -7,7 +7,9 @@ from .models import (
         User,
         Personnels,
         Locations,
-        LocationHistory
+        LocationHistory,
+        Sales,
+        Machines
 )
 
 
@@ -209,3 +211,91 @@ class LocationUpdateTestCases(APITestCase):
         self.assertEqual(2, len(location_histories))
 
         self.assertEqual(location_histories[1].stock, updated_data["stock"])
+
+class SalesTestCases(APITestCase):
+    
+    personnel_id = 40
+    initial_stock = 2
+    sales_data = {
+            "PersonnelId": personnel_id,
+            "CustomerName": "testName",
+            "CustomerSurname": "CustomerSurname",
+            "CustomerPhoneNumber": "23233232323",
+            "CustomerEmail": "aawdaw@a.com",
+            "IsCampaign": True
+    }
+    url = '/sales'
+
+    def setUp(self):
+        User.objects.all().delete()
+        Token.objects.all().delete()
+        Personnels.objects.all().delete()
+        Sales.objects.all().delete()
+
+        # add test user
+        test_user_data = {
+            "id": self.personnel_id,
+            "username": "test-user",
+            "password": "12345678.",
+            "email": "a5@a.com",
+            "is_active": True,
+            "user_type": 2
+        }
+        test_user = User(**test_user_data)
+        test_user.save()
+
+
+        # add machine
+        test_machine_data = {
+            'Name': 'test_name',
+            'SerialNumber': '1234',
+            'Fee': 2121
+        }
+        test_machine = Machines(**test_machine_data)
+        test_machine.save()
+
+        # add location
+        location_data = {
+                "id": 20,
+                "Latitude": 45.1,
+                "Longitude": 34.12,
+                "LocationName": "testPlace",
+                "stock": self.initial_stock,
+                'machine': test_machine
+        }
+        location = Locations(**location_data)
+        location.save()
+
+        # add personnel
+        test_personnel_data = {
+            "user": test_user,
+            "name": "test-name",
+            "surname": "test-surname",
+            "location_id": location
+        }
+        test_personnel = Personnels(**test_personnel_data)
+        test_personnel.save()
+  
+        self.token,_ = Token.objects.get_or_create(user=test_user)
+
+        self.api_authentication()
+    
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+    def test_add_sale(self):
+
+        response = self.client.post(self.url, self.sales_data, format='json')
+
+        # get all personnels
+        sales = Sales.objects.all()
+
+        # expect to status code ok
+        self.assertEqual(201, response.status_code)
+
+        # expect location is added successfully
+        self.assertEqual(1, len(sales))
+
+        # check stock is decreased
+        self.assertEqual(sales[0].LocationId.stock, self.initial_stock-1)
+        

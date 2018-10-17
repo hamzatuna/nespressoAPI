@@ -73,6 +73,7 @@ def insert_sales(request):
 class SalesListCreate(generics.ListCreateAPIView):
     serializer_class = SalesSerializer
     queryset = Sales.objects.all()
+    permission_classes = (IsPersonnelorManager,)
 
 class TastingInformationsList(generics.ListCreateAPIView):
     serializer_class = TastingInformationsSerializer

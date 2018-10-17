@@ -175,7 +175,12 @@ class Supervisors(models.Model):
 class Sales(models.Model):
     MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId',related_name='%(class)s_Machine')
     PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
-    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,db_column='LocationId',related_name='%(class)s_Location')
+    LocationId = models.ForeignKey(
+        Locations,
+        on_delete=models.CASCADE,
+        db_column='LocationId',
+        null=True,
+        related_name='%(class)s_Location')
     #SerialNumber = models.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
     Date = models.DateTimeField(default=datetime.now,blank=True)
     CustomerName = models.CharField(max_length=200)
@@ -226,3 +231,13 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 @receiver(post_save, sender=Locations)
 def log_stocks(sender, instance=None, created=False, **kwargs):
     LocationHistory.objects.create(location_id=instance, stock=instance.stock)
+
+# satis eklendiginde otamatik stoktan dusme
+@receiver(post_save, sender=Sales)
+def decrease_stock(sender, instance=None, created=False, **kwargs):
+    if created:
+        location = instance.LocationId
+        if location:
+            location.stock -=1
+            location.save()
+    

@@ -30,7 +30,7 @@ body ornek:
         "is_active": true,
         "user_type": 1
     },
-    "location_id": null
+    "location_id": 1
 }
 ```
 ## 2-) Token Alma

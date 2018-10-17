@@ -14,8 +14,7 @@ urlpatterns = [
         views.TastingInformationsList.as_view(),
         name='tasting_list'
     ),
-    path('get_sales',views.SalesListCreate.as_view(), name="sales_list"),
-    path('insert_sales', views.SalesListCreate.as_view(), name="sales_create"),
+    path('sales', views.SalesListCreate.as_view(), name="sales_list"),
     path('insert_tastinginfo',views.TastingInformationsList.as_view(),name='tasting_list'),
     path('admin_get_sales',views.SalesListCreate.as_view(), name="get_sales"),
     path('admin_get_tasting_informations',views.TastingInformationsList.as_view(),name='tasting_list'),
