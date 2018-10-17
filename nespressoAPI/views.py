@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from .models import *
 from .decorators import manager_required
-from .permissions import IsManeger
+from .permissions import IsManeger, IsPersonnelorManager
 import json
 from django.core import serializers
 from datetime import datetime,date,timedelta
@@ -73,6 +73,7 @@ def insert_sales(request):
 class SalesListCreate(generics.ListCreateAPIView):
     serializer_class = SalesSerializer
     queryset = Sales.objects.all()
+    permission_classes = (IsPersonnelorManager,)
 
 class TastingInformationsList(generics.ListCreateAPIView):
     serializer_class = TastingInformationsSerializer
@@ -81,3 +82,14 @@ class TastingInformationsList(generics.ListCreateAPIView):
 class PersonnelsListCreate(generics.ListCreateAPIView):
     serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
+
+class LocationListCreate(generics.ListCreateAPIView):
+    serializer_class = LocationSerializer
+    queryset = Locations.objects.all()
+    permission_classes = (IsPersonnelorManager,)
+
+class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LocationSerializer
+    queryset = Locations.objects.all()
+    permission_classes = (IsPersonnelorManager,)
+

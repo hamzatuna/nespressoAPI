@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
@@ -96,14 +97,42 @@ class Managers(models.Model):
     class Meta:
         db_table = "Managers"
 
+class Machines(models.Model):
+    Name = models.CharField(max_length=200)
+    SerialNumber = models.CharField(max_length=1000)
+
+    # max_digits noktadan sonrayla beraber toplam kaç sayı olabilir,
+    # decimal_places ise noktadan önceki ondalık kısımda max kaç sayı olabilir.
+    Fee = models.DecimalField(max_digits=10,decimal_places=3)
+
+    class Meta:
+        db_table = "Machines"
 
 class Locations(models.Model):
     Latitude = models.FloatField()
     Longitude = models.FloatField()
     LocationName = models.CharField(max_length=1000)
+    stock = models.IntegerField(default=0)
 
+    # foreign keys
+    machine = models.ForeignKey(
+        Machines,
+        null=True,
+        on_delete=models.PROTECT,
+        default=None)
     class Meta:
         db_table = "Locations"
+
+class LocationHistory(models.Model):
+    stock = models.IntegerField(default=0)
+    date = models.DateTimeField(default=datetime.now,blank=True)
+    
+    # foreign keys
+    location_id = models.ForeignKey(
+        Locations,
+        on_delete=models.CASCADE,
+        db_column='LocationId',
+        null=True)
 
 class Personnels(models.Model):
     name = models.CharField(max_length=200)
@@ -129,17 +158,6 @@ class PersonnelLocation(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     location = models.OneToOneField(Locations, on_delete=models.CASCADE)
 
-class Machines(models.Model):
-    Name = models.CharField(max_length=200)
-    SerialNumber = models.CharField(max_length=1000)
-
-    # max_digits noktadan sonrayla beraber toplam kaç sayı olabilir,
-    # decimal_places ise noktadan önceki ondalık kısımda max kaç sayı olabilir.
-    Fee = models.DecimalField(max_digits=10,decimal_places=3)
-
-    class Meta:
-        db_table = "Machines"
-
 class Supervisors(models.Model):
     Name = models.CharField(max_length=200)
     Surname = models.CharField(max_length=200)
@@ -157,7 +175,12 @@ class Supervisors(models.Model):
 class Sales(models.Model):
     MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId',related_name='%(class)s_Machine')
     PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
-    LocationId = models.ForeignKey(Locations,on_delete=models.CASCADE,db_column='LocationId',related_name='%(class)s_Location')
+    LocationId = models.ForeignKey(
+        Locations,
+        on_delete=models.CASCADE,
+        db_column='LocationId',
+        null=True,
+        related_name='%(class)s_Location')
     #SerialNumber = models.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
     Date = models.DateTimeField(default=datetime.now,blank=True)
     CustomerName = models.CharField(max_length=200)
@@ -203,3 +226,18 @@ class TastingInformations(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+# Location updatelendiginde eski degerini tutacak olan tablo
+@receiver(post_save, sender=Locations)
+def log_stocks(sender, instance=None, created=False, **kwargs):
+    LocationHistory.objects.create(location_id=instance, stock=instance.stock)
+
+# satis eklendiginde otamatik stoktan dusme
+@receiver(post_save, sender=Sales)
+def decrease_stock(sender, instance=None, created=False, **kwargs):
+    if created:
+        location = instance.LocationId
+        if location:
+            location.stock -=1
+            location.save()
+    

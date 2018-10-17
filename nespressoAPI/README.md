@@ -30,7 +30,7 @@ body ornek:
         "is_active": true,
         "user_type": 1
     },
-    "location_id": null
+    "location_id": 1
 }
 ```
 ## 2-) Token Alma
@@ -92,13 +92,15 @@ Sonuc: olusturulan personel bilgileri doner
    "email": "a1@a.com"
 }
 ```
+<<<<<<< HEAD
 
 ## 4-) Satış Ekleme
 
 ```
-/insert_sales POST
+/sales POST
 ```
 body ornek:
+Satis eklemeden once personel icin lokasyon tanimlanmis olmasi lazimdir ve lokasyona ait bir de makine olmasi lazimdir
 ```       
 {
     "LocationId":"1",
@@ -128,6 +130,41 @@ Sonuc:
 }
 ```
 
+=======
+## 4 Satis Ekleme
+```
+/register/personnel POST
+```
+authtication olmak icin header`a:
+```
+"Authorization: Token 241389a7b0e2f30668f8e71ce2bdff9a4a47d5c3(giriste alinan token)"
+```
+Satis eklemeden once personel icin lokasyon tanimlanmis olmasi lazimdir ve lokasyona ait bir de makine olmasi lazimdir
+body ornek:
+```
+{
+	"PersonnelId": 4, (user_id ile ayni)
+	"CustomerName": "testName",
+	"CustomerSurname": "CustomerSurname",
+	"CustomerPhoneNumber": "23233232323",
+	"CustomerEmail": "aawdaw@a.com",
+	"IsCampaign": true
+}
+```
+Sonuc: olusturulan personel bilgileri doner
+```
+{
+    "id": 6,
+    "Date": "2018-10-17T01:01:11.578994Z",
+    "CustomerName": "testName",
+    "CustomerSurname": "CustomerSurname",
+    "CustomerPhoneNumber": "23233232323",
+    "CustomerEmail": "aawdaw@a.com",
+    "IsCampaign": true,
+    "PersonnelId": 4
+}
+```
+>>>>>>> feature/stok-ekleme
 # Endpoitlere Permission ekleme
 
 fonksiyona ekleme:

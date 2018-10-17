@@ -62,11 +62,6 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active',
             'user_type'
         )
-class LocationSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Locations
-        fields = '__all__'
 
 class PersonnelSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -99,6 +94,7 @@ class DateSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         return Locations.objects.create(**validated_data)
+
     class Meta:
         model=Locations
         exclude=()
@@ -130,13 +126,34 @@ class SalesSerializer(serializers.ModelSerializer):
     # JSON içerisinde LocationId değil Location başlığı veriyor. Bununla beraber datatables
     # ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
     # tablosundaki asli isimleriyle yolluyoruz.
-    LocationId = LocationSerializer(many=False,required=True)
-    MachineId = MachinesSerializer(many=False,required=True)
-    PersonnelId =PersonnelsSerializer(many=False,required=True)
+
+    def create(self, validated_data):
+        personnel = Personnels.objects.get(pk=validated_data['PersonnelId'])
+
+        # personel yoksa hata don
+        if not personnel:
+            raise serializers.ValidationError('Personel bulunamadi')
+        
+        location = personnel.location_id
+
+        # location yoksa hata don
+        if not location:
+            raise serializers.ValidationError('lokasyon bulunamadi')
+        
+        machine = location.machine
+
+        # machine yoksa hata don
+        if not machine:
+            raise serializers.ValidationError('Personel bulunamadi')
+        
+        return Sales.objects.create(
+            **validated_data,
+            MachineId=machine,
+            LocationId=location)
 
     class Meta:
         model=Sales
-        exclude=()
+        exclude=('MachineId', 'LocationId')
 
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):
