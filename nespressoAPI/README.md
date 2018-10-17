@@ -30,7 +30,7 @@ body ornek:
         "is_active": true,
         "user_type": 1
     },
-    "location_id": null
+    "location_id": 1
 }
 ```
 ## 2-) Token Alma
@@ -42,7 +42,7 @@ body ornek:
 ```
 {
     "username": "test2",
-    "password": "test2",
+    "password": "test2"
 }
 ```
 Sonuc:
@@ -90,6 +90,39 @@ Sonuc: olusturulan personel bilgileri doner
    "name": "test-name1",
    "surname": "test-surname",
    "email": "a1@a.com"
+}
+```
+
+## 4-) Satış Ekleme
+
+```
+/sales POST
+```
+body ornek:
+Satis eklemeden once personel icin lokasyon tanimlanmis olmasi lazimdir ve lokasyona ait bir de makine olmasi lazimdir
+```       
+{
+	"PersonnelId": 4,
+	"CustomerName": "testName",
+	"CustomerSurname": "CustomerSurname",
+	"CustomerPhoneNumber": "23233232323",
+	"CustomerEmail": "aawdaw@a.com",
+	"IsCampaign": true
+}
+```
+Sonuc:
+```
+{
+    "id": 14,
+    "Date": "2018-09-10T01:32:12.922000Z",
+    "CustomerName": "YEPSYENI7",
+    "CustomerSurname": "ADAM7",
+    "CustomerPhoneNumber": "05672348294",
+    "CustomerEmail": "ADAMLIQUE7@gmail.com",
+    "IsCampaign": false,
+    "MachineId": 1,
+    "PersonnelId": 4,
+    "LocationId": 1
 }
 ```
 
