@@ -20,7 +20,7 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from .models import *
 from .decorators import manager_required
-from .permissions import IsManeger, IsPersonnelorManager
+from .permissions import IsManager, IsPersonnelorManager
 import json
 from django.core import serializers
 from datetime import datetime,date,timedelta
@@ -213,7 +213,7 @@ class RegisterUser(CreateAPIView):
 class RegisterPersonnel(CreateAPIView):
     serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
-    permission_classes = (IsManeger,)
+    permission_classes = (IsManager,)
 
 @api_view(['POST'])
 def insert_sales(request):
@@ -255,3 +255,8 @@ class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Locations.objects.all()
     permission_classes = (IsPersonnelorManager,)
 
+
+class LocationListCreate(generics.ListCreateAPIView):
+    serializer_class = LocationsSerializer
+    queryset = Locations.objects.all()
+    permission_classes = (IsPersonnelorManager,)
