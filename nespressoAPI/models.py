@@ -114,12 +114,6 @@ class Locations(models.Model):
     LocationName = models.CharField(max_length=1000)
     stock = models.IntegerField(default=0)
 
-    # foreign keys
-    machine = models.ForeignKey(
-        Machines,
-        null=True,
-        on_delete=models.PROTECT,
-        default=None)
     class Meta:
         db_table = "Locations"
 

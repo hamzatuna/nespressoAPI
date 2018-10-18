@@ -140,20 +140,13 @@ class SalesSerializer(serializers.ModelSerializer):
         if not location:
             raise serializers.ValidationError('lokasyon bulunamadi')
         
-        machine = location.machine
-
-        # machine yoksa hata don
-        if not machine:
-            raise serializers.ValidationError('Personel bulunamadi')
-        
         return Sales.objects.create(
             **validated_data,
-            MachineId=machine,
             LocationId=location)
 
     class Meta:
         model=Sales
-        exclude=('MachineId', 'LocationId')
+        exclude=('LocationId',)
 
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):

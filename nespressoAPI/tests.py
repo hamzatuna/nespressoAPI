@@ -216,13 +216,16 @@ class SalesTestCases(APITestCase):
     
     personnel_id = 40
     initial_stock = 2
+    machine_id = 40
     sales_data = {
             "PersonnelId": personnel_id,
             "CustomerName": "testName",
             "CustomerSurname": "CustomerSurname",
             "CustomerPhoneNumber": "23233232323",
             "CustomerEmail": "aawdaw@a.com",
-            "IsCampaign": True
+            "IsCampaign": True,
+            "MachineId": machine_id,
+
     }
     url = '/sales'
 
@@ -244,9 +247,9 @@ class SalesTestCases(APITestCase):
         test_user = User(**test_user_data)
         test_user.save()
 
-
         # add machine
         test_machine_data = {
+            'id': self.machine_id,
             'Name': 'test_name',
             'SerialNumber': '1234',
             'Fee': 2121
@@ -261,7 +264,6 @@ class SalesTestCases(APITestCase):
                 "Longitude": 34.12,
                 "LocationName": "testPlace",
                 "stock": self.initial_stock,
-                'machine': test_machine
         }
         location = Locations(**location_data)
         location.save()

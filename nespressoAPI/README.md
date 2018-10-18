@@ -107,6 +107,7 @@ Satis eklemeden once personel icin lokasyon tanimlanmis olmasi lazimdir ve lokas
 	"CustomerSurname": "CustomerSurname",
 	"CustomerPhoneNumber": "23233232323",
 	"CustomerEmail": "aawdaw@a.com",
+    "MachineId": 1,
 	"IsCampaign": true
 }
 ```
