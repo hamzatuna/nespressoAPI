@@ -126,13 +126,35 @@ class MachinesSerializer(serializers.ModelSerializer):
         exclude=()
 
 
-class PersonnelsSerializer(serializers.ModelSerializer):
+class OldPersonnelsSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Personnels.objects.create(**validated_data)
     class Meta:
         model=Personnels
         exclude=()
 
+
+class PersonnelsSerializer(serializers.ModelSerializer):
+    user = UsersSerializer()
+
+    class Meta:
+        model = Personnels
+        fields = (
+            'name',
+            'wage',
+            'phone_number',
+            'user',
+            'location_id')
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            user_data = validated_data.pop('user')
+            user = User(**user_data)
+            user.set_password(user_data['password'])
+            user.user_type = 2
+            user.save()
+
+            return Personnels.objects.create(user=user, **validated_data)
 
 class SalesSerializer(serializers.ModelSerializer):
     # Serializer Constructoru içerisine örneğin source='LocationId' ekleyip,serializer'dan
