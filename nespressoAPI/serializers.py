@@ -187,6 +187,11 @@ class IntensiveHoursSerializer(serializers.ModelSerializer):
     class Meta:
         model=IntensiveHours
         exclude=()
+class CustomerGoalSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomerGoals
+        exclude=()
 
 class TastingInformationsSerializer(serializers.ModelSerializer):
     LocationId = LocationsSerializer(many=False,required=True)

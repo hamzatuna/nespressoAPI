@@ -260,3 +260,8 @@ class LocationListCreate(generics.ListCreateAPIView):
     serializer_class = LocationsSerializer
     queryset = Locations.objects.all()
     permission_classes = (IsPersonnelorManager,)
+
+class CustomerGoalListCreate(generics.ListCreateAPIView):
+    serializer_class = CustomerGoalSerializer
+    queryset = CustomerGoals.objects.all()
+    permission_classes = (IsPersonnelorManager,)

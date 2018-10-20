@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -6,8 +7,8 @@ from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 from datetime import datetime
 from django.contrib.auth.hashers import make_password
+from .validators import month_validator
 
-#from django.utils.timezone import now
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password=None):
@@ -214,6 +215,12 @@ class TastingInformations(models.Model):
     class Meta:
         db_table = "TastingInformations"
 
+class CustomerGoals(models.Model):
+    sale_goal = models.IntegerField()
+    date = models.DateField(unique=True, validators=[month_validator])
+    
+    # foreign keys
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 # This receiver handles token creation immediately a new user is created.
 @receiver(post_save, sender=User)

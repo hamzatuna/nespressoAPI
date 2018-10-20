@@ -127,6 +127,31 @@ Sonuc:
 }
 ```
 
+
+## 4-) Target Ekleme
+
+```
+/goals POST
+```
+body ornek:
+
+```       
+{
+    "sale_goal": 1,
+    "date": "2018-01-02",
+    "user": 1
+}
+```
+Sonuc:
+```
+{
+    "id": 2,
+    "sale_goal": 1,
+    "date": "2018-01-02",
+    "user": 1
+}
+```
+
 # Endpoitlere Permission ekleme
 
 fonksiyona ekleme:
