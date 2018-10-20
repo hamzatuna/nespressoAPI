@@ -6,10 +6,11 @@ from django.core import exceptions
 import django.contrib.auth.password_validation as validators
 from rest_framework.validators import UniqueValidator
 import logging
+from django.contrib.auth.hashers import make_password
 
 # UserModel = get_user_model()
 
-class UserSerializer(serializers.ModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, max_length=128)
     email = serializers.EmailField(
@@ -51,7 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
          if errors:
              raise serializers.ValidationError(errors)
 
-         return super(UserSerializer, self).validate(data)
+         return super(UsersSerializer, self).validate(data)
 
     class Meta:
         model = User
@@ -63,9 +64,15 @@ class UserSerializer(serializers.ModelSerializer):
             'user_type'
         )
 
-class PersonnelSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+class LocationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Locations
+        fields = '__all__'
 
+
+class PersonnelsSerializer(serializers.ModelSerializer):
+    user = UsersSerializer(many=False,required=False)
+    
     class Meta:
         model = Personnels
         fields = (
@@ -78,11 +85,16 @@ class PersonnelSerializer(serializers.ModelSerializer):
     def create(self,  validated_data):
         with transaction.atomic():
             user_data = validated_data.pop('user')
+            user_data["password"]=make_password(user_data["password"])
+            print("USER DATA" , user_data)
+            #user_data.set_password(user_data.password)
+            user = User.objects.create(**user_data)
+            print("USER", user)
             user = User(**user_data)
             user.set_password(user_data['password'])
             user.user_type = 2
             user.save()
-            
+
             return Personnels.objects.create(user=user, **validated_data)
 
 
@@ -91,7 +103,7 @@ class DateSerializer(serializers.ModelSerializer):
         model=Sales
         exclude=()
 
-class LocationSerializer(serializers.ModelSerializer):
+class LocationsSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         return Locations.objects.create(**validated_data)
 
@@ -112,13 +124,35 @@ class MachinesSerializer(serializers.ModelSerializer):
         exclude=()
 
 
-class PersonnelsSerializer(serializers.ModelSerializer):
+class OldPersonnelsSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Personnels.objects.create(**validated_data)
     class Meta:
         model=Personnels
         exclude=()
 
+
+class PersonnelsSerializer(serializers.ModelSerializer):
+    user = UsersSerializer()
+
+    class Meta:
+        model = Personnels
+        fields = (
+            'name',
+            'wage',
+            'phone_number',
+            'user',
+            'location_id')
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            user_data = validated_data.pop('user')
+            user = User(**user_data)
+            user.set_password(user_data['password'])
+            user.user_type = 2
+            user.save()
+
+            return Personnels.objects.create(user=user, **validated_data)
 
 class SalesSerializer(serializers.ModelSerializer):
     # Serializer Constructoru içerisine örneğin source='LocationId' ekleyip,serializer'dan
@@ -133,13 +167,13 @@ class SalesSerializer(serializers.ModelSerializer):
         # personel yoksa hata don
         if not personnel:
             raise serializers.ValidationError('Personel bulunamadi')
-        
+
         location = personnel.location_id
 
         # location yoksa hata don
         if not location:
             raise serializers.ValidationError('lokasyon bulunamadi')
-        
+
         return Sales.objects.create(
             **validated_data,
             LocationId=location)
@@ -155,7 +189,7 @@ class IntensiveHoursSerializer(serializers.ModelSerializer):
         exclude=()
 
 class TastingInformationsSerializer(serializers.ModelSerializer):
-    LocationId = LocationSerializer(many=False,required=True)
+    LocationId = LocationsSerializer(many=False,required=True)
     MachineConditionId = MachineConditionsSerializer(many=False,required=True)
     IntensiveHourId = IntensiveHoursSerializer(many=False,required=True)
     PersonnelId = PersonnelsSerializer(many=False,required=True)

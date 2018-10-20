@@ -50,7 +50,7 @@ class User(AbstractUser):
     )
 
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
-    
+
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -109,8 +109,8 @@ class Machines(models.Model):
         db_table = "Machines"
 
 class Locations(models.Model):
-    Latitude = models.FloatField()
-    Longitude = models.FloatField()
+    Latitude = models.FloatField(null=True)
+    Longitude = models.FloatField(null=True)
     LocationName = models.CharField(max_length=1000)
     stock = models.IntegerField(default=0)
 
@@ -120,7 +120,7 @@ class Locations(models.Model):
 class LocationHistory(models.Model):
     stock = models.IntegerField(default=0)
     date = models.DateTimeField(default=datetime.now,blank=True)
-    
+
     # foreign keys
     location_id = models.ForeignKey(
         Locations,
@@ -234,4 +234,4 @@ def decrease_stock(sender, instance=None, created=False, **kwargs):
         if location:
             location.stock -=1
             location.save()
-    
+

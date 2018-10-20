@@ -1,0 +1,55 @@
+{% extends 'document_js_codes_add_sales_target.html' %}
+
+{% load static %}
+
+{% block document_container_fluid %}
+
+    <div class="row" ng-controller="MainCtrl">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Satış Hedefi Ekle</h4>
+
+                    <div class="input-daterange input-group" id="date-range">
+                        <input type="text" class="form-control" name="start">
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-info b-0 text-white">TO</span>
+                        </div>
+                        <input type="text" class="form-control" name="end">
+                    </div>
+
+
+                    <div class="table-responsive m-t-40">
+                        <table id="albums" class="display nowrap table table-hover table-striped table-bordered"
+                               cellspacing="0" style="width:100%"
+                               data-server-side="true"
+                        >
+                            <thead>
+                            <tr>
+                                <th data-data="Date">Tarih</th>
+                                <th data-data="LocationId.LocationName">Mağaza</th>
+                                <th data-data="PersonnelId.name">Satış Elemanı Ad</th>
+                                <th data-data="PersonnelId.surname">Satış Elemanı Soyad</th>
+                                <th data-data="MachineId.Name">Ürün</th>
+                                <th data-data="CustomerName">Müşteri Ad</th>
+                                <th data-data="CustomerSurname">Müşteri Soyad</th>
+                                <th data-data="CustomerPhoneNumber">Müşteri Tel</th>
+                                <th data-data="CustomerEmail">Müşteri Email</th>
+                                <th data-data="IsCampaign">Kampanyalı Mı?</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Container fluid  -->
+    <!-- ============================================================== -->
+    </div>
+
+{% endblock document_container_fluid %}

@@ -138,7 +138,7 @@ def get_sales_count(request):
 class`a ekleme:
 ```
 class RegisterPersonnel(CreateAPIView):
-    serializer_class = PersonnelSerializer
+    serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
-    permission_classes = (IsManeger,)
+    permission_classes = (IsManager,)
 ```

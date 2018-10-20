@@ -1,0 +1,53 @@
+{% extends 'document_js_codes_add_personnel.html' %}
+
+{% load static %}
+
+{% block document_container_fluid %}
+
+    <div class="row" ng-controller="MainCtrl">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Personel Ekle</h4>
+
+                    <form action="/dashboard_add_personnel" method="post">
+                        <div class="col-md-6">
+                            {% csrf_token %}
+                            {% for field in personnels_form %}
+                                <div class="form-group">
+                                    {{ field.label_tag }} {{ field }}
+                                </div>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Kaydet
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive m-t-40">
+                        <table id="personnels" class="display nowrap table table-hover table-striped table-bordered"
+                               cellspacing="0" style="width:100%"
+                               data-server-side="true"
+                        >
+                            <thead>
+                            <tr>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                                <th>Lokasyon</th>
+                                <th>Telefon Numarası</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Container fluid  -->
+    <!-- ============================================================== -->
+    </div>
+
+{% endblock document_container_fluid %}
