@@ -50,6 +50,8 @@
     <script>
         $('#locations').DataTable({
             dom: 'Bfrtip',
+            'paging': true,
+            pageLength: 20,
             'serverSide': true,
             'ajax': '/get_machines?format=datatables',
             'columns': [
