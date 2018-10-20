@@ -64,6 +64,7 @@ def dashboard_add_location(request):
                 location = locations_form.save()
                 form_context = {}
                 form_context["locations_form"] = LocationsForm()
+                form_context["locations_form"].fields['LocationName'].widget.attrs = {'class': 'form-control'}
                 return render(request,'dashboard_add_location.html',form_context)
     except KeyError:
         return Response(KeyError)
@@ -108,7 +109,8 @@ class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
         token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'id': token.user_id})
+        user_object = User.objects.get(id = token.user_id)
+        return Response({'token': token.key, 'id': token.user_id, 'user_type':user_object.user_type})
 
 @api_view(['POST'])
 def login_site(request):
