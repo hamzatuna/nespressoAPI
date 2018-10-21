@@ -95,7 +95,11 @@ Sonuc: olusturulan personel bilgileri doner
 }
 ```
 
-## 4-) Satış Ekleme
+## 4-) Makine Ekleme
+makine boyle eklenicek
+
+
+## 5-) Satış Ekleme
 
 ```
 /sales POST
@@ -130,7 +134,7 @@ Sonuc:
 ```
 
 
-## 4-) Target Ekleme
+## 6-) Target Ekleme
 
 ```
 /goals POST
