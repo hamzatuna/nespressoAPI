@@ -49,6 +49,8 @@ Sonuc:
 ```
 {
     "token": "feb077537b9225af583b1c10b31dda77d88379a5"
+    "id": 1,
+    "user_type": 1
 }
 ```
 
@@ -80,20 +82,24 @@ body ornek:
 Sonuc: olusturulan personel bilgileri doner
 ```
 {
-   "user": {
-	"username": "test6",
-	"email": "a7@a.com",
-	"is_active": true,
-	"user_type": 1
-   },
-   
-   "name": "test-name1",
-   "surname": "test-surname",
-   "email": "a1@a.com"
+    "name": "test-name1",
+    "wage": null,
+    "phone_number": null,
+    "user": {
+        "username": "test6",
+        "email": "a7@a.com",
+        "is_active": true,
+        "user_type": 2
+    },
+    "location_id": null
 }
 ```
 
-## 4-) Satış Ekleme
+## 4-) Makine Ekleme
+makine boyle eklenicek
+
+
+## 5-) Satış Ekleme
 
 ```
 /sales POST
@@ -128,7 +134,7 @@ Sonuc:
 ```
 
 
-## 4-) Target Ekleme
+## 6-) Target Ekleme
 
 ```
 /goals POST
