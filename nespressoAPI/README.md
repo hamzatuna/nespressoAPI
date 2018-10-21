@@ -49,6 +49,8 @@ Sonuc:
 ```
 {
     "token": "feb077537b9225af583b1c10b31dda77d88379a5"
+    "id": 1,
+    "user_type": 1
 }
 ```
 
