@@ -82,16 +82,16 @@ body ornek:
 Sonuc: olusturulan personel bilgileri doner
 ```
 {
-   "user": {
-	"username": "test6",
-	"email": "a7@a.com",
-	"is_active": true,
-	"user_type": 1
-   },
-   
-   "name": "test-name1",
-   "surname": "test-surname",
-   "email": "a1@a.com"
+    "name": "test-name1",
+    "wage": null,
+    "phone_number": null,
+    "user": {
+        "username": "test6",
+        "email": "a7@a.com",
+        "is_active": true,
+        "user_type": 2
+    },
+    "location_id": null
 }
 ```
 
