@@ -38,6 +38,7 @@ def to_json(objects):
     return serializers.serialize('json', objects)
 
 @api_view(['GET'])
+@manager_required
 def dashboard_main(request):
     try:
         context = {}
@@ -50,6 +51,7 @@ def dashboard_main(request):
         return Response(KeyError)
 
 @api_view(['GET','POST'])
+@manager_required
 def dashboard_add_location(request):
     try:
         if request.method == "GET":
@@ -71,6 +73,7 @@ def dashboard_add_location(request):
 
 
 @api_view(['GET','POST'])
+@manager_required
 def dashboard_add_machine(request):
     try:
         if request.method == "GET":
@@ -88,6 +91,7 @@ def dashboard_add_machine(request):
         return Response(KeyError)
 
 @api_view(['GET','POST'])
+@manager_required
 def dashboard_add_personnel(request):
     try:
         if request.method == "GET":
@@ -123,8 +127,9 @@ def login_site(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 if user.is_active:
-                    login(request, user)
-                    return HttpResponseRedirect(reverse('dashboard_main'))
+                    if user.user_type == 1: #Dashboard'a sadece admin login olabilir.
+                        login(request, user)
+                        return HttpResponseRedirect(reverse('dashboard_main'))
         return HttpResponseRedirect(reverse("login"))
     except KeyError:
         return Response(KeyError)
@@ -196,6 +201,7 @@ def get_filtered_sales(request):
 
 
 @api_view(['GET'])
+@manager_required
 def get_sales_count(request):
     try:
         d = {}
