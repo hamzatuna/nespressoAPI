@@ -129,6 +129,16 @@ def login_site(request):
     except KeyError:
         return Response(KeyError)
 
+@api_view(['GET'])
+def logout_site(request):
+    try:
+        logout(request)
+        return HttpResponseRedirect(reverse("login"))
+    except:
+        return Response(KeyError)
+
+
+
 @api_view(['GET','POST'])
 def get_filtered_sales(request):
     print("DENEME")
