@@ -3,7 +3,7 @@
 {% load static %}
 
 
-{% block document_js_codes_add_machine %}
+{% block document_js_codes_add_stock %}
 
     <script src="{% static 'assets/node_modules/jquery/jquery-3.2.1.min.js' %}"></script>
     <!-- Bootstrap tether Core JavaScript -->
@@ -53,11 +53,10 @@
             'paging': true,
             pageLength: 20,
             'serverSide': true,
-            'ajax': '/get_machines?format=datatables',
+            'ajax': '/get_locations?format=datatables',
             'columns': [
-
-                {'data': 'Name'},
-                {'data': 'Fee'},
+                {'data': 'LocationName'},
+                {'data': 'stock'}
             ],
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -65,4 +64,4 @@
         });
     </script>
 
-{% endblock document_js_codes_add_machine %}
+{% endblock document_js_codes_add_stock %}

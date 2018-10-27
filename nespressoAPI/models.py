@@ -100,7 +100,7 @@ class Managers(models.Model):
 
 class Machines(models.Model):
     Name = models.CharField(max_length=200)
-    SerialNumber = models.CharField(max_length=1000)
+    #SerialNumber = models.CharField(max_length=1000)
 
     # max_digits noktadan sonrayla beraber toplam kaç sayı olabilir,
     # decimal_places ise noktadan önceki ondalık kısımda max kaç sayı olabilir.
@@ -176,7 +176,7 @@ class Sales(models.Model):
         db_column='LocationId',
         null=True,
         related_name='%(class)s_Location')
-    #SerialNumber = models.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
+    SerialNumber = models.CharField(max_length=1000)
     Date = models.DateTimeField(default=datetime.now,blank=True)
     CustomerName = models.CharField(max_length=200)
     CustomerSurname = models.CharField(max_length=200)

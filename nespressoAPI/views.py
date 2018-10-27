@@ -32,7 +32,8 @@ from django.shortcuts import render_to_response,redirect
 from django.template import RequestContext
 from django.http import *
 from django.urls import reverse
-
+from django.conf import settings
+import urllib
 
 def to_json(objects):
     return serializers.serialize('json', objects)
@@ -83,12 +84,74 @@ def dashboard_add_machine(request):
         elif request.method == "POST":
             machines_form = MachinesForm(request.POST)
             if machines_form.is_valid():
-                location = machines_form.save()
+                machine = machines_form.save()
                 form_context = {}
                 form_context["machines_form"] = MachinesForm()
                 return render(request,'dashboard_add_machine.html',form_context)
     except KeyError:
         return Response(KeyError)
+
+'''
+@api_view(['GET','POST'])
+@manager_required
+def dashboard_add_stock(request):
+    try:
+        if request.method == "GET":
+            form_context = {}
+            form_context["stock_form"] = StockForm()
+            return render(request,'dashboard_add_stock.html',form_context)
+        elif request.method == "POST":
+            stock_form = StockForm(request.POST)
+            #if stock_form.is_valid():
+            print("BURA")
+            #stock = stock_form.cleaned_data['stock']
+            #location_name = stock_form.cleaned_data['LocationName']
+            #print(location_name,stock)
+            form_context = {}
+            form_context["stock_form"] = StockForm()
+            return render(request,'dashboard_add_stock.html',form_context)
+    except KeyError:
+        return Response(KeyError)
+'''
+@api_view(['GET','POST'])
+@manager_required
+def dashboard_add_stock(request):
+    try:
+        if request.method == "GET":
+            form_context = {}
+            form_context["location_form"] = Locations.objects.values_list('id','LocationName', named=True)
+            return render(request,'dashboard_add_stock.html',form_context)
+        elif request.method == "POST":
+            form_location_id = request.POST.get('location_id')
+            form_stock = request.POST.get('stock')
+            #print(location_id,stock)
+            Locations.objects.filter(id=form_location_id).update(stock=form_stock)
+            form_context = {}
+            form_context["location_form"] = Locations.objects.values_list('id','LocationName', named=True)
+            return render(request,'dashboard_add_stock.html',form_context)
+    except KeyError:
+        return Response(KeyError)
+
+@api_view(['GET','POST'])
+@manager_required
+def dashboard_add_sales_target(request):
+    try:
+        if request.method == "GET":
+            form_context = {}
+            form_context["sales_target_form"] = Personnels.objects.values_list('user_id','name', named=True)
+            return render(request,'dashboard_add_sales_target.html',form_context)
+        elif request.method == "POST":
+            form_location_id = request.POST.get('location_id')
+            form_stock = request.POST.get('stock')
+            #print(location_id,stock)
+            Locations.objects.filter(id=form_location_id).update(stock=form_stock)
+            form_context = {}
+            form_context["sales_target_form"] = Personnels.objects.values_list('user_id', 'name', named=True)
+            return render(request,'dashboard_add_sales_target.html',form_context)
+    except KeyError:
+        return Response(KeyError)
+
+
 
 @api_view(['GET','POST'])
 @manager_required
@@ -97,13 +160,25 @@ def dashboard_add_personnel(request):
         if request.method == "GET":
             form_context = {}
             form_context["personnels_form"] = PersonnelsForm()
+            form_context["user_form"] = AutoUserForm()
             return render(request,'dashboard_add_personnel.html',form_context)
         elif request.method == "POST":
             personnels_form = PersonnelsForm(request.POST)
-            if personnels_form.is_valid():
-                location = personnels_form.save()
+            user_form = AutoUserForm(request.POST)
+            print(form_to_json(personnels_form))
+            if personnels_form.is_valid() and user_form.is_valid():
+                #personnel = personnels_form.save()
+                '''
+                user = User(**user_form)
+                print(user)
+                user.set_password(user_form['password'])
+                user.user_type = 2
+                user.save()
+                Personnels.objects.create(user=user, **personnels_form)
+                '''
                 form_context = {}
                 form_context["personnels_form"] = PersonnelsForm()
+                form_context["user_form"] = AutoUserForm()
                 return render(request,'dashboard_add_personnel.html',form_context)
     except KeyError:
         return Response(KeyError)
@@ -116,7 +191,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user_object = User.objects.get(id = token.user_id)
         return Response({'token': token.key, 'id': token.user_id, 'user_type':user_object.user_type})
 
-@api_view(['POST'])
+@api_view(['GET','POST'])
 def login_site(request):
     try:
         logout(request)
@@ -130,7 +205,34 @@ def login_site(request):
                     if user.user_type == 1: #Dashboard'a sadece admin login olabilir.
                         login(request, user)
                         return HttpResponseRedirect(reverse('dashboard_main'))
-        return HttpResponseRedirect(reverse("login"))
+                        '''
+                        #Begin reCAPTCHA validation
+                        recaptcha_response = request.POST.get('g-recaptcha-response')
+                        url = 'https://www.google.com/recaptcha/api/siteverify'
+                        values = {
+                            'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+                            'response': recaptcha_response
+                        }
+                        data = urllib.parse.urlencode(values).encode()
+                        req = urllib.request.Request(url, data=data)
+                        response = urllib.request.urlopen(req)
+                        result = json.loads(response.read().decode())
+                        #End reCAPTCHA validation
+
+                        if result['success']:
+                            login(request, user)
+                            return HttpResponseRedirect(reverse('dashboard_main'))
+                        else:
+                            login_context = {}
+                            login_context["is_failed"] = 1
+                            return render(request, 'login.html', login_context)
+                        '''
+            else:
+                login_context = {}
+                login_context["is_failed"] = 1
+                return render(request, 'login.html', login_context)
+        #return HttpResponseRedirect(reverse("login"))
+        return render(request, 'login.html')
     except KeyError:
         return Response(KeyError)
 
