@@ -152,6 +152,8 @@ class Supervisors(models.Model):
         db_table = "Supervisors"
     
 class Sales(models.Model):
+    #foreign keys
+
     MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId',related_name='%(class)s_Machine')
     PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
     LocationId = models.ForeignKey(
@@ -160,7 +162,9 @@ class Sales(models.Model):
         db_column='LocationId',
         null=True,
         related_name='%(class)s_Location')
-    #SerialNumber = models.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
+
+    #fields
+
     Date = models.DateTimeField(default=datetime.now,blank=True)
     CustomerName = models.CharField(max_length=200)
     CustomerSurname = models.CharField(max_length=200)
