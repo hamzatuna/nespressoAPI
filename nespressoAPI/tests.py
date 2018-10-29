@@ -92,125 +92,55 @@ class RegisterPersonnelTestCases(APITestCase):
         # expect personel is added successfully
         self.assertEqual(1, len(personnels))
 
-# class LocationTestCases(APITestCase):
-#     url = '/locations/'
-#     location_data = {
-#             "Latitude": 45.1,
-#             "Longitude": 34.12,
-#             "LocationName": "testPlace",
-#             "stock": 2
-#     }
+class LocationTestCases(APITestCase):
+    url = '/locations/'
+    location_data = {
+            "Latitude": 45.1,
+            "Longitude": 34.12,
+            "LocationName": "testPlace",
+    }
 
-#     def setUp(self):
-#         User.objects.all().delete()
-#         Token.objects.all().delete()
-#         Locations.objects.all().delete()
-#         LocationHistory.objects.all().delete()
+    def setUp(self):
+        User.objects.all().delete()
+        Token.objects.all().delete()
+        Locations.objects.all().delete()
 
-#         # add test user
-#         test_user_data = {
-#             "username": "test-user",
-#             "password": "12345678.",
-#             "email": "a5@a.com",
-#             "is_active": True,
-#             "user_type": 1
-#         }
+        # add test user
+        test_user_data = {
+            "username": "test-user",
+            "password": "12345678.",
+            "email": "a5@a.com",
+            "is_active": True,
+            "user_type": 1
+        }
 
-#         test_user = User(**test_user_data)
-#         test_user.save()
+        test_user = User(**test_user_data)
+        test_user.save()
         
-#         self.token,_ = Token.objects.get_or_create(user=test_user)
+        self.token,_ = Token.objects.get_or_create(user=test_user)
 
-#         self.api_authentication()
+        self.api_authentication()
 
-#     def api_authentication(self):
-#         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
     
-#     def test_add_location(self):
-#         response = self.client.post(self.url, self.location_data, format='json')
+    def test_add_location(self):
+        response = self.client.post(self.url, self.location_data, format='json')
 
-#         # get all personnels
-#         locations = Locations.objects.all()
-#         location_histories = LocationHistory.objects.all()
+        # get all personnels
+        locations = Locations.objects.all()
 
-#         # expect to status code ok
-#         self.assertEqual(201, response.status_code)
+        # expect to status code ok
+        self.assertEqual(201, response.status_code)
 
-#         # expect location is added successfully
-#         self.assertEqual(1, len(locations))
+        # expect location is added successfully
+        self.assertEqual(1, len(locations))
 
-#         # check field are correct
-#         location = locations[0].__dict__
-#         for key in self.location_data:
-#             self.assertEqual(location[key], self.location_data[key])
+        # check field are correct
+        location = locations[0].__dict__
+        for key in self.location_data:
+            self.assertEqual(location[key], self.location_data[key])
 
-#         # check location is logged
-#         self.assertEqual(1, len(location_histories))
-
-#         self.assertEqual(location_histories[0].stock, self.location_data["stock"])
-    
-# class LocationUpdateTestCases(APITestCase):
-#     location_data = {
-#             "id": 20,
-#             "Latitude": 45.1,
-#             "Longitude": 34.12,
-#             "LocationName": "testPlace",
-#             "stock": 2
-#     }
-#     url = '/locations/{}/'.format(location_data['id'])
-
-#     def setUp(self):
-#         User.objects.all().delete()
-#         Token.objects.all().delete()
-#         Locations.objects.all().delete()
-#         LocationHistory.objects.all().delete()
-
-#         # add test user
-#         test_user_data = {
-#             "username": "test-user",
-#             "password": "12345678.",
-#             "email": "a5@a.com",
-#             "is_active": True,
-#             "user_type": 1
-#         }
-
-#         test_user = User(**test_user_data)
-#         test_user.save()
-#         location = Locations(**self.location_data)
-#         location.save()
-        
-#         self.token,_ = Token.objects.get_or_create(user=test_user)
-
-#         self.api_authentication()
-    
-#     def api_authentication(self):
-#         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-
-#     def test_update_location(self):
-#         updated_data = {
-#             **self.location_data,
-#             'stock': 45}
-#         response = self.client.put(self.url, updated_data, format='json')
-
-#         # get all personnels
-#         locations = Locations.objects.all()
-#         location_histories = LocationHistory.objects.all()
-
-#         # expect to status code ok
-#         self.assertEqual(200, response.status_code)
-
-#         # expect location is added successfully
-#         self.assertEqual(1, len(locations))
-
-#         # check field are correct
-#         location = locations[0].__dict__
-#         for key in updated_data:
-#             self.assertEqual(location[key], updated_data[key])
-
-#         # check location is logged
-#         self.assertEqual(2, len(location_histories))
-
-#         self.assertEqual(location_histories[1].stock, updated_data["stock"])
 
 # class SalesTestCases(APITestCase):
     

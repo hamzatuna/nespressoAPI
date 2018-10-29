@@ -252,10 +252,21 @@ class TastingInformationsList(generics.ListCreateAPIView):
 class PersonnelsListCreate(generics.ListCreateAPIView):
     serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
+    permission_classes = (IsManager,)
 
 class MachinesListCreate(generics.ListCreateAPIView):
     serializer_class = MachinesSerializer
-    queryset = Machines.objects.all()
+    permission_classes = (IsPersonnelorManager,)
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases
+        for the currently authenticated user.
+        """
+        user = self.request.user
+        location = user.location_id
+        
+        return Machines.objects.all()
 
 class LocationsListCreate(generics.ListCreateAPIView):
     serializer_class = LocationsSerializer
