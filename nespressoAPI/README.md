@@ -76,7 +76,8 @@ body ornek:
    
    "name": "test-name1",
    "surname": "test-surname",
-   "email": "a1@a.com"
+   "email": "a1@a.com",
+   "tc_no": 12345678901
 }
 ```
 Sonuc: olusturulan personel bilgileri doner
@@ -155,6 +156,66 @@ Sonuc:
     "sale_goal": 1,
     "date": "2018-01-02",
     "user": 1
+}
+```
+
+## 6-) Stock Ekleme
+
+```
+/stocks POST
+```
+body ornek:
+
+```       
+{
+    "id": 4,
+    "stock_count": 5,
+    "machine": 1,
+    "location": 1
+}
+```
+Sonuc:
+```
+{
+    "id": 4,
+    "stock_count": 5,
+    "machine": 1,
+    "location": 1
+}
+```
+
+## 6-) Stock Cekme
+
+```
+/stocks GET
+```
+Istegin yapan kullanici personnelse personel lokasyonundakileri doner, Eger kullanici tipi managerse butun stoklari doner.
+Sonuc:
+```
+{
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "stock_count": 5,
+            "machine": 1,
+            "location": 1
+        },
+        {
+            "id": 2,
+            "stock_count": 5,
+            "machine": 1,
+            "location": 1
+        },
+        {
+            "id": 4,
+            "stock_count": 5,
+            "machine": 1,
+            "location": 1
+        }
+    ]
 }
 ```
 

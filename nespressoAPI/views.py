@@ -360,9 +360,11 @@ class TastingInformationsList(generics.ListCreateAPIView):
 class PersonnelsListCreate(generics.ListCreateAPIView):
     serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
+    permission_classes = (IsManager,)
 
 class MachinesListCreate(generics.ListCreateAPIView):
     serializer_class = MachinesSerializer
+    permission_classes = (IsPersonnelorManager,)
     queryset = Machines.objects.all()
 
 class LocationsListCreate(generics.ListCreateAPIView):
@@ -385,3 +387,18 @@ class CustomerGoalListCreate(generics.ListCreateAPIView):
     serializer_class = CustomerGoalSerializer
     queryset = CustomerGoals.objects.all()
     permission_classes = (IsPersonnelorManager,)
+
+class StockListCreate(generics.ListCreateAPIView):
+    serializer_class = StockSerializer
+    permission_classes = (IsPersonnelorManager,)
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # if user is manager return all Sales
+        if user.user_type==1:
+            return Stock.objects.all()
+
+        personnel_location = user.personnels.location_id
+
+        return Stock.objects.filter(location=personnel_location)

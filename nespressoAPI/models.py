@@ -1,9 +1,10 @@
 import re
+import operator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 from datetime import datetime
@@ -119,7 +120,8 @@ class Personnels(models.Model):
     birthday = models.DateField(null=True)
     phone_number = models.CharField(max_length=30, null=True)
     wage = models.DecimalField(max_digits=10, decimal_places=6, null=True)
-    tc_no = models.IntegerField(validators=[MaxLengthValidator(11),MinLengthValidator(11)])
+    tc_no = models.FloatField(validators=[MinValueValidator(1e10), MaxValueValidator(1e11-1)])
+    
     # foreign keys
     location_id = models.ForeignKey(
         Locations,
@@ -217,18 +219,18 @@ class CustomerGoals(models.Model):
 
 class Stock(models.Model):
     # foreign keys
-    machine_id = models.ForeignKey(Machines, on_delete=models.CASCADE)
-    location_id = models.ForeignKey(Locations, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # fields
     stock_count = models.IntegerField(default=0)
 
 class StockHistory(models.Model):
     # foreign keys
-    machine_id = models.ForeignKey(Machines, on_delete=models.CASCADE)
-    location_id = models.ForeignKey(Locations, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # fields
     stock_count = models.IntegerField(default=0)
@@ -241,10 +243,20 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
-# # Location updatelendiginde eski degerini tutacak olan tablo
-# @receiver(post_save, sender=Locations)
-# def log_stocks(sender, instance=None, created=False, **kwargs):
-#     LocationHistory.objects.create(location_id=instance, stock=instance.stock)
+# Stock updatelendiginde eski degerini tutacak olan tablo
+@receiver(post_save, sender=Stock)
+def log_stocks(sender, instance=None, created=False, **kwargs):
+    fields = [
+        'machine',
+        'location',
+        'user',
+        'stock_count'
+    ]
+    stock = {field:getattr(instance, field)  for field in fields}
+    StockHistory.objects.create(
+        note = 'created' if created else 'updated',
+        **stock
+    )
 
 # # satis eklendiginde otamatik stoktan dusme
 # @receiver(post_save, sender=Sales)

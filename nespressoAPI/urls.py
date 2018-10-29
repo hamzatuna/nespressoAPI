@@ -47,6 +47,8 @@ urlpatterns = [
     path('dashboard_add_sales_target', views.dashboard_add_sales_target,name="dashboard_add_sales_target"),
 
     path('dashboard_tasting_tab',TemplateView.as_view(template_name='dashboard_tasting_tab.html'),name="dashboard_tasting_tab"),
-    path('goals', views.CustomerGoalListCreate.as_view())
+    path('goals', views.CustomerGoalListCreate.as_view()),
+    path('stocks', views.StockListCreate.as_view())
+
 ]
 
