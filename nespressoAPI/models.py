@@ -94,9 +94,6 @@ class Managers(models.Model):
     # foreign keys
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
-    # Meta sınıfı olmadan modeli migrate ettigimizde
-    #  django appname_tablename şeklinde isimlendiriyor.
-    # Bunun önüne geçmek için Meta sınıfıyla tabloya isim veriyoruz.
     class Meta:
         db_table = "Managers"
 
