@@ -159,6 +159,66 @@ Sonuc:
 }
 ```
 
+## 6-) Stock Ekleme
+
+```
+/stocks POST
+```
+body ornek:
+
+```       
+{
+    "id": 4,
+    "stock_count": 5,
+    "machine": 1,
+    "location": 1
+}
+```
+Sonuc:
+```
+{
+    "id": 4,
+    "stock_count": 5,
+    "machine": 1,
+    "location": 1
+}
+```
+
+## 6-) Stock Cekme
+
+```
+/stocks GET
+```
+Istegin yapan kullanici personnelse personel lokasyonundakileri doner, Eger kullanici tipi managerse butun stoklari doner.
+Sonuc:
+```
+{
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "stock_count": 5,
+            "machine": 1,
+            "location": 1
+        },
+        {
+            "id": 2,
+            "stock_count": 5,
+            "machine": 1,
+            "location": 1
+        },
+        {
+            "id": 4,
+            "stock_count": 5,
+            "machine": 1,
+            "location": 1
+        }
+    ]
+}
+```
+
 # Endpoitlere Permission ekleme
 
 fonksiyona ekleme:

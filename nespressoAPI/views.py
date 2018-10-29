@@ -257,16 +257,7 @@ class PersonnelsListCreate(generics.ListCreateAPIView):
 class MachinesListCreate(generics.ListCreateAPIView):
     serializer_class = MachinesSerializer
     permission_classes = (IsPersonnelorManager,)
-
-    def get_queryset(self):
-        """
-        This view should return a list of all the purchases
-        for the currently authenticated user.
-        """
-        user = self.request.user
-        location = user.location_id
-        
-        return Machines.objects.all()
+    queryset = Machines.objects.all()
 
 class LocationsListCreate(generics.ListCreateAPIView):
     serializer_class = LocationsSerializer
@@ -291,5 +282,15 @@ class CustomerGoalListCreate(generics.ListCreateAPIView):
 
 class StockListCreate(generics.ListCreateAPIView):
     serializer_class = StockSerializer
-    queryset = CustomerGoals.objects.all()
     permission_classes = (IsPersonnelorManager,)
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # if user is manager return all Sales
+        if user.user_type==1:
+            return Stock.objects.all()
+
+        personnel_location = user.personnels.location_id
+
+        return Stock.objects.filter(location=personnel_location)
