@@ -137,12 +137,7 @@ class PersonnelsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Personnels
-        fields = (
-            'name',
-            'wage',
-            'phone_number',
-            'user',
-            'location_id')
+        exclude = ()
 
     def create(self, validated_data):
         with transaction.atomic():

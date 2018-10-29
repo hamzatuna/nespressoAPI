@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 from datetime import datetime
@@ -119,7 +119,8 @@ class Personnels(models.Model):
     birthday = models.DateField(null=True)
     phone_number = models.CharField(max_length=30, null=True)
     wage = models.DecimalField(max_digits=10, decimal_places=6, null=True)
-    tc_no = models.IntegerField(validators=[MaxLengthValidator(11),MinLengthValidator(11)])
+    tc_no = models.FloatField(validators=[MinValueValidator(1e10), MaxValueValidator(1e11-1)])
+    
     # foreign keys
     location_id = models.ForeignKey(
         Locations,

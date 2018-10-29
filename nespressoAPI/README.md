@@ -76,7 +76,8 @@ body ornek:
    
    "name": "test-name1",
    "surname": "test-surname",
-   "email": "a1@a.com"
+   "email": "a1@a.com",
+   "tc_no": 12345678901
 }
 ```
 Sonuc: olusturulan personel bilgileri doner
