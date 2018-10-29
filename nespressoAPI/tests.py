@@ -142,92 +142,89 @@ class LocationTestCases(APITestCase):
             self.assertEqual(location[key], self.location_data[key])
 
 
-# class SalesTestCases(APITestCase):
+class SalesTestCases(APITestCase):
     
-#     personnel_id = 40
-#     initial_stock = 2
-#     machine_id = 40
-#     sales_data = {
-#             "PersonnelId": personnel_id,
-#             "CustomerName": "testName",
-#             "CustomerSurname": "CustomerSurname",
-#             "CustomerPhoneNumber": "23233232323",
-#             "CustomerEmail": "aawdaw@a.com",
-#             "IsCampaign": True,
-#             "MachineId": machine_id,
+    personnel_id = 40
+    machine_id = 40
+    sales_data = {
+            "PersonnelId": personnel_id,
+            "CustomerName": "testName",
+            "CustomerSurname": "CustomerSurname",
+            "CustomerPhoneNumber": "23233232323",
+            "CustomerEmail": "aawdaw@a.com",
+            "Latitude": 45.1,
+            "Longitude": 45.2,
+            "Price": "23.000",
+            "SerialNumber": "aweawe",
+            "IsCampaign": True,
+            "MachineId": machine_id,
 
-#     }
-#     url = '/sales'
+    }
+    url = '/sales'
 
-#     def setUp(self):
-#         User.objects.all().delete()
-#         Token.objects.all().delete()
-#         Personnels.objects.all().delete()
-#         Sales.objects.all().delete()
+    def setUp(self):
+        User.objects.all().delete()
+        Token.objects.all().delete()
+        Personnels.objects.all().delete()
+        Sales.objects.all().delete()
 
-#         # add test user
-#         test_user_data = {
-#             "id": self.personnel_id,
-#             "username": "test-user",
-#             "password": "12345678.",
-#             "email": "a5@a.com",
-#             "is_active": True,
-#             "user_type": 2
-#         }
-#         test_user = User(**test_user_data)
-#         test_user.save()
+        # add test user
+        test_user_data = {
+            "id": self.personnel_id,
+            "username": "test-user",
+            "password": "12345678.",
+            "email": "a5@a.com",
+            "is_active": True,
+            "user_type": 2
+        }
+        test_user = User(**test_user_data)
+        test_user.save()
 
-#         # add machine
-#         test_machine_data = {
-#             'id': self.machine_id,
-#             'Name': 'test_name',
-#             'SerialNumber': '1234',
-#             'Fee': 2121
-#         }
-#         test_machine = Machines(**test_machine_data)
-#         test_machine.save()
+        # add machine
+        test_machine_data = {
+            'id': self.machine_id,
+            'Name': 'test_name',
+        }
+        test_machine = Machines(**test_machine_data)
+        test_machine.save()
 
-#         # add location
-#         location_data = {
-#                 "id": 20,
-#                 "Latitude": 45.1,
-#                 "Longitude": 34.12,
-#                 "LocationName": "testPlace",
-#                 "stock": self.initial_stock,
-#         }
-#         location = Locations(**location_data)
-#         location.save()
+        # add location
+        location_data = {
+                "id": 20,
+                "Latitude": 45.1,
+                "Longitude": 34.12,
+                "LocationName": "testPlace",
+        }
+        location = Locations(**location_data)
+        location.save()
 
-#         # add personnel
-#         test_personnel_data = {
-#             "user": test_user,
-#             "name": "test-name",
-#             "surname": "test-surname",
-#             "location_id": location
-#         }
-#         test_personnel = Personnels(**test_personnel_data)
-#         test_personnel.save()
+        # add personnel
+        test_personnel_data = {
+            "user": test_user,
+            "name": "test-name",
+            "surname": "test-surname",
+            "location_id": location,
+            "tc_no": 12345678901
+        }
+        test_personnel = Personnels(**test_personnel_data)
+        test_personnel.save()
   
-#         self.token,_ = Token.objects.get_or_create(user=test_user)
+        self.token,_ = Token.objects.get_or_create(user=test_user)
 
-#         self.api_authentication()
+        self.api_authentication()
     
-#     def api_authentication(self):
-#         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
-#     def test_add_sale(self):
+    def test_add_sale(self):
 
-#         response = self.client.post(self.url, self.sales_data, format='json')
+        response = self.client.post(self.url, self.sales_data, format='json')
 
-#         # get all personnels
-#         sales = Sales.objects.all()
+        # get all personnels
+        sales = Sales.objects.all()
 
-#         # expect to status code ok
-#         self.assertEqual(201, response.status_code)
+        # expect to status code ok
+        self.assertEqual(201, response.status_code)
 
-#         # expect location is added successfully
-#         self.assertEqual(1, len(sales))
-
-#         # check stock is decreased
-#         self.assertEqual(sales[0].LocationId.stock, self.initial_stock-1)
-        
+        # expect location is added successfully
+        self.assertEqual(1, len(sales))
