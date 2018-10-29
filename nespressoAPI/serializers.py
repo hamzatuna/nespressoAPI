@@ -64,24 +64,6 @@ class UsersSerializer(serializers.ModelSerializer):
             'user_type'
         )
 
-class LocationsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Locations
-        fields = '__all__'
-
-
-class PersonnelsSerializer(serializers.ModelSerializer):
-    user = UsersSerializer(many=False,required=False)
-    
-    class Meta:
-        model = Personnels
-        fields = (
-            'name',
-            'wage',
-            'phone_number',
-            'user',
-            'location_id')
-
     def create(self,  validated_data):
         with transaction.atomic():
             user_data = validated_data.pop('user')
@@ -199,3 +181,17 @@ class TastingInformationsSerializer(serializers.ModelSerializer):
     class Meta:
         model=TastingInformations
         exclude=()
+
+class StockSerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        
+        return Stock.objects.create(
+            user=user,
+            **validated_data
+        )
+
+    class Meta:
+        model = Stock
+        exclude = ('user',)

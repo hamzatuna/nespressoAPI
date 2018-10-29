@@ -288,3 +288,8 @@ class CustomerGoalListCreate(generics.ListCreateAPIView):
     serializer_class = CustomerGoalSerializer
     queryset = CustomerGoals.objects.all()
     permission_classes = (IsPersonnelorManager,)
+
+class StockListCreate(generics.ListCreateAPIView):
+    serializer_class = StockSerializer
+    queryset = CustomerGoals.objects.all()
+    permission_classes = (IsPersonnelorManager,)

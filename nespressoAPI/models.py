@@ -1,4 +1,5 @@
 import re
+import operator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -214,18 +215,18 @@ class CustomerGoals(models.Model):
 
 class Stock(models.Model):
     # foreign keys
-    machine_id = models.ForeignKey(Machines, on_delete=models.CASCADE)
-    location_id = models.ForeignKey(Locations, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # fields
     stock_count = models.IntegerField(default=0)
     
 class StockHistory(models.Model):
     # foreign keys
-    machine_id = models.ForeignKey(Machines, on_delete=models.CASCADE)
-    location_id = models.ForeignKey(Locations, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # fields
     stock_count = models.IntegerField(default=0)
@@ -238,10 +239,20 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
-# # Location updatelendiginde eski degerini tutacak olan tablo
-# @receiver(post_save, sender=Locations)
-# def log_stocks(sender, instance=None, created=False, **kwargs):
-#     LocationHistory.objects.create(location_id=instance, stock=instance.stock)
+# Stock updatelendiginde eski degerini tutacak olan tablo
+@receiver(post_save, sender=Stock)
+def log_stocks(sender, instance=None, created=False, **kwargs):
+    fields = [
+        'machine',
+        'location',
+        'user',
+        'stock_count'
+    ]
+    stock = {field:getattr(instance, field)  for field in fields}
+    StockHistory.objects.create(
+        note = 'created' if created else 'updated',
+        **stock
+    )
 
 # # satis eklendiginde otamatik stoktan dusme
 # @receiver(post_save, sender=Sales)
