@@ -6,8 +6,8 @@ from django.views.generic import TemplateView
 
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='login.html'),name="login"),
-    path('login', views.login_site),
+    path('', TemplateView.as_view(template_name='login.html')),
+    path('login', views.login_site,name="login"),
     path('logout', views.logout_site,name="logout"),
 
     path('register', views.RegisterUser.as_view()),
@@ -43,7 +43,8 @@ urlpatterns = [
     path('dashboard_add_location', views.dashboard_add_location, name="dashboard_add_location"),
     path('dashboard_add_machine', views.dashboard_add_machine, name="dashboard_add_machine"),
     path('dashboard_add_personnel', views.dashboard_add_personnel, name="dashboard_add_personnel"),
-    path('dashboard_add_sales_target', TemplateView.as_view(template_name='dashboard_add_sales_target.html'),name="dashboard_add_sales_target"),
+    path('dashboard_add_stock', views.dashboard_add_stock,name="dashboard_add_stock"),
+    path('dashboard_add_sales_target', views.dashboard_add_sales_target,name="dashboard_add_sales_target"),
 
     path('dashboard_tasting_tab',TemplateView.as_view(template_name='dashboard_tasting_tab.html'),name="dashboard_tasting_tab"),
     path('goals', views.CustomerGoalListCreate.as_view()),

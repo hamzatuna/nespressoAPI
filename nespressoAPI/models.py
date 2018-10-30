@@ -87,34 +87,34 @@ class User(AbstractUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+
+
 class Managers(models.Model):
+    #fields
     Name = models.CharField(max_length=200)
     Surname = models.CharField(max_length=200)
 
-    # foreign keys
+    #foreign keys
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
-    # Meta sınıfı olmadan modeli migrate ettigimizde
-    #  django appname_tablename şeklinde isimlendiriyor.
-    # Bunun önüne geçmek için Meta sınıfıyla tabloya isim veriyoruz.
-    class Meta:
-        db_table = "Managers"
+
 
 class Machines(models.Model):
+    #fields
     Name = models.CharField(max_length=200, unique=True)
 
-    class Meta:
-        db_table = "Machines"
+
 
 class Locations(models.Model):
+    #fields
     Latitude = models.FloatField(null=True)
     Longitude = models.FloatField(null=True)
     LocationName = models.CharField(max_length=1000)
 
-    class Meta:
-        db_table = "Locations"
+
 
 class Personnels(models.Model):
+    #fields
     name = models.CharField(max_length=200)
     surname = models.CharField(max_length=200)
     birthday = models.DateField(null=True)
@@ -122,7 +122,7 @@ class Personnels(models.Model):
     wage = models.DecimalField(max_digits=10, decimal_places=6, null=True)
     tc_no = models.FloatField(validators=[MinValueValidator(1e10), MaxValueValidator(1e11-1)])
     
-    # foreign keys
+    #foreign keys
     location_id = models.ForeignKey(
         Locations,
         on_delete=models.CASCADE,
@@ -130,39 +130,31 @@ class Personnels(models.Model):
         null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
-    class Meta:
-        db_table = "Personnels"
+
 
 class PersonnelLocation(models.Model):
-
     #foreign keys
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     location = models.OneToOneField(Locations, on_delete=models.CASCADE)
 
+
+
 class Supervisors(models.Model):
+    #fields
     Name = models.CharField(max_length=200)
     Surname = models.CharField(max_length=200)
     Email = models.EmailField(max_length=200)
     PhoneNumber = models.CharField(max_length=30)
     IsActive = models.BooleanField()
 
-    # foreign keys
+    #foreign keys
     Location = models.ForeignKey(Locations,on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
-    class Meta:
-        db_table = "Supervisors"
-    
+
+
 class Sales(models.Model):
-    MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId',related_name='%(class)s_Machine')
-    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
-    LocationId = models.ForeignKey(
-        Locations,
-        on_delete=models.CASCADE,
-        db_column='LocationId',
-        null=True,
-        related_name='%(class)s_Location')
-    #SerialNumber = models.CharField(max_length=1000) #Seri numarası tekrar eklemek gerekli mi düşün.
+    #fields
     Date = models.DateTimeField(default=datetime.now,blank=True)
     CustomerName = models.CharField(max_length=200)
     CustomerSurname = models.CharField(max_length=200)
@@ -174,70 +166,90 @@ class Sales(models.Model):
     Price = models.DecimalField(max_digits=10,decimal_places=3)
     SerialNumber = models.CharField(max_length=1000)
 
-    class Meta:
-        db_table = "Sales"
+    #foreign keys
+    MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId',related_name='%(class)s_Machine')
+    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
+    LocationId = models.ForeignKey(
+        Locations,
+        on_delete=models.CASCADE,
+        db_column='LocationId',
+        null=True,
+        related_name='%(class)s_Location')
+
+
 
 #Yoğun saatler tablosu
 class IntensiveHours(models.Model):
-    #Veritabanında 12.00-14.00 şeklinde kayıtlı olacak.
+    #fields
+    #Veritabanında 12.00-14.00 şeklinde saat aralıkları şeklinde kayıtlı olacak.
     IntensiveHour = models.CharField(max_length=100)
 
-    class Meta:
-        db_table = "IntensiveHours"
+
 
 class MachineConditions(models.Model):
+    #fields
     MachineCondition = models.CharField(max_length=300)
 
-    class Meta:
-        db_table = "MachineConditions"
 
 
 class TastingInformations(models.Model):
-    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
-    MachineConditionId = models.ForeignKey(MachineConditions,on_delete=models.CASCADE,db_column='MachineConditionId',related_name='%(class)s_MachineCondition')
-    IntensiveHourId = models.ForeignKey(IntensiveHours,on_delete=models.CASCADE,db_column='IntensiveHourId',related_name='%(class)s_IntensiveHour')
+    #fields
     Date = models.DateTimeField(default=datetime.now,blank=True)
-    LocationId = models.ForeignKey(Locations, on_delete=models.CASCADE, db_column='LocationId',related_name='%(class)s_Location')
     TotalEspressoRecipe = models.IntegerField() #Yapılan toplam espresso tarif
     TotalMilkyRecipe = models.IntegerField() #Yapılan toplam sütlü tarif
     DailyCoffeeConsumption = models.IntegerField() #Günlük tüketilen kahve adedi
     DailyShopCoffeeConsumption = models.IntegerField() #Günlük mağazanın kullandığı kahve adeti
     DailyMilkBoxConsumption = models.IntegerField() #Günlük kullanılan süt (kutu)
-    class Meta:
-        db_table = "TastingInformations"
+
+    #foreign keys
+    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
+    MachineConditionId = models.ForeignKey(MachineConditions,on_delete=models.CASCADE,db_column='MachineConditionId',related_name='%(class)s_MachineCondition')
+    IntensiveHourId = models.ForeignKey(IntensiveHours,on_delete=models.CASCADE,db_column='IntensiveHourId',related_name='%(class)s_IntensiveHour')
+    LocationId = models.ForeignKey(Locations, on_delete=models.CASCADE, db_column='LocationId',related_name='%(class)s_Location')
+
+
 
 class CustomerGoals(models.Model):
+    #fields
     sale_goal = models.IntegerField()
     date = models.DateField(unique=True, validators=[month_validator])
     
-    # foreign keys
+    #foreign keys
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 
 class Stock(models.Model):
-    # foreign keys
-    machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
-    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    # fields
+    #fields
     stock_count = models.IntegerField(default=0)
-    
-class StockHistory(models.Model):
-    # foreign keys
+
+    #foreign keys
     machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
     location = models.ForeignKey(Locations, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # fields
+
+
+class StockHistory(models.Model):
+    #fields
     stock_count = models.IntegerField(default=0)
     date = models.DateField(default=datetime.now)
     note = models.CharField(max_length=15)
+
+    #foreign keys
+    machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 
 # This receiver handles token creation immediately a new user is created.
 @receiver(post_save, sender=User)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
 
 # Stock updatelendiginde eski degerini tutacak olan tablo
 @receiver(post_save, sender=Stock)
@@ -253,6 +265,8 @@ def log_stocks(sender, instance=None, created=False, **kwargs):
         note = 'created' if created else 'updated',
         **stock
     )
+
+
 
 # # satis eklendiginde otamatik stoktan dusme
 # @receiver(post_save, sender=Sales)

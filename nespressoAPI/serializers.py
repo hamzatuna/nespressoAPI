@@ -64,21 +64,6 @@ class UsersSerializer(serializers.ModelSerializer):
             'user_type'
         )
 
-    def create(self,  validated_data):
-        with transaction.atomic():
-            user_data = validated_data.pop('user')
-            user_data["password"]=make_password(user_data["password"])
-            print("USER DATA" , user_data)
-            #user_data.set_password(user_data.password)
-            user = User.objects.create(**user_data)
-            print("USER", user)
-            user = User(**user_data)
-            user.set_password(user_data['password'])
-            user.user_type = 2
-            user.save()
-
-            return Personnels.objects.create(user=user, **validated_data)
-
 
 class DateSerializer(serializers.ModelSerializer):
     class Meta:
