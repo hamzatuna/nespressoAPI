@@ -59,7 +59,6 @@ def dashboard_add_location(request):
             form_context = {}
             form_context["locations_form"] = LocationsForm()
             form_context["locations_form"].fields['LocationName'].widget.attrs = {'class': 'form-control'}
-            print(form_context)
             return render(request,'dashboard_add_location.html',form_context)
         elif request.method == "POST":
             locations_form = LocationsForm(request.POST)
@@ -124,7 +123,6 @@ def dashboard_add_stock(request):
         elif request.method == "POST":
             form_location_id = request.POST.get('location_id')
             form_stock = request.POST.get('stock')
-            #print(location_id,stock)
             Locations.objects.filter(id=form_location_id).update(stock=form_stock)
             form_context = {}
             form_context["location_form"] = Locations.objects.values_list('id','LocationName', named=True)
@@ -143,7 +141,6 @@ def dashboard_add_sales_target(request):
         elif request.method == "POST":
             form_location_id = request.POST.get('location_id')
             form_stock = request.POST.get('stock')
-            #print(location_id,stock)
             Locations.objects.filter(id=form_location_id).update(stock=form_stock)
             form_context = {}
             form_context["sales_target_form"] = Personnels.objects.values_list('user_id', 'name', named=True)
@@ -165,7 +162,6 @@ def dashboard_add_personnel(request):
         elif request.method == "POST":
             personnels_form = PersonnelsForm(request.POST)
             user_form = AutoUserForm(request.POST)
-            print(form_to_json(personnels_form))
             if personnels_form.is_valid() and user_form.is_valid():
                 #personnel = personnels_form.save()
                 '''
@@ -248,7 +244,6 @@ def logout_site(request):
 
 @api_view(['GET','POST'])
 def get_filtered_sales(request):
-    print("DENEME")
     #print(request.data['personnel_name'])
     try:
         cursor = connection.cursor()
@@ -302,6 +297,7 @@ def get_filtered_sales(request):
         return HttpResponse("",status=500)
 
 
+
 @api_view(['GET'])
 @manager_required
 def get_sales_count(request):
@@ -311,15 +307,11 @@ def get_sales_count(request):
                                                  Date__month= date.today().month,
                                                  Date__day= date.today().day).count()
 
-        #d["daily_sales_count"] = Sales.objects.filter(Date__startswith = datetime).count()
-
         d["weekly_sales_count"] = Sales.objects.filter(Date__gte = datetime.now()-timedelta(days=7)).count()
-        #return HttpResponse(to_json(d), content_type='application/json', status=200)
         return HttpResponse(json.dumps(d),status=200)
     except KeyError:
         return Response(KeyError)
 
-    #weekly_sales_count =
 
 
 @api_view(['GET'])
