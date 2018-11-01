@@ -19,6 +19,7 @@ before_script:
   - python -V
   - pip install -r requirements.txt
   - python manage.py makemigrations
+  - python manage.py makemigrations nespressoAPI
   - python manage.py migrate
 
 test:
