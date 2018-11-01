@@ -135,7 +135,7 @@ Sonuc:
 ```
 
 
-## 6-) Target Ekleme
+## 6-) Hedef Ekleme
 
 ```
 /goals POST
@@ -148,6 +148,16 @@ body ornek:
     "date": "2018-01-02",
     "user": 1
 }
+```
+birden fazla eklemek icin liste olarak gonderilmesi yeterlidir:
+```       
+[
+    {
+        "sale_goal": 1,
+        "date": "2018-01-02",
+        "user": 1
+    }
+]
 ```
 Sonuc:
 ```
@@ -189,7 +199,7 @@ Sonuc:
 ```
 /stocks GET
 ```
-Istegin yapan kullanici personnelse personel lokasyonundakileri doner, Eger kullanici tipi managerse butun stoklari doner.
+Istegin yapan kullanici personnelse personel lokasyonundakileri doner, Eger kullanici tipi managerse butun stoklari doner. 
 Sonuc:
 ```
 {
