@@ -94,7 +94,7 @@ DATABASES = {
         'NAME':'nespressoDB',
         'USER':'postgres',
         'PASSWORD':'1234',
-        'HOST':'localhost',
+        'HOST': os.environ.get('DB_HOST', False) or 'localhost',
         'ATOMIC_REQUESTS': True,
         'TEST': {
             'NAME': 'postgresTestDb',
