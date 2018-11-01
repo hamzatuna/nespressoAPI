@@ -1,0 +1,27 @@
+image: python:latest
+
+services:
+  - postgres:latest
+
+variables:
+  # Configure postgres service (https://hub.docker.com/_/postgres/)
+  POSTGRES_DB: nespressoDB
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: 1234
+  DB_HOST: postgres
+
+
+cache:
+  paths:
+  - ~/.cache/pip/
+
+before_script:
+  - python -V
+  - pip install -r requirements.txt
+  - python manage.py makemigrations
+  - python manage.py migrate
+
+test:
+  
+  script:
+  - python manage.py test
