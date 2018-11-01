@@ -58,7 +58,7 @@ def dashboard_add_location(request):
         if request.method == "GET":
             form_context = {}
             form_context["locations_form"] = LocationsForm()
-            form_context["locations_form"].fields['LocationName'].widget.attrs = {'class': 'form-control'}
+            form_context["locations_form"].fields['location_name'].widget.attrs = {'class': 'form-control'}
             print(form_context)
             return render(request,'dashboard_add_location.html',form_context)
         elif request.method == "POST":
@@ -67,7 +67,7 @@ def dashboard_add_location(request):
                 location = locations_form.save()
                 form_context = {}
                 form_context["locations_form"] = LocationsForm()
-                form_context["locations_form"].fields['LocationName'].widget.attrs = {'class': 'form-control'}
+                form_context["locations_form"].fields['location_name'].widget.attrs = {'class': 'form-control'}
                 return render(request,'dashboard_add_location.html',form_context)
     except KeyError:
         return Response(KeyError)
@@ -105,7 +105,7 @@ def dashboard_add_stock(request):
             #if stock_form.is_valid():
             print("BURA")
             #stock = stock_form.cleaned_data['stock']
-            #location_name = stock_form.cleaned_data['LocationName']
+            #location_name = stock_form.cleaned_data['location_name']
             #print(location_name,stock)
             form_context = {}
             form_context["stock_form"] = StockForm()
@@ -119,7 +119,7 @@ def dashboard_add_stock(request):
     try:
         if request.method == "GET":
             form_context = {}
-            form_context["location_form"] = Locations.objects.values_list('id','LocationName', named=True)
+            form_context["location_form"] = Locations.objects.values_list('id','location_name', named=True)
             return render(request,'dashboard_add_stock.html',form_context)
         elif request.method == "POST":
             form_location_id = request.POST.get('location_id')
@@ -127,7 +127,7 @@ def dashboard_add_stock(request):
             #print(location_id,stock)
             Locations.objects.filter(id=form_location_id).update(stock=form_stock)
             form_context = {}
-            form_context["location_form"] = Locations.objects.values_list('id','LocationName', named=True)
+            form_context["location_form"] = Locations.objects.values_list('id','location_name', named=True)
             return render(request,'dashboard_add_stock.html',form_context)
     except KeyError:
         return Response(KeyError)
@@ -253,9 +253,9 @@ def get_filtered_sales(request):
     try:
         cursor = connection.cursor()
         print(request.POST)
-        #query = '''select "SL"."CustomerName" from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."PersonnelId" = "PL"."user_id")     INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."LocationId" = "LC"."id") '''
-        #query = '''select "SL"."CustomerName","SL"."CustomerSurname","SL"."CustomerName","SL"."CustomerPhoneNumber","SL"."CustomerEmail","MC"."Name","LC"."LocationName" from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."PersonnelId" = "PL"."user_id")     INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."LocationId" = "LC"."id") '''
-        query = '''select * from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."PersonnelId" = "PL"."user_id") INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."LocationId" = "LC"."id") '''
+        #query = '''select "SL"."CustomerName" from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."personnel_id" = "PL"."user_id")     INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."location_id" = "LC"."id") '''
+        #query = '''select "SL"."CustomerName","SL"."CustomerSurname","SL"."CustomerName","SL"."CustomerPhoneNumber","SL"."CustomerEmail","MC"."","LC"."location_name" from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."personnel_id" = "PL"."user_id")     INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."location_id" = "LC"."id") '''
+        query = '''select * from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."personnel_id" = "PL"."user_id") INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."location_id" = "LC"."id") '''
         if request.method=='POST':
             if request.data['personnel_name'] and request.data['personnel_name'] is not None:
                 personnel_name = request.data['personnel_name']
@@ -289,7 +289,7 @@ def get_filtered_sales(request):
 
             if request.data['location_id'] and request.data['location_id'] is not None:
                 location_id = request.data['location_id']
-                condition = '''WHERE "SL"."LocationId" = '{0}' '''.format(location_id)
+                condition = '''WHERE "SL"."location_id" = '{0}' '''.format(location_id)
                 query = query+condition
 
             print(query)

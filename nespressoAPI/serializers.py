@@ -132,14 +132,14 @@ class PersonnelsSerializer(serializers.ModelSerializer):
             return Personnels.objects.create(user=user, **validated_data)
 
 class SalesSerializer(serializers.ModelSerializer):
-    # Serializer Constructoru içerisine örneğin source='LocationId' ekleyip,serializer'dan
+    # Serializer Constructoru içerisine örneğin source='location_id' ekleyip,serializer'dan
     # dönen field'ın ismini Location olarak değiştirebiliyoruz. Bu durumda API oluşturduğu
-    # JSON içerisinde LocationId değil Location başlığı veriyor. Bununla beraber datatables
+    # JSON içerisinde location_id değil Location başlığı veriyor. Bununla beraber datatables
     # ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
     # tablosundaki asli isimleriyle yolluyoruz.
 
     def create(self, validated_data):
-        personnel = Personnels.objects.get(pk=validated_data['PersonnelId'])
+        personnel = Personnels.objects.get(pk=validated_data['^[A-Z]{1}'])
 
         # personel yoksa hata don
         if not personnel:
@@ -153,11 +153,11 @@ class SalesSerializer(serializers.ModelSerializer):
 
         return Sales.objects.create(
             **validated_data,
-            LocationId=location)
+            location_id=location)
 
     class Meta:
         model=Sales
-        exclude=('LocationId',)
+        exclude=('location_id',)
 
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):
@@ -171,10 +171,10 @@ class CustomerGoalSerializer(serializers.ModelSerializer):
         exclude=()
 
 class TastingInformationsSerializer(serializers.ModelSerializer):
-    LocationId = LocationsSerializer(many=False,required=True)
-    MachineConditionId = MachineConditionsSerializer(many=False,required=True)
-    IntensiveHourId = IntensiveHoursSerializer(many=False,required=True)
-    PersonnelId = PersonnelsSerializer(many=False,required=True)
+    location_id = LocationsSerializer(many=False,required=True)
+    machine_condition_id = MachineConditionsSerializer(many=False,required=True)
+    intensive_hour_id = IntensiveHoursSerializer(many=False,required=True)
+    personnel_id = PersonnelsSerializer(many=False,required=True)
 
     #def create(self, validated_data):
     #    return TastingInformations.objects.create(**validated_data)

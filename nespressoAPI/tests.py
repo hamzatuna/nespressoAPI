@@ -70,9 +70,9 @@ class RegisterPersonnelTestCases(APITestCase):
 class LocationTestCases(APITestCase):
     url = '/locations/'
     location_data = {
-            "Latitude": 45.1,
-            "Longitude": 34.12,
-            "LocationName": "testPlace",
+            "latitude": 45.1,
+            "longitude": 34.12,
+            "location_name": "testPlace",
     }
 
     def setUp(self):
@@ -122,17 +122,17 @@ class SalesTestCases(APITestCase):
     personnel_id = 40
     machine_id = 40
     sales_data = {
-            "PersonnelId": personnel_id,
-            "CustomerName": "testName",
-            "CustomerSurname": "CustomerSurname",
-            "CustomerPhoneNumber": "23233232323",
-            "CustomerEmail": "aawdaw@a.com",
-            "Latitude": 45.1,
-            "Longitude": 45.2,
-            "Price": "23.000",
-            "SerialNumber": "aweawe",
-            "IsCampaign": True,
-            "MachineId": machine_id,
+            "personnel_id": personnel_id,
+            "customer_name": "testName",
+            "customer_surname": "customer_surname",
+            "customer_phone_number": "23233232323",
+            "customer_email": "aawdaw@a.com",
+            "latitude": 45.1,
+            "longitude": 45.2,
+            "price": "23.000",
+            "serial_number": "aweawe",
+            "is_campaign": True,
+            "machine_id": machine_id,
 
     }
     url = '/sales'
@@ -158,7 +158,7 @@ class SalesTestCases(APITestCase):
         # add machine
         test_machine_data = {
             'id': self.machine_id,
-            'Name': 'test_name',
+            'name': 'test_name',
         }
         test_machine = Machines(**test_machine_data)
         test_machine.save()
@@ -166,9 +166,9 @@ class SalesTestCases(APITestCase):
         # add location
         location_data = {
                 "id": 20,
-                "Latitude": 45.1,
-                "Longitude": 34.12,
-                "LocationName": "testPlace",
+                "latitude": 45.1,
+                "longitude": 34.12,
+                "location_name": "testPlace",
         }
         location = Locations(**location_data)
         location.save()
@@ -238,7 +238,7 @@ class StockTestCases(APITestCase):
         # add machine
         test_machine_data = {
             'id': self.machine_id,
-            'Name': 'test_name',
+            'name': 'test_name',
         }
         test_machine = Machines(**test_machine_data)
         test_machine.save()
@@ -246,9 +246,9 @@ class StockTestCases(APITestCase):
         # add location
         location_data = {
                 "id": self.location_id,
-                "Latitude": 45.1,
-                "Longitude": 34.12,
-                "LocationName": "testPlace",
+                "latitude": 45.1,
+                "longitude": 34.12,
+                "location_name": "testPlace",
         }
         location = Locations(**location_data)
         location.save()

@@ -6,17 +6,15 @@ class LocationsForm(ModelForm):
     class Meta:
         model = Locations
         labels = {
-            "LocationName" : "Lokasyon Adı:"
+            "location_name" : "Lokasyon Adı:"
         }
-        fields = ['LocationName']
+        fields = ['location_name']
 
 class MachinesForm(ModelForm):
     class Meta:
         model = Machines
         labels= {
-            "Name" : "Makine Adı",
-            "SerialNumber" : "Seri Numarası",
-            "Fee" : "Fiyatı",
+            "name" : "Makine Adı",
         }
         exclude = ()
 
@@ -31,7 +29,7 @@ class PersonnelsForm(ModelForm):
         labels= {
             "name" : "İsim",
             "surname" : "Soyisim",
-            "LocationId" : "Lokasyon",
+            "location_id" : "Lokasyon",
             "phone_number" : "Telefon Numarası"
         }
         exclude = ["location_id","user","birthday","wage"]
@@ -69,11 +67,11 @@ class AutoUserForm(ModelForm):
             visible.field.widget.attrs['class'] = 'form-control'
 
 class StockForm(forms.Form):
-    LocationName = forms.ModelChoiceField(queryset=Locations.objects.values_list('LocationName',flat=True))
+    location_name = forms.ModelChoiceField(queryset=Locations.objects.values_list('location_name',flat=True))
     stock = forms.IntegerField()
     class Meta:
         labels = {
-            "LocationName" : "Lokasyon Adı:",
+            "location_name" : "Lokasyon Adı:",
             "stock": "Stok:"
         }
     def __init__(self, *args, **kwargs):

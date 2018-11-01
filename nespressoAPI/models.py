@@ -91,8 +91,8 @@ class User(AbstractUser):
 
 class Managers(models.Model):
     #fields
-    Name = models.CharField(max_length=200)
-    Surname = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    surname = models.CharField(max_length=200)
 
     #foreign keys
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -101,15 +101,15 @@ class Managers(models.Model):
 
 class Machines(models.Model):
     #fields
-    Name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200, unique=True)
 
 
 
 class Locations(models.Model):
     #fields
-    Latitude = models.FloatField(null=True)
-    Longitude = models.FloatField(null=True)
-    LocationName = models.CharField(max_length=1000)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
+    location_name = models.CharField(max_length=1000)
 
 
 
@@ -125,8 +125,8 @@ class Personnels(models.Model):
     #foreign keys
     location_id = models.ForeignKey(
         Locations,
+        db_column='location_id',
         on_delete=models.CASCADE,
-        db_column='LocationId',
         null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
@@ -135,44 +135,44 @@ class Personnels(models.Model):
 class PersonnelLocation(models.Model):
     #foreign keys
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    location = models.OneToOneField(Locations, on_delete=models.CASCADE)
+    location_id = models.OneToOneField(Locations,db_column='location_id', on_delete=models.CASCADE)
 
 
 
 class Supervisors(models.Model):
     #fields
-    Name = models.CharField(max_length=200)
-    Surname = models.CharField(max_length=200)
-    Email = models.EmailField(max_length=200)
-    PhoneNumber = models.CharField(max_length=30)
-    IsActive = models.BooleanField()
+    name = models.CharField(max_length=200)
+    surname = models.CharField(max_length=200)
+    email = models.EmailField(max_length=200)
+    phone_number = models.CharField(max_length=30)
+    is_active = models.BooleanField()
 
     #foreign keys
-    Location = models.ForeignKey(Locations,on_delete=models.CASCADE)
+    location_id = models.ForeignKey(Locations,db_column='location_id',on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
 
 
 class Sales(models.Model):
     #fields
-    Date = models.DateTimeField(default=datetime.now,blank=True)
-    CustomerName = models.CharField(max_length=200)
-    CustomerSurname = models.CharField(max_length=200)
-    CustomerPhoneNumber = models.CharField(max_length=30)
-    CustomerEmail = models.EmailField(max_length=200)
-    IsCampaign = models.BooleanField()
-    Latitude = models.FloatField()
-    Longitude = models.FloatField()
-    Price = models.DecimalField(max_digits=10,decimal_places=3)
-    SerialNumber = models.CharField(max_length=1000)
+    date = models.DateTimeField(default=datetime.now,blank=True)
+    customer_name = models.CharField(max_length=200)
+    customer_surname = models.CharField(max_length=200)
+    custome_phone_number = models.CharField(max_length=30)
+    customer_email = models.EmailField(max_length=200)
+    is_campaign = models.BooleanField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    price = models.DecimalField(max_digits=10,decimal_places=3)
+    serial_number = models.CharField(max_length=1000)
 
     #foreign keys
-    MachineId = models.ForeignKey(Machines,on_delete=models.CASCADE,db_column='MachineId',related_name='%(class)s_Machine')
-    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
-    LocationId = models.ForeignKey(
+    machine_id = models.ForeignKey(Machines,db_column='machine_id',on_delete=models.CASCADE,related_name='%(class)s_Machine')
+    personnel_id = models.ForeignKey(Personnels,db_column='personnel_id',on_delete=models.CASCADE,related_name='%(class)s_Personnel')
+    location_id = models.ForeignKey(
         Locations,
+        db_column='location_id',
         on_delete=models.CASCADE,
-        db_column='LocationId',
         null=True,
         related_name='%(class)s_Location')
 
@@ -182,30 +182,30 @@ class Sales(models.Model):
 class IntensiveHours(models.Model):
     #fields
     #Veritabanında 12.00-14.00 şeklinde saat aralıkları şeklinde kayıtlı olacak.
-    IntensiveHour = models.CharField(max_length=100)
+    intensive_hour = models.CharField(max_length=100)
 
 
 
 class MachineConditions(models.Model):
     #fields
-    MachineCondition = models.CharField(max_length=300)
+    machine_condition = models.CharField(max_length=300)
 
 
 
 class TastingInformations(models.Model):
     #fields
-    Date = models.DateTimeField(default=datetime.now,blank=True)
-    TotalEspressoRecipe = models.IntegerField() #Yapılan toplam espresso tarif
-    TotalMilkyRecipe = models.IntegerField() #Yapılan toplam sütlü tarif
-    DailyCoffeeConsumption = models.IntegerField() #Günlük tüketilen kahve adedi
-    DailyShopCoffeeConsumption = models.IntegerField() #Günlük mağazanın kullandığı kahve adeti
-    DailyMilkBoxConsumption = models.IntegerField() #Günlük kullanılan süt (kutu)
+    date = models.DateTimeField(default=datetime.now,blank=True)
+    total_espresso_recipe = models.IntegerField() #Yapılan toplam espresso tarif
+    total_milky_recipe = models.IntegerField() #Yapılan toplam sütlü tarif
+    daily_coffee_consumption = models.IntegerField() #Günlük tüketilen kahve adedi
+    daily_shop_coffee_consumption = models.IntegerField() #Günlük mağazanın kullandığı kahve adeti
+    daily_milk_box_consumption = models.IntegerField() #Günlük kullanılan süt (kutu)
 
     #foreign keys
-    PersonnelId = models.ForeignKey(Personnels,on_delete=models.CASCADE,db_column='PersonnelId',related_name='%(class)s_Personnel')
-    MachineConditionId = models.ForeignKey(MachineConditions,on_delete=models.CASCADE,db_column='MachineConditionId',related_name='%(class)s_MachineCondition')
-    IntensiveHourId = models.ForeignKey(IntensiveHours,on_delete=models.CASCADE,db_column='IntensiveHourId',related_name='%(class)s_IntensiveHour')
-    LocationId = models.ForeignKey(Locations, on_delete=models.CASCADE, db_column='LocationId',related_name='%(class)s_Location')
+    personnel_id = models.ForeignKey(Personnels,db_column='personnel_id',on_delete=models.CASCADE,related_name='%(class)s_Personnel')
+    machine_condition_id = models.ForeignKey(MachineConditions,db_column='machine_condition_id',on_delete=models.CASCADE,related_name='%(class)s_MachineCondition')
+    intensive_hour_id = models.ForeignKey(IntensiveHours,db_column='intensive_hour_id',on_delete=models.CASCADE,related_name='%(class)s_IntensiveHour')
+    location_id = models.ForeignKey(Locations,db_column='location_id', on_delete=models.CASCADE,related_name='%(class)s_Location')
 
 
 
@@ -224,7 +224,7 @@ class Stock(models.Model):
     stock_count = models.IntegerField(default=0)
 
     #foreign keys
-    machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
+    machine_id = models.ForeignKey(Machines, on_delete=models.CASCADE)
     location = models.ForeignKey(Locations, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -272,7 +272,7 @@ def log_stocks(sender, instance=None, created=False, **kwargs):
 # @receiver(post_save, sender=Sales)
 # def decrease_stock(sender, instance=None, created=False, **kwargs):
 #     if created:
-#         location = instance.LocationId
+#         location = instance.location_id
 #         if location:
 #             location.stock -=1
 #             location.save()
