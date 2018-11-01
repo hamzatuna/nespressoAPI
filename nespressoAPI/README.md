@@ -168,8 +168,33 @@ Sonuc:
     "user": 1
 }
 ```
+## 7-) Hedef Updateleme
 
-## 6-) Stock Ekleme
+```
+/goals/<id>/ PATCH
+```
+body ornek:
+
+```       
+{
+    "sale_goal": 1,
+
+}
+```
+
+Sonuc:
+```
+{
+    "id": 2,
+    "sale_goal": 1,
+    "date": "2018-01-02",
+    "user": 1
+}
+```
+
+
+
+## 8-) Stock Ekleme
 
 ```
 /stocks POST
@@ -194,7 +219,7 @@ Sonuc:
 }
 ```
 
-## 6-) Stock Cekme
+## 9-) Stock Cekme
 
 ```
 /stocks GET
