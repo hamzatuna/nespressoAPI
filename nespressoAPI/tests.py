@@ -72,7 +72,7 @@ class LocationTestCases(APITestCase):
     location_data = {
             "latitude": 45.1,
             "longitude": 34.12,
-            "location_name": "testPlace",
+            "name": "testPlace",
     }
 
     def setUp(self):
@@ -116,13 +116,12 @@ class LocationTestCases(APITestCase):
         for key in self.location_data:
             self.assertEqual(location[key], self.location_data[key])
 
-
 class SalesTestCases(APITestCase):
     
-    personnel_id = 40
-    machine_id = 40
+    personnel = 40
+    machine = 40
     sales_data = {
-            "personnel_id": personnel_id,
+            "personnel": personnel,
             "customer_name": "testName",
             "customer_surname": "customer_surname",
             "customer_phone_number": "23233232323",
@@ -132,8 +131,7 @@ class SalesTestCases(APITestCase):
             "price": "23.000",
             "serial_number": "aweawe",
             "is_campaign": True,
-            "machine_id": machine_id,
-
+            "machine": machine,
     }
     url = '/sales'
 
@@ -145,7 +143,7 @@ class SalesTestCases(APITestCase):
 
         # add test user
         test_user_data = {
-            "id": self.personnel_id,
+            "id": self.personnel,
             "username": "test-user",
             "password": "12345678.",
             "email": "a5@a.com",
@@ -157,7 +155,7 @@ class SalesTestCases(APITestCase):
 
         # add machine
         test_machine_data = {
-            'id': self.machine_id,
+            'id': self.machine,
             'name': 'test_name',
         }
         test_machine = Machines(**test_machine_data)
@@ -168,7 +166,7 @@ class SalesTestCases(APITestCase):
                 "id": 20,
                 "latitude": 45.1,
                 "longitude": 34.12,
-                "location_name": "testPlace",
+                "name": "testPlace",
         }
         location = Locations(**location_data)
         location.save()
@@ -178,7 +176,7 @@ class SalesTestCases(APITestCase):
             "user": test_user,
             "name": "test-name",
             "surname": "test-surname",
-            "location_id": location,
+            "location": location,
             "tc_no": 12345678901
         }
         test_personnel = Personnels(**test_personnel_data)
@@ -204,16 +202,17 @@ class SalesTestCases(APITestCase):
         # expect location is added successfully
         self.assertEqual(1, len(sales))
 
+
 class StockTestCases(APITestCase):
     
-    user_id = 40
-    machine_id = 40
-    location_id = 40
+    user = 40
+    machine = 40
+    location = 40
     stock_data = {
         "id": 4,
         "stock_count": 5,
-        "machine": machine_id,
-        "location": location_id
+        "machine": machine,
+        "location": location
     }
     url = '/stocks'
 
@@ -225,7 +224,7 @@ class StockTestCases(APITestCase):
         
         # add test user
         test_user_data = {
-            "id": self.user_id,
+            "id": self.user,
             "username": "test-user",
             "password": "12345678.",
             "email": "a5@a.com",
@@ -237,7 +236,7 @@ class StockTestCases(APITestCase):
 
         # add machine
         test_machine_data = {
-            'id': self.machine_id,
+            'id': self.machine,
             'name': 'test_name',
         }
         test_machine = Machines(**test_machine_data)
@@ -245,10 +244,10 @@ class StockTestCases(APITestCase):
 
         # add location
         location_data = {
-                "id": self.location_id,
+                "id": self.location,
                 "latitude": 45.1,
                 "longitude": 34.12,
-                "location_name": "testPlace",
+                "name": "testPlace",
         }
         location = Locations(**location_data)
         location.save()
@@ -258,7 +257,7 @@ class StockTestCases(APITestCase):
             "user": test_user,
             "name": "test-name",
             "surname": "test-surname",
-            "location_id": location,
+            "location": location,
             "tc_no": 12345678901
         }
         test_personnel = Personnels(**test_personnel_data)

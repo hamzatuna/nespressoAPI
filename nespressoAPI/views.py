@@ -43,10 +43,10 @@ def to_json(objects):
 def dashboard_main(request):
     try:
         context = {}
-        context["daily_sales_count"] = Sales.objects.filter(Date__year=date.today().year,
-                                                      Date__month=date.today().month,
-                                                      Date__day=date.today().day).count()
-        context["weekly_sales_count"] = Sales.objects.filter(Date__gte=datetime.now() - timedelta(days=7)).count()
+        context["daily_sales_count"] = Sales.objects.filter(date__year=date.today().year,
+                                                      date__month=date.today().month,
+                                                      date__day=date.today().day).count()
+        context["weekly_sales_count"] = Sales.objects.filter(date__gte=datetime.now() - timedelta(days=7)).count()
         return render(request,'dashboard_main.html',context)
     except KeyError:
         return Response(KeyError)
@@ -58,7 +58,7 @@ def dashboard_add_location(request):
         if request.method == "GET":
             form_context = {}
             form_context["locations_form"] = LocationsForm()
-            form_context["locations_form"].fields['location_name'].widget.attrs = {'class': 'form-control'}
+            form_context["locations_form"].fields['name'].widget.attrs = {'class': 'form-control'}
             print(form_context)
             return render(request,'dashboard_add_location.html',form_context)
         elif request.method == "POST":
@@ -67,7 +67,7 @@ def dashboard_add_location(request):
                 location = locations_form.save()
                 form_context = {}
                 form_context["locations_form"] = LocationsForm()
-                form_context["locations_form"].fields['location_name'].widget.attrs = {'class': 'form-control'}
+                form_context["locations_form"].fields['name'].widget.attrs = {'class': 'form-control'}
                 return render(request,'dashboard_add_location.html',form_context)
     except KeyError:
         return Response(KeyError)
@@ -105,8 +105,8 @@ def dashboard_add_stock(request):
             #if stock_form.is_valid():
             print("BURA")
             #stock = stock_form.cleaned_data['stock']
-            #location_name = stock_form.cleaned_data['location_name']
-            #print(location_name,stock)
+            #name = stock_form.cleaned_data['name']
+            #print(name,stock)
             form_context = {}
             form_context["stock_form"] = StockForm()
             return render(request,'dashboard_add_stock.html',form_context)
@@ -119,7 +119,7 @@ def dashboard_add_stock(request):
     try:
         if request.method == "GET":
             form_context = {}
-            form_context["location_form"] = Locations.objects.values_list('id','location_name', named=True)
+            form_context["location_form"] = Locations.objects.values_list('id','name', named=True)
             return render(request,'dashboard_add_stock.html',form_context)
         elif request.method == "POST":
             form_location_id = request.POST.get('location_id')
@@ -127,7 +127,7 @@ def dashboard_add_stock(request):
             #print(location_id,stock)
             Locations.objects.filter(id=form_location_id).update(stock=form_stock)
             form_context = {}
-            form_context["location_form"] = Locations.objects.values_list('id','location_name', named=True)
+            form_context["location_form"] = Locations.objects.values_list('id','name', named=True)
             return render(request,'dashboard_add_stock.html',form_context)
     except KeyError:
         return Response(KeyError)
@@ -137,9 +137,9 @@ def dashboard_add_stock(request):
 def dashboard_add_sales_target(request):
     try:
         if request.method == "GET":
-            form_context = {}
-            form_context["sales_target_form"] = Personnels.objects.values_list('user_id','name', named=True)
-            return render(request,'dashboard_add_sales_target.html',form_context)
+            personnel_dict = {}
+            personnel_dict["personnels"] = Personnels.objects.select_related('location')
+            return render(request,'dashboard_add_sales_target.html',personnel_dict)
         elif request.method == "POST":
             form_location_id = request.POST.get('location_id')
             form_stock = request.POST.get('stock')
@@ -254,7 +254,7 @@ def get_filtered_sales(request):
         cursor = connection.cursor()
         print(request.POST)
         #query = '''select "SL"."CustomerName" from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."personnel_id" = "PL"."user_id")     INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."location_id" = "LC"."id") '''
-        #query = '''select "SL"."CustomerName","SL"."CustomerSurname","SL"."CustomerName","SL"."CustomerPhoneNumber","SL"."CustomerEmail","MC"."","LC"."location_name" from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."personnel_id" = "PL"."user_id")     INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."location_id" = "LC"."id") '''
+        #query = '''select "SL"."CustomerName","SL"."CustomerSurname","SL"."CustomerName","SL"."CustomerPhoneNumber","SL"."CustomerEmail","MC"."","LC"."name" from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."personnel_id" = "PL"."user_id")     INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."location_id" = "LC"."id") '''
         query = '''select * from "Sales" as "SL" INNER JOIN "Personnels" as "PL" ON ("SL"."personnel_id" = "PL"."user_id") INNER JOIN "Machines" as "MC" ON ("SL"."MachineId" = "MC"."id")    INNER JOIN "Locations" as "LC" ON ("SL"."location_id" = "LC"."id") '''
         if request.method=='POST':
             if request.data['personnel_name'] and request.data['personnel_name'] is not None:

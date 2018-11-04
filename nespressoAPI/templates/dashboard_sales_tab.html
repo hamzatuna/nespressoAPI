@@ -19,7 +19,7 @@
                     <select ng-model="filter.location_id">
                         <option value="">Lokasyon Seçiniz</option>
                         <option ng-repeat="location in locations.results" value="{{ location.id }}">{{
-                            location.location_name }}
+                            location.name }}
                         </option>
                     </select>
 
@@ -60,7 +60,7 @@
                         <thead>
                         <tr>
                             <th data-data="Date">Tarih</th>
-                            <th data-data="location_id.location_name">Mağaza</th>
+                            <th data-data="location_id.name">Mağaza</th>
                             <th data-data="personnel_id.name">Satış Elemanı Ad</th>
                             <th data-data="personnel_id.surname">Satış Elemanı Soyad</th>
                             <th data-data="machineId.name">Ürün</th>

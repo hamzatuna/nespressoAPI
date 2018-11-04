@@ -64,26 +64,14 @@ class UsersSerializer(serializers.ModelSerializer):
             'user_type'
         )
 
-    def create(self,  validated_data):
-        with transaction.atomic():
-            user_data = validated_data.pop('user')
-            user_data["password"]=make_password(user_data["password"])
-            print("USER DATA" , user_data)
-            #user_data.set_password(user_data.password)
-            user = User.objects.create(**user_data)
-            print("USER", user)
-            user = User(**user_data)
-            user.set_password(user_data['password'])
-            user.user_type = 2
-            user.save()
-
-            return Personnels.objects.create(user=user, **validated_data)
 
 
 class DateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Sales
         exclude=()
+
+
 
 class LocationsSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
@@ -93,10 +81,14 @@ class LocationsSerializer(serializers.ModelSerializer):
         model=Locations
         exclude=()
 
+
+
 class MachineConditionsSerializer(serializers.ModelSerializer):
     class Meta:
         model=MachineConditions
         exclude=()
+
+
 
 class MachinesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -106,12 +98,15 @@ class MachinesSerializer(serializers.ModelSerializer):
         exclude=()
 
 
+
+
 class OldPersonnelsSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Personnels.objects.create(**validated_data)
     class Meta:
         model=Personnels
         exclude=()
+
 
 
 class PersonnelsSerializer(serializers.ModelSerializer):
@@ -145,7 +140,7 @@ class SalesSerializer(serializers.ModelSerializer):
         if not personnel:
             raise serializers.ValidationError('Personel bulunamadi')
 
-        location = personnel.location_id
+        location = personnel.location
 
         # location yoksa hata don
         if not location:
@@ -153,11 +148,11 @@ class SalesSerializer(serializers.ModelSerializer):
 
         return Sales.objects.create(
             **validated_data,
-            location_id=location)
+            location=location)
 
     class Meta:
         model=Sales
-        exclude=('location_id',)
+        exclude=('location',)
 
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):
@@ -171,10 +166,10 @@ class CustomerGoalSerializer(serializers.ModelSerializer):
         exclude=()
 
 class TastingInformationsSerializer(serializers.ModelSerializer):
-    location_id = LocationsSerializer(many=False,required=True)
-    machine_condition_id = MachineConditionsSerializer(many=False,required=True)
-    intensive_hour_id = IntensiveHoursSerializer(many=False,required=True)
-    personnel_id = PersonnelsSerializer(many=False,required=True)
+    location = LocationsSerializer(many=False,required=True)
+    machine_condition = MachineConditionsSerializer(many=False,required=True)
+    intensive_hour = IntensiveHoursSerializer(many=False,required=True)
+    personnel = PersonnelsSerializer(many=False,required=True)
 
     #def create(self, validated_data):
     #    return TastingInformations.objects.create(**validated_data)

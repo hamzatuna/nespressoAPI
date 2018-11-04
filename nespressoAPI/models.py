@@ -45,6 +45,8 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
+
 class User(AbstractUser):
     USER_TYPE_CHOICES = (
         (1, 'Manager'),
@@ -109,7 +111,7 @@ class Locations(models.Model):
     #fields
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
-    location_name = models.CharField(max_length=1000)
+    name = models.CharField(max_length=1000)
 
 
 
@@ -123,19 +125,23 @@ class Personnels(models.Model):
     tc_no = models.FloatField(validators=[MinValueValidator(1e10), MaxValueValidator(1e11-1)])
     
     #foreign keys
-    location_id = models.ForeignKey(
+    location = models.ForeignKey(
         Locations,
-        db_column='location_id',
         on_delete=models.CASCADE,
         null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+    #methods
+    #returns personnels with their locations if exist (left joinloca)
+    def personnels_with_locations(self):
+        Personnels.objects.select_related('location')
 
 
 
 class PersonnelLocation(models.Model):
     #foreign keys
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    location_id = models.OneToOneField(Locations,db_column='location_id', on_delete=models.CASCADE)
+    location = models.OneToOneField(Locations,db_column='location_id', on_delete=models.CASCADE)
 
 
 
@@ -148,7 +154,7 @@ class Supervisors(models.Model):
     is_active = models.BooleanField()
 
     #foreign keys
-    location_id = models.ForeignKey(Locations,db_column='location_id',on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations,on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
 
@@ -167,11 +173,10 @@ class Sales(models.Model):
     serial_number = models.CharField(max_length=1000)
 
     #foreign keys
-    machine_id = models.ForeignKey(Machines,db_column='machine_id',on_delete=models.CASCADE,related_name='%(class)s_Machine')
-    personnel_id = models.ForeignKey(Personnels,db_column='personnel_id',on_delete=models.CASCADE,related_name='%(class)s_Personnel')
-    location_id = models.ForeignKey(
+    machine = models.ForeignKey(Machines,on_delete=models.CASCADE,related_name='%(class)s_Machine')
+    personnel = models.ForeignKey(Personnels,on_delete=models.CASCADE,related_name='%(class)s_Personnel')
+    location = models.ForeignKey(
         Locations,
-        db_column='location_id',
         on_delete=models.CASCADE,
         null=True,
         related_name='%(class)s_Location')
@@ -202,10 +207,10 @@ class TastingInformations(models.Model):
     daily_milk_box_consumption = models.IntegerField() #Günlük kullanılan süt (kutu)
 
     #foreign keys
-    personnel_id = models.ForeignKey(Personnels,db_column='personnel_id',on_delete=models.CASCADE,related_name='%(class)s_Personnel')
-    machine_condition_id = models.ForeignKey(MachineConditions,db_column='machine_condition_id',on_delete=models.CASCADE,related_name='%(class)s_MachineCondition')
-    intensive_hour_id = models.ForeignKey(IntensiveHours,db_column='intensive_hour_id',on_delete=models.CASCADE,related_name='%(class)s_IntensiveHour')
-    location_id = models.ForeignKey(Locations,db_column='location_id', on_delete=models.CASCADE,related_name='%(class)s_Location')
+    personnel = models.ForeignKey(Personnels,on_delete=models.CASCADE,related_name='%(class)s_Personnel')
+    machine_condition = models.ForeignKey(MachineConditions,on_delete=models.CASCADE,related_name='%(class)s_MachineCondition')
+    intensive_hour = models.ForeignKey(IntensiveHours,on_delete=models.CASCADE,related_name='%(class)s_IntensiveHour')
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE,related_name='%(class)s_Location')
 
 
 
@@ -224,7 +229,7 @@ class Stock(models.Model):
     stock_count = models.IntegerField(default=0)
 
     #foreign keys
-    machine_id = models.ForeignKey(Machines, on_delete=models.CASCADE)
+    machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
     location = models.ForeignKey(Locations, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

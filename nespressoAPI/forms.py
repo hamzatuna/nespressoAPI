@@ -6,9 +6,9 @@ class LocationsForm(ModelForm):
     class Meta:
         model = Locations
         labels = {
-            "location_name" : "Lokasyon Adı:"
+            "name" : "Lokasyon Adı:"
         }
-        fields = ['location_name']
+        fields = ['name']
 
 class MachinesForm(ModelForm):
     class Meta:
@@ -29,10 +29,14 @@ class PersonnelsForm(ModelForm):
         labels= {
             "name" : "İsim",
             "surname" : "Soyisim",
-            "location_id" : "Lokasyon",
             "phone_number" : "Telefon Numarası"
         }
-        exclude = ["location_id","user","birthday","wage"]
+        exclude = ["location","user","birthday","wage"]
+
+    @property
+    def locationnames(self):
+        return Locations.objects.all()
+
     #Aşağıdaki init constuctoru,ModelForm'un baz aldığı Model'daki fieldların hepsine
     #ortak olarak eklemek istediğimiz css class'ları kolayca eklemek için kullanıldı.
     #Aksi taktirde views.py içerisinden tüm fieldlara aynı css class'larını tek tek
@@ -67,11 +71,11 @@ class AutoUserForm(ModelForm):
             visible.field.widget.attrs['class'] = 'form-control'
 
 class StockForm(forms.Form):
-    location_name = forms.ModelChoiceField(queryset=Locations.objects.values_list('location_name',flat=True))
+    name = forms.ModelChoiceField(queryset=Locations.objects.values_list('name',flat=True))
     stock = forms.IntegerField()
     class Meta:
         labels = {
-            "location_name" : "Lokasyon Adı:",
+            "name" : "Lokasyon Adı:",
             "stock": "Stok:"
         }
     def __init__(self, *args, **kwargs):
