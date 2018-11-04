@@ -109,7 +109,7 @@ body ornek:
 Satis eklemeden once personel icin lokasyon tanimlanmis olmasi lazimdir ve lokasyona ait bir de makine olmasi lazimdir
 ```       
 {
-	"PersonnelId": 4,
+	"personnel_id": 4,
 	"CustomerName": "testName",
 	"CustomerSurname": "CustomerSurname",
 	"CustomerPhoneNumber": "23233232323",
@@ -129,8 +129,8 @@ Sonuc:
     "CustomerEmail": "ADAMLIQUE7@gmail.com",
     "IsCampaign": false,
     "MachineId": 1,
-    "PersonnelId": 4,
-    "LocationId": 1
+    "personnel_id": 4,
+    "location_id": 1
 }
 ```
 

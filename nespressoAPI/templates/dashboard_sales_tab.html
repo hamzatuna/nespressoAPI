@@ -19,7 +19,7 @@
                     <select ng-model="filter.location_id">
                         <option value="">Lokasyon Seçiniz</option>
                         <option ng-repeat="location in locations.results" value="{{ location.id }}">{{
-                            location.LocationName }}
+                            location.name }}
                         </option>
                     </select>
 
@@ -30,7 +30,7 @@
                     <select ng-model="filter.machine_id">
                         <option value="">Makine Seçiniz</option>
                         <option ng-repeat="machine in machines.results" value="{{ machine.id }}">{{
-                            machine.Name }}
+                            machine. }}
                         </option>
                     </select>
                     <select ng-model="filter.is_campaign">
@@ -60,10 +60,10 @@
                         <thead>
                         <tr>
                             <th data-data="Date">Tarih</th>
-                            <th data-data="LocationId.LocationName">Mağaza</th>
-                            <th data-data="PersonnelId.name">Satış Elemanı Ad</th>
-                            <th data-data="PersonnelId.surname">Satış Elemanı Soyad</th>
-                            <th data-data="MachineId.Name">Ürün</th>
+                            <th data-data="location_id.name">Mağaza</th>
+                            <th data-data="personnel_id.name">Satış Elemanı Ad</th>
+                            <th data-data="personnel_id.surname">Satış Elemanı Soyad</th>
+                            <th data-data="machineId.name">Ürün</th>
                             <th data-data="CustomerName">Müşteri Ad</th>
                             <th data-data="CustomerSurname">Müşteri Soyad</th>
                             <th data-data="CustomerPhoneNumber">Müşteri Tel</th>

@@ -6,6 +6,9 @@ from django.views.generic import TemplateView
 
 
 urlpatterns = [
+    #This url is to test some frontend things...
+    path('test', TemplateView.as_view(template_name='dashboard_test.html'), name="test"),
+
     path('', TemplateView.as_view(template_name='login.html')),
     path('login', views.login_site,name="login"),
     path('logout', views.logout_site,name="logout"),

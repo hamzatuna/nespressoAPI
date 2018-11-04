@@ -38,7 +38,7 @@
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
 
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
 
     <!-- Date Picker Plugin JavaScript -->
     <script src="{% static 'assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
@@ -47,24 +47,64 @@
     <script src="{% static 'assets/node_modules/moment/moment.js' %}"></script>
 
 
+
     <script>
-        $('#personnels').DataTable({
-            dom: 'Bfrtip',
-            'serverSide': true,
-            'ajax': '/get_personnels?format=datatables',
-            'columns': [
-                {'data': 'name'},
-                {'data': 'surname'},
-                {
-                    'data': 'LocationId.LocationName',
-                    "defaultContent": ""
-                },
-                {'data': 'phone_number'},
-            ],
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
-        });
+        var MainModule = angular
+            .module("MainModule", [])
+            .controller("MainCtrl", function ($scope, $http) {
+                $scope.personnel = {};
+                var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+                this.$onInit = function () {
+                    console.log("GEÇTİ");
+                    $('#personnels').DataTable({
+                        dom: 'Bfrtip',
+                        'serverSide': true,
+                        'ajax': '/get_personnels?format=datatables',
+                        'columns': [
+                            {'data': 'name'},
+                            {'data': 'surname'},
+                            {
+                                'data': 'location.name'
+                            },
+                            {
+                                'data': 'phone_number',
+                                "defaultContent": "-"
+                            },
+                        ],
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        ]
+                    });
+                    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
+                }
+
+
+                $scope.locations = {};
+                $http.get("/get_locations")
+                    .then(function (locations) {
+                        $scope.locations = locations.data;
+                        console.log($scope.locations);
+                    });
+
+                $scope.add_personnel = function () {
+                    $scope.personnel.user.user_type = 2;
+                    $http({
+                        url: '/register/personnel',
+                        method: "POST",
+                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        headers: {"X-CSRFToken": $crf_token},
+                        data: $scope.personnel,
+                    })
+                        .then(function (response) {
+                                console.log("EKLENDİ");
+                            },
+                            function (response) { // optional
+                                console.log("EKLEME BAŞARISIZ");
+                            });
+                }
+
+
+            });
     </script>
 
 {% endblock document_js_codes_add_personnel %}

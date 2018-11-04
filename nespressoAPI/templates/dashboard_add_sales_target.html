@@ -4,19 +4,52 @@
 
 {% block document_container_fluid %}
 
+
     <div class="row" ng-controller="MainCtrl">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Satış Hedefi Ekle</h4>
 
-                    <div class="input-daterange input-group" id="date-range">
-                        <input type="text" class="form-control" name="start">
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-info b-0 text-white">TO</span>
+
+                    <form action="/dashboard_add_machine" method="post">
+                        <div class="offset-md-2 col-md-12">
+                            {% for personnel in personnels %}
+                                <div class="row">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value=""> {{ personnel.name }} {{ personnel.surname }}</label>
+                                    </div>
+                                    {% if personnel.location is None %}
+                                        Lokasyon Atanmamış
+                                    {% else %}
+                                    {{ personnel.location.name }}
+                                    {% endif %}
+
+                                    <input type="text" name="name" maxlength="200" required=""
+                                           id="id_name" placeholder="Satış Hedefi">
+                                    <select>
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">Ocak</option>
+                                        <option value="2">Şubat</option>
+                                        <option value="3">Mart</option>
+                                        <option value="4">Nisan</option>
+                                        <option value="5">Mayıs</option>
+                                        <option value="6">Haziran</option>
+                                        <option value="7">Temmuz</option>
+                                        <option value="8">Ağustos</option>
+                                        <option value="9">Eylül</option>
+                                        <option value="10">Ekim</option>
+                                        <option value="11">Kasım</option>
+                                        <option value="12">Aralık</option>
+                                    </select>
+                                </div>
+                            {% endfor %}
+
+
+                            <button type="submit" class="offset-md-2 btn btn-success waves-effect waves-light m-r-10" style="margin-top:10px">Kaydet
+                            </button>
                         </div>
-                        <input type="text" class="form-control" name="end">
-                    </div>
+                    </form>
 
 
                     <div class="table-responsive m-t-40">
@@ -26,16 +59,16 @@
                         >
                             <thead>
                             <tr>
-                                <th data-data="Date">Tarih</th>
-                                <th data-data="LocationId.LocationName">Mağaza</th>
-                                <th data-data="PersonnelId.name">Satış Elemanı Ad</th>
-                                <th data-data="PersonnelId.surname">Satış Elemanı Soyad</th>
-                                <th data-data="MachineId.Name">Ürün</th>
-                                <th data-data="CustomerName">Müşteri Ad</th>
-                                <th data-data="CustomerSurname">Müşteri Soyad</th>
-                                <th data-data="CustomerPhoneNumber">Müşteri Tel</th>
-                                <th data-data="CustomerEmail">Müşteri Email</th>
-                                <th data-data="IsCampaign">Kampanyalı Mı?</th>
+                                <th data-data="date">Tarih</th>
+                                <th data-data="location_id.name">Mağaza</th>
+                                <th data-data="personnel_id.name">Satış Elemanı Ad</th>
+                                <th data-data="personnel_id.surname">Satış Elemanı Soyad</th>
+                                <th data-data="machine_id.name">Ürün</th>
+                                <th data-data="customer_name">Müşteri Ad</th>
+                                <th data-data="customer_surname">Müşteri Soyad</th>
+                                <th data-data="customer_phone_number">Müşteri Tel</th>
+                                <th data-data="customer_email">Müşteri Email</th>
+                                <th data-data="is_campaign">Kampanyalı Mı?</th>
                             </tr>
                             </thead>
                         </table>
