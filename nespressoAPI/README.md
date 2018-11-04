@@ -109,28 +109,33 @@ body ornek:
 Satis eklemeden once personel icin lokasyon tanimlanmis olmasi lazimdir ve lokasyona ait bir de makine olmasi lazimdir
 ```       
 {
-	"personnel_id": 4,
-	"CustomerName": "testName",
-	"CustomerSurname": "CustomerSurname",
-	"CustomerPhoneNumber": "23233232323",
-	"CustomerEmail": "aawdaw@a.com",
-    "MachineId": 1,
-	"IsCampaign": true
+    "customer_name": "testName",
+    "customer_surname": "customer_surname",
+    "customer_phone_number": "23233232323",
+    "customer_email": "aawdaw@a.com",
+    "latitude": 45.1,
+    "longitude": 45.2,
+    "price": "23.000",
+    "serial_number": "aweawe",
+    "is_campaign": true,
+	"machine": 1,
+	"personnel": 2
 }
 ```
 Sonuc:
 ```
 {
-    "id": 14,
-    "Date": "2018-09-10T01:32:12.922000Z",
-    "CustomerName": "YEPSYENI7",
-    "CustomerSurname": "ADAM7",
-    "CustomerPhoneNumber": "05672348294",
-    "CustomerEmail": "ADAMLIQUE7@gmail.com",
-    "IsCampaign": false,
-    "MachineId": 1,
-    "personnel_id": 4,
-    "location_id": 1
+    "customer_name": "testName",
+    "customer_surname": "customer_surname",
+    "customer_phone_number": "23233232323",
+    "customer_email": "aawdaw@a.com",
+    "latitude": 45.1,
+    "longitude": 45.2,
+    "price": "23.000",
+    "serial_number": "aweawe",
+    "is_campaign": true,
+	"machine": 1,
+	"personnel": 2
 }
 ```
 
