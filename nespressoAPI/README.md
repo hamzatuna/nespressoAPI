@@ -73,7 +73,7 @@ body ornek:
 	"is_active": true,
 	"user_type": 1
    },
-   
+   "location_id":1,
    "name": "test-name1",
    "surname": "test-surname",
    "email": "a1@a.com",
