@@ -73,7 +73,7 @@ body ornek:
 	"is_active": true,
 	"user_type": 1
    },
-   
+   "location_id":1,
    "name": "test-name1",
    "surname": "test-surname",
    "email": "a1@a.com",
@@ -97,7 +97,25 @@ Sonuc: olusturulan personel bilgileri doner
 ```
 
 ## 4-) Makine Ekleme
-makine boyle eklenicek
+
+```
+/get_machines POST
+```
+Headerda Authorization/Token olmasi gerekli.
+
+body ornek:
+```
+{
+    "name": "BEYAZ_MAKINE"
+}
+```
+Sonuc: olusturulan makine bilgileri doner
+```
+{
+    "id": 1,
+    "name": "BEYAZ_MAKINE"
+}
+```
 
 
 ## 5-) Satış Ekleme
