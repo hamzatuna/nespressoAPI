@@ -56,6 +56,7 @@
                 var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
                 this.$onInit = function () {
                     console.log("GEÇTİ");
+                    $.fn.dataTable.ext.errMode = 'none';
                     $('#personnels').DataTable({
                         dom: 'Bfrtip',
                         'serverSide': true,
@@ -64,7 +65,8 @@
                             {'data': 'name'},
                             {'data': 'surname'},
                             {
-                                'data': 'location.name'
+                                'data': 'location.name',
+                                "defaultContent": "-"
                             },
                             {
                                 'data': 'phone_number',
@@ -78,6 +80,60 @@
                     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
                 }
 
+                $scope.initDatatable = function () {
+                    $('#personnels').DataTable().clear().destroy();
+                    $('#personnels').DataTable({
+                        dom: 'Bfrtip',
+                        'serverSide': true,
+                        'ajax': '/get_personnels?format=datatables',
+                        'columns': [
+                            {'data': 'name'},
+                            {'data': 'surname'},
+                            {
+                                'data': 'location.name',
+                                "defaultContent": "-"
+                            },
+                            {
+                                'data': 'phone_number',
+                                "defaultContent": "-"
+                            },
+                        ],
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        ]
+                    });
+                    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
+                };
+                /*
+                $scope.test_personnel = {
+                    "name": "AAAA" + Math.floor(Math.random() * 100),
+                    "surname": "YAAAA" + Math.floor(Math.random() * 100),
+                    "phone_number": "05416856268",
+                    "tc_no": 10129852791,
+                    "user": {
+                        "username": "alaaaa" + Math.floor(Math.random() * 100),
+                        "password": "12345678.",
+                        "email": "alaaaa" + Math.floor(Math.random() * 100) + "@gmail.com"
+                    },
+                    "location_id": "1"
+                };
+                $scope.test_add_personnel = function () {
+                    $scope.test_personnel.user.user_type = 2;
+                    $http({
+                        url: '/register/personnel',
+                        method: "POST",
+                        headers: {"X-CSRFToken": $crf_token},
+                        data: $scope.test_personnel,
+                    })
+                        .then(function (response) {
+                                console.log("EKLENDİ");
+                                $scope.initDatatable();
+                            },
+                            function (response) { // optional
+                                console.log("EKLEME BAŞARISIZ");
+                            });
+                }
+                */
 
                 $scope.locations = {};
                 $http.get("/get_locations")

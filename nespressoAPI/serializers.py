@@ -111,6 +111,8 @@ class OldPersonnelsSerializer(serializers.ModelSerializer):
 
 class PersonnelsSerializer(serializers.ModelSerializer):
     user = UsersSerializer()
+    location = LocationsSerializer(read_only=True)
+    location_id = serializers.PrimaryKeyRelatedField(queryset = Locations.objects.all(),source='location',write_only=True)
 
     class Meta:
         model = Personnels
