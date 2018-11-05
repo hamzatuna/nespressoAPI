@@ -152,6 +152,7 @@
                         data: $scope.personnel,
                     })
                         .then(function (response) {
+                                $scope.initDatatable();
                                 console.log("EKLENDİ");
                             },
                             function (response) { // optional
