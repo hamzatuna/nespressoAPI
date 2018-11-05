@@ -65,7 +65,6 @@ class UsersSerializer(serializers.ModelSerializer):
         )
 
 
-
 class DateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Sales
@@ -136,7 +135,7 @@ class SalesSerializer(serializers.ModelSerializer):
     # tablosundaki asli isimleriyle yolluyoruz.
 
     def create(self, validated_data):
-        personnel = Personnels.objects.get(pk=validated_data['^[A-Z]{1}'])
+        personnel = Personnels.objects.get(pk=validated_data['personnel'])
 
         # personel yoksa hata don
         if not personnel:

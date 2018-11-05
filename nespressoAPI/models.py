@@ -164,7 +164,7 @@ class Sales(models.Model):
     date = models.DateTimeField(default=datetime.now,blank=True)
     customer_name = models.CharField(max_length=200)
     customer_surname = models.CharField(max_length=200)
-    custome_phone_number = models.CharField(max_length=30)
+    customer_phone_number = models.CharField(max_length=30)
     customer_email = models.EmailField(max_length=200)
     is_campaign = models.BooleanField()
     latitude = models.FloatField()

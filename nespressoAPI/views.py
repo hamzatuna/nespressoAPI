@@ -124,7 +124,6 @@ def dashboard_add_stock(request):
         elif request.method == "POST":
             form_location_id = request.POST.get('location_id')
             form_stock = request.POST.get('stock')
-            #print(location_id,stock)
             Locations.objects.filter(id=form_location_id).update(stock=form_stock)
             form_context = {}
             form_context["location_form"] = Locations.objects.values_list('id','name', named=True)
@@ -143,7 +142,6 @@ def dashboard_add_sales_target(request):
         elif request.method == "POST":
             form_location_id = request.POST.get('location_id')
             form_stock = request.POST.get('stock')
-            #print(location_id,stock)
             Locations.objects.filter(id=form_location_id).update(stock=form_stock)
             form_context = {}
             form_context["sales_target_form"] = Personnels.objects.values_list('user_id', 'name', named=True)
@@ -248,7 +246,6 @@ def logout_site(request):
 
 @api_view(['GET','POST'])
 def get_filtered_sales(request):
-    print("DENEME")
     #print(request.data['personnel_name'])
     try:
         cursor = connection.cursor()
@@ -319,7 +316,6 @@ def get_sales_count(request):
     except KeyError:
         return Response(KeyError)
 
-    #weekly_sales_count =
 
 
 @api_view(['GET'])
@@ -384,6 +380,19 @@ class LocationListCreate(generics.ListCreateAPIView):
     permission_classes = (IsPersonnelorManager,)
 
 class CustomerGoalListCreate(generics.ListCreateAPIView):
+    serializer_class = CustomerGoalSerializer
+    queryset = CustomerGoals.objects.all()
+    permission_classes = (IsPersonnelorManager,)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=isinstance(request.data,list))
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class CustomerGoalDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CustomerGoalSerializer
     queryset = CustomerGoals.objects.all()
     permission_classes = (IsPersonnelorManager,)

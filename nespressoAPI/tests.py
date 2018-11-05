@@ -121,7 +121,6 @@ class SalesTestCases(APITestCase):
     personnel = 40
     machine = 40
     sales_data = {
-            "personnel": personnel,
             "customer_name": "testName",
             "customer_surname": "customer_surname",
             "customer_phone_number": "23233232323",
@@ -132,6 +131,7 @@ class SalesTestCases(APITestCase):
             "serial_number": "aweawe",
             "is_campaign": True,
             "machine": machine,
+            "personnel": personnel,
     }
     url = '/sales'
 
