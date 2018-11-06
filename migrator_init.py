@@ -2,9 +2,11 @@ from nespressoAPI.models import User, Machines, Locations, Personnels, Sales, St
 
 
 # add initial admin
+password_raw = "boran.1994"
+password_hashed = make_password(password)
 test_user_data = {
     "username": "boran",
-    "password": "boran.1994",
+    "password": password_hashed,
     "email": "boran@nespresso.com",
     "is_active": True,
     "user_type": 1
