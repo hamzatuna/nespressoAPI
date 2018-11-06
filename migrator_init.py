@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 
 # add initial admin
 password_raw = "boran.1994"
-password_hashed = make_password(password)
+password_hashed = make_password(password_raw)
 test_user_data = {
     "username": "boran",
     "password": password_hashed,
