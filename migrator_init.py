@@ -1,5 +1,5 @@
 from nespressoAPI.models import User, Machines, Locations, Personnels, Sales, Stock, StockHistory
-
+from django.contrib.auth.hashers import make_password
 
 # add initial admin
 password_raw = "boran.1994"
