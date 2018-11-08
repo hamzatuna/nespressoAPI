@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_datatables',
+    'rest_framework_swagger',
     'nespressoAPI'
 ]
 

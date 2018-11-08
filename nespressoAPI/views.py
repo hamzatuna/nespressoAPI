@@ -34,6 +34,9 @@ from django.http import *
 from django.urls import reverse
 from django.conf import settings
 import urllib
+from . import sale_filters
+from django.forms.models import model_to_dict
+
 
 def to_json(objects):
     return serializers.serialize('json', objects)
@@ -343,6 +346,27 @@ def insert_sales(request):
             return Response(serializer.errors)
     except KeyError:
         return Response(KeyError)
+
+@api_view(['POST'])
+def filter_sales(request):
+    """
+    keyler:
+        startdate: baslangic zamani  -- eklenmedigi durumlar: (None, 'null')
+        enddate: bitis zamani  -- eklenmedigi durumlar: (None, 'null')
+        location_id: bu lokasyondaki satislar -- eklenmedigi durumlar: (None, '')
+        personnel_name: personel adi -- eklenmedigi durumlar: (None, '')
+        personel_surname: personel soyadi -- eklenmedigi durumlar: (None, 'null')
+        is_campaign: is_campaign {'1', '0'} -- eklenmedigi durumlar {None, ''}
+        machine_id: bu makineden satislar {string olabilir}
+    """
+
+    data = request.data
+    start_date = data['startdate']
+    machine_id = int(data['machine_id'])
+    
+    
+    objects = list(Sales.objects.filter(sale_filters.filter_start_date(start_date), machine_id=machine_id))
+    return Response(list(map(model_to_dict, objects)))
 
 class SalesListCreate(generics.ListCreateAPIView):
     serializer_class = SalesSerializer
