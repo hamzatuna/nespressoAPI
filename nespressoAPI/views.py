@@ -360,12 +360,29 @@ def filter_sales(request):
         machine_id: bu makineden satislar {string olabilir}
     """
 
+    # get json data
     data = request.data
-    start_date = data['startdate']
-    machine_id = int(data['machine_id'])
-    
-    
-    objects = list(Sales.objects.filter(sale_filters.filter_start_date(start_date), machine_id=machine_id))
+
+    # get post values or default values
+    start_date = data.get('startdate', 'null')
+    end_date = data.get('end_date', 'null')
+    machine_id = data.get('machine_id', 'null')
+    location_id = data.get('location_id', 'null')
+    personnel_name = data.get('personnel_name', 'null')
+    personnel_surname = data.get('personnel_surname', 'null')
+    is_campaign = data.get('is_campaign', 'null')
+
+    filters = [
+        sale_filters.filter_start_date(start_date),
+        sale_filters.filter_end_date(end_date),
+        sale_filters.filter_machine_id(machine_id),
+        sale_filters.filter_location_id(location_id),
+        sale_filters.filter_personnel_name(personnel_name),
+        sale_filters.filter_personnel_surname(personnel_surname),
+        sale_filters.filter_is_campaign(is_campaign)
+    ]
+
+    objects = list(Sales.objects.filter(*filters))
     return Response(list(map(model_to_dict, objects)))
 
 class SalesListCreate(generics.ListCreateAPIView):

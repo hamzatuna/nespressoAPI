@@ -14,6 +14,7 @@ from .models import (
 )
 
 class RegisterPersonnelTestCases(APITestCase):
+    location_id = 20
     url = '/register/personnel'
     personnel_data = {
         "user": {
@@ -27,7 +28,8 @@ class RegisterPersonnelTestCases(APITestCase):
         "name": "test-name",
         "surname": "test-surname",
         "email": "a1@a.com",
-        "tc_no": 12345678901
+        "tc_no": 12345678901,
+        "location_id": location_id
     }
 
     def setUp(self):
@@ -47,6 +49,15 @@ class RegisterPersonnelTestCases(APITestCase):
         test_user = User(**test_user_data)
         test_user.save()
         
+        # add location
+        location_data = {
+                "id": self.location_id,
+                "latitude": 45.1,
+                "longitude": 34.12,
+                "name": "testPlace",
+        }
+        location = Locations(**location_data)
+        location.save()
         self.token,_ = Token.objects.get_or_create(user=test_user)
 
         self.api_authentication()
