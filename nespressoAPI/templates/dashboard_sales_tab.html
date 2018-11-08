@@ -4,85 +4,87 @@
 
 {% block document_container_fluid %}
 
-<div class="row" ng-controller="MainCtrl">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">Satış Bilgileri</h3>
+    <div class="row" ng-controller="MainCtrl">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Satış Bilgileri</h3>
+                    {% csrf_token %}
+                    {% verbatim %}
 
-                {% verbatim %}
-                <div class="row">
-                    Başlangıç Tarihi:
-                    <input type="date" name="startdate" ng-model="filter.startdate">
-                    Bitiş Tarihi
-                    <input type="date" name="enddate" ng-model="filter.enddate">
-                    <select ng-model="filter.location_id">
-                        <option value="">Lokasyon Seçiniz</option>
-                        <option ng-repeat="location in locations.results" value="{{ location.id }}">{{
-                            location.name }}
-                        </option>
-                    </select>
-
-                    <input type="location" name="enddate" placeholder="Satış Elemanı Ad"
-                           ng-model="filter.personnel_name">
-                    <input type="location" name="enddate" placeholder="Satış Elemanı Soyad"
-                           ng-model="filter.personnel_surname">
-                    <select ng-model="filter.machine_id">
-                        <option value="">Makine Seçiniz</option>
-                        <option ng-repeat="machine in machines.results" value="{{ machine.id }}">{{
-                            machine.name }}
-                        </option>
-                    </select>
-                    <select ng-model="filter.is_campaign">
-                        <option value="">Kampanyalı/Kampanyasız
-                        </option>
-                        <option value="1">Kampanyalı
-                        </option>
-                        <option value="0">Kampanyasız
-                        </option>
-                    </select>
-                    {{ filter }}
                     <div class="row">
-                        <button ng-click="get_filtered_sales()"
-                                class="btn waves-effect waves-light btn-info">
-                            Filtrele
-                        </button>
+                        Başlangıç Tarihi:
+
+                        <input class="form-control" datetime="yyyy-MM-dd" type="date" ng-model="filter.startdate">
+                        Bitiş Tarihi
+                        <input type="date" name="enddate" ng-model="filter.enddate">
+                        <select ng-model="filter.location_id">
+                            <option value="">Lokasyon Seçiniz</option>
+                            <option ng-repeat="location in locations.results" value="{{ location.id }}">{{
+                                location.name }}
+                            </option>
+                        </select>
+
+                        <input type="location" name="enddate" placeholder="Satış Elemanı Ad"
+                               ng-model="filter.personnel_name">
+                        <input type="location" name="enddate" placeholder="Satış Elemanı Soyad"
+                               ng-model="filter.personnel_surname">
+                        <select ng-model="filter.machine_id">
+                            <option value="">Makine Seçiniz</option>
+                            <option ng-repeat="machine in machines.results" value="{{ machine.id }}">{{
+                                machine.name }}
+                            </option>
+                        </select>
+                        <select ng-model="filter.is_campaign">
+                            <option value="">Kampanyalı/Kampanyasız
+                            </option>
+                            <option value="1">Kampanyalı
+                            </option>
+                            <option value="0">Kampanyasız
+                            </option>
+                        </select>
+                        {{ filter }}
+                        <div class="row">
+                            <button ng-click="get_filtered_sales()"
+                                    class="btn waves-effect waves-light btn-info">
+                                Filtrele
+                            </button>
+                        </div>
+                    </div>
+                    {% endverbatim %}
+
+
+                    <div class="table-responsive m-t-40">
+                        <table id="albums" class="display nowrap table table-hover table-striped table-bordered"
+                               cellspacing="0" style="width:100%"
+                               data-server-side="true"
+                        >
+                            <thead>
+                            <tr>
+                                <th data-data="Date">Tarih</th>
+                                <th data-data="location_id.name">Mağaza</th>
+                                <th data-data="personnel_id.name">Satış Elemanı Ad</th>
+                                <th data-data="personnel_id.surname">Satış Elemanı Soyad</th>
+                                <th data-data="machineId.name">Ürün</th>
+                                <th data-data="CustomerName">Müşteri Ad</th>
+                                <th data-data="CustomerSurname">Müşteri Soyad</th>
+                                <th data-data="CustomerPhoneNumber">Müşteri Tel</th>
+                                <th data-data="CustomerEmail">Müşteri Email</th>
+                                <th data-data="IsCampaign">Kampanyalı Mı?</th>
+                            </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
-                {% endverbatim %}
 
-
-                <div class="table-responsive m-t-40">
-                    <table id="albums" class="display nowrap table table-hover table-striped table-bordered"
-                           cellspacing="0" style="width:100%"
-                           data-server-side="true"
-                    >
-                        <thead>
-                        <tr>
-                            <th data-data="Date">Tarih</th>
-                            <th data-data="location_id.name">Mağaza</th>
-                            <th data-data="personnel_id.name">Satış Elemanı Ad</th>
-                            <th data-data="personnel_id.surname">Satış Elemanı Soyad</th>
-                            <th data-data="machineId.name">Ürün</th>
-                            <th data-data="CustomerName">Müşteri Ad</th>
-                            <th data-data="CustomerSurname">Müşteri Soyad</th>
-                            <th data-data="CustomerPhoneNumber">Müşteri Tel</th>
-                            <th data-data="CustomerEmail">Müşteri Email</th>
-                            <th data-data="IsCampaign">Kampanyalı Mı?</th>
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
             </div>
-
         </div>
+
+
     </div>
-
-
-</div>
-<!-- ============================================================== -->
-<!-- End Container fluid  -->
-<!-- ============================================================== -->
-</div>
+    <!-- ============================================================== -->
+    <!-- End Container fluid  -->
+    <!-- ============================================================== -->
+    </div>
 
 {% endblock document_container_fluid %}

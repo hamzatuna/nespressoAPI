@@ -43,81 +43,9 @@
     <!-- Date Picker Plugin JavaScript -->
     <script src="{% static 'assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
     <script>
-        // MAterial Date picker
-        //$('#mdate').bootstrapMaterialDatePicker({weekStart: 0, time: false});
-        $('#timepicker').bootstrapMaterialDatePicker({format: 'HH:mm', time: true, date: false});
-        $('#date-format').bootstrapMaterialDatePicker({format: 'dddd DD MMMM YYYY - HH:mm'});
 
-        $('#min-date').bootstrapMaterialDatePicker({format: 'DD/MM/YYYY HH:mm', minDate: new Date()});
-        // Clock pickers
-        $('#single-input').clockpicker({
-            placement: 'bottom',
-            align: 'left',
-            autoclose: true,
-            'default': 'now'
-        });
-        $('.clockpicker').clockpicker({
-            donetext: 'Done',
-        }).find('input').change(function () {
-            console.log(this.value);
-        });
-        $('#check-minutes').click(function (e) {
-            // Have to stop propagation here
-            e.stopPropagation();
-            input.clockpicker('show').clockpicker('toggleView', 'minutes');
-        });
-        if (/mobile/i.test(navigator.userAgent)) {
-            $('input').prop('readOnly', true);
-        }
-        // Colorpicker
-        $(".colorpicker").asColorPicker();
-        $(".complex-colorpicker").asColorPicker({
-            mode: 'complex'
-        });
-        $(".gradient-colorpicker").asColorPicker({
-            mode: 'gradient'
-        });
-        // Date Picker
-        jQuery('.mydatepicker, #datepicker').datepicker();
-        jQuery('#datepicker-autoclose').datepicker({
-            autoclose: true,
-            todayHighlight: true
-        });
-        jQuery('#date-range').datepicker({
-            toggleActive: true
-        });
-        jQuery('#datepicker-inline').datepicker({
-            todayHighlight: true
-        });
-        // Daterange picker
-        $('.input-daterange-datepicker').daterangepicker({
-            buttonClasses: ['btn', 'btn-sm'],
-            applyClass: 'btn-danger',
-            cancelClass: 'btn-inverse'
-        });
-        $('.input-daterange-timepicker').daterangepicker({
-            timePicker: true,
-            format: 'MM/DD/YYYY h:mm A',
-            timePickerIncrement: 30,
-            timePicker12Hour: true,
-            timePickerSeconds: false,
-            buttonClasses: ['btn', 'btn-sm'],
-            applyClass: 'btn-danger',
-            cancelClass: 'btn-inverse'
-        });
-        $('.input-limit-datepicker').daterangepicker({
-            format: 'MM/DD/YYYY',
-            minDate: '06/01/2015',
-            maxDate: '06/30/2015',
-            buttonClasses: ['btn', 'btn-sm'],
-            applyClass: 'btn-danger',
-            cancelClass: 'btn-inverse',
-            dateLimit: {
-                days: 6
-            }
-        });
+
     </script>
-
 
     <script>
         var MainModule = angular
@@ -163,25 +91,27 @@
                         $scope.locations = locations.data;
                         console.log($scope.locations);
                     });
-                $scope.get_filtered_sales = function () {
-                    console.log($scope.filter);
-                    $.ajax({
-                        url: '/get_filtered_sales',
-                        type: "POST",
-                        data: {'a1': 'b1'},
-                        //data: JSON.stringify($scope.filter),
-                        //data:JSON.stringify($scope.filter),
-                        dataType: 'json',
-                        contentType: "application/json",
-                        success: function (data) {
-                            console.log("OLDU");
-                        },
-                        fail: function (data) {
-                            console.log("BAŞARISIZ");
-                        }
-                    });
 
-                };
+                $scope.get_filtered_sales = function () {
+                    $http({
+                        url: '/get_filtered_sales',
+                        method: "POST",
+                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        headers: {"X-CSRFToken": $crf_token},
+                        data: $scope.filter,
+                    })
+                        .then(function (response) {
+                                //scope.initDatatable();
+                                console.log("BAŞARILI");
+                                console.log(response);
+                            },
+                            function (response) { // optional
+                                console.log("BAŞARISIZ");
+                                console.log(response);
+                            });
+                }
+
+
                 /*
                 $scope.get_filtered_sales = function () {
                     console.log("YAZDIK");
@@ -215,36 +145,6 @@
                 };
                 */
             });
-    </script>
-
-    <script>
-        /*
-            $(document).ready(function () {
-            $('#albums').DataTable({
-                //"scrollX": true,
-                dom: 'Bfrtip',
-                'serverSide': true,
-                'ajax': '/admin_get_sales?format=datatables',
-                'columns': [
-                    {'data': 'Date'},
-                    {'data': 'location_id.name'},
-                    {'data': 'personnel_id.name'},
-                    {'data': 'personnel_id.surname'},
-                    {'data': 'MachineId.'},
-                    {'data': 'CustomerName'},
-                    {'data': 'CustomerSurname'},
-                    {'data': 'CustomerPhoneNumber'},
-                    {'data': 'CustomerEmail'},
-                    {'data': 'IsCampaign'},
-                ],
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]
-            });
-            $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
-            });
-        */
-
     </script>
 
 
