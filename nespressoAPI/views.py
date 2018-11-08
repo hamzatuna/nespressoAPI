@@ -365,7 +365,7 @@ def filter_sales(request):
 
     # get post values or default values
     start_date = data.get('startdate', 'null')
-    end_date = data.get('end_date', 'null')
+    end_date = data.get('enddate', 'null')
     machine_id = data.get('machine_id', 'null')
     location_id = data.get('location_id', 'null')
     personnel_name = data.get('personnel_name', 'null')
