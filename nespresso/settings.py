@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_datatables',
+    'rest_framework_swagger',
     'nespressoAPI'
 ]
 
@@ -181,3 +182,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 AUTH_USER_MODEL = "nespressoAPI.User"
 
 GOOGLE_RECAPTCHA_SECRET_KEY = '6LfZZ3YUAAAAAA7e4K0pB4dW8JMgMY-j7nsARPNk'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        }
+    }
+}
+
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'

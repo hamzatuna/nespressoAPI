@@ -5,3 +5,4 @@ djangorestframework
 django-datatables-view==1.16.0
 djangorestframework-datatables==0.4.0
 requests
+django-rest-swagger
