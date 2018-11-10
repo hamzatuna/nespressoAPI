@@ -29,7 +29,6 @@ urlpatterns = [
 
     path('get_machines', views.MachinesListCreate.as_view(), name="get_machines"),
     path('get_locations', views.LocationsListCreate.as_view(), name="get_locations"),
-    path('get_filtered_sales', views.get_filtered_sales, name="get_filtered_sales"),
 
     path('get_personnels',views.PersonnelsListCreate.as_view(),name="get_personnels"),
     path('locations/', views.LocationListCreate.as_view(), name="locations"),

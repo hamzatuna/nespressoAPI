@@ -51,6 +51,7 @@
         var MainModule = angular
             .module("MainModule", [])
             .controller("MainCtrl", function ($scope, $http) {
+                var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
                 $scope.filter = {};
                 this.$onInit = function () {
                     console.log("GEÇTİ");
@@ -94,7 +95,7 @@
 
                 $scope.get_filtered_sales = function () {
                     $http({
-                        url: '/get_filtered_sales',
+                        url: '/filter/sales',
                         method: "POST",
                         //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                         headers: {"X-CSRFToken": $crf_token},
