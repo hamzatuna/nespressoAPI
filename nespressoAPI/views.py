@@ -306,6 +306,7 @@ def filter_sales(request):
         machine_id: bu makineden satislar {string olabilir}
     """
 
+    
     # get json data
     data = request.data
 

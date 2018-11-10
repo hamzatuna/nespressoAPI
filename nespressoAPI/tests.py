@@ -1,4 +1,5 @@
 import logging
+import json
 from django.test import TestCase
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
@@ -295,3 +296,185 @@ class StockTestCases(APITestCase):
         # expect stock is added successfully
         self.assertEqual(1, len(stocks))
         self.assertEqual(1, len(stockHistories))
+
+class SalesFilterTestCases(APITestCase):
+    
+    user = 40
+    machine = 40
+    location = 40
+
+    url = '/filter/sales'
+    filter_object = {
+        'startdate': '2016-10-31T21:00:00.000Z', 
+        'enddate': '2019-10-31T21:00:00.000Z', 
+        'machine_id': machine, 
+        'location_id': location,
+        'personnel_name': 'test', 
+        'personnel_surname': 'test', 
+        'is_campaign': '1'
+    }
+    
+
+    def setUp(self):
+        User.objects.all().delete()
+        Token.objects.all().delete()
+        Sales.objects.all().delete()
+        Machines.objects.all().delete()
+        Locations.objects.all().delete()
+        
+        # add test user
+        test_user_data = {
+            "id": self.user,
+            "username": "test-user",
+            "password": "12345678.",
+            "email": "a5@a.com",
+            "is_active": True,
+            "user_type": 2
+        }
+        test_user = User(**test_user_data)
+        test_user.save()
+
+        # add machine
+        test_machine_data = {
+            'id': self.machine,
+            'name': 'test_name',
+        }
+        test_machine = Machines(**test_machine_data)
+        test_machine.save()
+
+        # add location
+        location_data = {
+                "id": self.location,
+                "latitude": 45.1,
+                "longitude": 34.12,
+                "name": "testPlace",
+        }
+        location = Locations(**location_data)
+        location.save()
+
+        # add personnel
+        test_personnel_data = {
+            "user": test_user,
+            "name": "test-name",
+            "surname": "test-surname",
+            "location": location,
+            "tc_no": 12345678901
+        }
+        test_personnel = Personnels(**test_personnel_data)
+        test_personnel.save()
+
+        # add sale 
+        sale_data = {
+            "date": "2018-11-04T19:57:37.431053Z",
+            "customer_name": "testName",
+            "customer_surname": "CustomerSurname",
+            "customer_phone_number": "23233232323",
+            "customer_email": "aawdaw@a.com",
+            "is_campaign": True,
+            "latitude": 45.1,
+            "longitude": 45.2,
+            "price": "23.000",
+            "serial_number": "aweawe",
+            "machine": test_machine,
+            "personnel": test_personnel,
+            "location": location
+        }
+        sale = Sales(**sale_data)
+        sale.save()
+
+        self.token,_ = Token.objects.get_or_create(user=test_user)
+
+        self.api_authentication()
+    
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+    def test_sale_filter_success(self):
+
+        response = self.client.post(self.url, self.filter_object, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 1)
+
+    def test_sale_filter_success_null(self):
+
+        response = self.client.post(self.url, {}, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 1)
+
+    def test_sale_filter_machine_fail(self):
+        filter_object_machine_fail = {**self.filter_object, "machine_id": 1}
+        response = self.client.post(self.url, filter_object_machine_fail, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 0)
+
+    def test_sale_filter_location_fail(self):
+        filter_object_location_fail = {**self.filter_object, "location_id": 1}
+        response = self.client.post(self.url, filter_object_location_fail, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 0)
+
+    def test_sale_filter_startdate_fail(self):
+        filter_object_fail = {**self.filter_object, "startdate": '2070-10-31T21:00:00.000Z'}
+        response = self.client.post(self.url, filter_object_fail, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 0)
+
+    def test_sale_filter_enddate_fail(self):
+        filter_object_fail = {**self.filter_object, "enddate": '2000-10-31T21:00:00.000Z'}
+        response = self.client.post(self.url, filter_object_fail, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 0)
+
+    def test_sale_filter_is_campaign_fail(self):
+        filter_object_fail = {**self.filter_object, "is_campaign": False}
+        response = self.client.post(self.url, filter_object_fail, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 0)
+
+    def test_sale_filter_personnel_name_fail(self):
+        filter_object_fail = {**self.filter_object, "personnel_name": 'ddddddd'}
+        response = self.client.post(self.url, filter_object_fail, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 0)
+
+    def test_sale_filter_personnel_surname_fail(self):
+        filter_object_fail = {**self.filter_object, "personnel_surname": 'ddddddd'}
+        response = self.client.post(self.url, filter_object_fail, format='json')
+
+        # expect to status code ok
+        self.assertEqual(200, response.status_code)
+
+        # check object is pass all filters
+        self.assertEqual(len(json.loads(response.content)), 0)
