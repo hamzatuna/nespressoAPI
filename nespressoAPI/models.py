@@ -273,12 +273,27 @@ def log_stocks(sender, instance=None, created=False, **kwargs):
 
 
 
-# # satis eklendiginde otamatik stoktan dusme
-# @receiver(post_save, sender=Sales)
-# def decrease_stock(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         location = instance.location_id
-#         if location:
-#             location.stock -=1
-#             location.save()
+# satis eklendiginde otamatik stoktan dusme
+@receiver(post_save, sender=Sales)
+def decrease_stock(sender, instance=None, created=False, **kwargs):
+    if created:
+        location = instance.location
+        machine = instance.machine
 
+        # get stock of machine at current location
+        if machine and location:
+            try:
+                stock = Stock.objects.get(machine=machine, location=location)
+                stock.stock_count -=1
+                stock.save()
+
+            except Stock.DoesNotExist:
+                # stock bulunamadiginda manager'e haber verilmesi lazim
+                # simdilik printliyorum ileride mail falan eklenebilir
+
+                print('lokasyonda olmayan bir makine satildi sale id:{}'.format(instance.id))
+        else:
+            # stock bulunamadiginda manager'e haber verilmesi lazim
+            # simdilik printliyorum ileride mail falan eklenebilir
+
+            print('lokasyonu veya makinesi olmayan bir satis eklendi sale id:{}'.format(instance.id))

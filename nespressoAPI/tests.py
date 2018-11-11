@@ -132,6 +132,8 @@ class SalesTestCases(APITestCase):
     
     personnel = 40
     machine = 40
+    location = 20
+    initial_stock_count = 4
     sales_data = {
             "customer_name": "testName",
             "customer_surname": "customer_surname",
@@ -152,7 +154,7 @@ class SalesTestCases(APITestCase):
         Token.objects.all().delete()
         Personnels.objects.all().delete()
         Sales.objects.all().delete()
-
+        Stock.objects.all().delete()
         # add test user
         test_user_data = {
             "id": self.personnel,
@@ -175,7 +177,7 @@ class SalesTestCases(APITestCase):
 
         # add location
         location_data = {
-                "id": 20,
+                "id": self.location,
                 "latitude": 45.1,
                 "longitude": 34.12,
                 "name": "testPlace",
@@ -193,7 +195,18 @@ class SalesTestCases(APITestCase):
         }
         test_personnel = Personnels(**test_personnel_data)
         test_personnel.save()
-  
+
+        # add stock
+        test_stock_data = {
+            'machine': test_machine,
+            'location': location,
+            'stock_count': self.initial_stock_count,
+            'user': test_user
+        }
+        test_stock = Stock(**test_stock_data)
+        test_stock.save()
+
+
         self.token,_ = Token.objects.get_or_create(user=test_user)
 
         self.api_authentication()
@@ -214,6 +227,9 @@ class SalesTestCases(APITestCase):
         # expect location is added successfully
         self.assertEqual(1, len(sales))
 
+        stock = Stock.objects.get(location=self.location, machine=self.machine)
+
+        self.assertEqual(self.initial_stock_count-1, stock.stock_count)
 
 class StockTestCases(APITestCase):
     
