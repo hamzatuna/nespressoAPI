@@ -282,6 +282,11 @@ class RegisterPersonnel(CreateAPIView):
     queryset = Personnels.objects.all()
     permission_classes = (IsManager,)
 
+class UpdatePersonnelView(generics.UpdateAPIView):
+    serializer_class = PersonnelsSerializer
+    queryset = Personnels.objects.all()
+    permission_classes = (IsManager,)
+
 @api_view(['POST'])
 def insert_sales(request):
     sales = Sales()

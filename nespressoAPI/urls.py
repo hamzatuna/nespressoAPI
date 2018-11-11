@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('register', views.RegisterUser.as_view()),
     path('register/personnel', views.RegisterPersonnel.as_view()),
+    path('personnel/update/<int:pk>/', views.UpdatePersonnelView.as_view()),
     #path('insert_sales', views.insert_sales, name="insert_sales"),
     path(
         'insert_tastinginfo',
