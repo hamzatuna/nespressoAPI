@@ -223,7 +223,7 @@ class StockTestCases(APITestCase):
     stock_data = {
         "id": 4,
         "stock_count": 5,
-        "machine": machine,
+        "machine_id": machine,
         "location": location
     }
     url = '/stocks'
