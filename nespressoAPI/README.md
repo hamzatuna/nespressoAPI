@@ -228,7 +228,7 @@ body ornek:
 {
     "id": 4,
     "stock_count": 5,
-    "machine": 1,
+    "machine_id": 1,
     "location": 1
 }
 ```
@@ -251,29 +251,55 @@ Istegin yapan kullanici personnelse personel lokasyonundakileri doner, Eger kull
 Sonuc:
 ```
 {
-    "count": 3,
+    "count": 1,
     "next": null,
     "previous": null,
     "results": [
         {
             "id": 1,
-            "stock_count": 5,
-            "machine": 1,
-            "location": 1
-        },
-        {
-            "id": 2,
-            "stock_count": 5,
-            "machine": 1,
-            "location": 1
-        },
-        {
-            "id": 4,
-            "stock_count": 5,
-            "machine": 1,
+            "machine": {
+                "id": 1,
+                "name": "awe"
+            },
+            "stock_count": 3,
             "location": 1
         }
     ]
+}
+```
+
+## 9-) Personnel Lokasyon Degistirme
+
+```
+/personnel/update/2(personnelin idsi)/ Patch
+```
+Body:
+```
+{
+    'location_id': 2
+}
+```
+Sonuc:
+```
+{
+    "user": {
+        "username": "test_personel5",
+        "email": "aeaea3543@a.com",
+        "is_active": true,
+        "user_type": 2
+    },
+    "location": {
+        "id": 2,
+        "latitude": 35,
+        "longitude": 35,
+        "name": "test2"
+    },
+    "name": "test-name1",
+    "surname": "test-surname",
+    "birthday": "1994-01-02",
+    "phone_number": null,
+    "wage": null,
+    "tc_no": 12345678901
 }
 ```
 

@@ -33,10 +33,12 @@ from django.template import RequestContext
 from django.http import *
 from django.urls import reverse
 from django.conf import settings
+from django.db.models.functions import Cast
+from django.db.models import CharField
 import urllib
 from . import sale_filters
 from django.forms.models import model_to_dict
-
+import xlwt
 
 def to_json(objects):
     return serializers.serialize('json', objects)
@@ -62,8 +64,8 @@ def dashboard_add_location(request):
             form_context = {}
             form_context["locations_form"] = LocationsForm()
             form_context["locations_form"].fields['name'].widget.attrs = {'class': 'form-control'}
-            print(form_context)
             return render(request,'dashboard_add_location.html',form_context)
+
         elif request.method == "POST":
             locations_form = LocationsForm(request.POST)
             if locations_form.is_valid():
@@ -280,6 +282,20 @@ class RegisterPersonnel(CreateAPIView):
     queryset = Personnels.objects.all()
     permission_classes = (IsManager,)
 
+class UpdatePersonnelView(generics.UpdateAPIView):
+    serializer_class = PersonnelsSerializer
+    queryset = Personnels.objects.all()
+    permission_classes = (IsManager,)
+
+class FilterSalesView(generics.ListAPIView):
+    serializer_class = SalesSerializer
+
+    def get_queryset(self):
+        data = self.request.data
+        filters = sale_filters.get_sale_filters(data)
+
+        return Sales.objects.filter(*filters)
+
 @api_view(['POST'])
 def insert_sales(request):
     sales = Sales()
@@ -309,27 +325,84 @@ def filter_sales(request):
     # get json data
     data = request.data
 
-    # get post values or default values
-    start_date = data.get('startdate', 'null')
-    end_date = data.get('enddate', 'null')
-    machine_id = data.get('machine_id', 'null')
-    location_id = data.get('location_id', 'null')
-    personnel_name = data.get('personnel_name', 'null')
-    personnel_surname = data.get('personnel_surname', 'null')
-    is_campaign = data.get('is_campaign', 'null')
+    filters = sale_filters.get_sale_filters(data)
+    queryset = Sales.objects.filter(*filters)
 
-    filters = [
-        sale_filters.filter_start_date(start_date),
-        sale_filters.filter_end_date(end_date),
-        sale_filters.filter_machine_id(machine_id),
-        sale_filters.filter_location_id(location_id),
-        sale_filters.filter_personnel_name(personnel_name),
-        sale_filters.filter_personnel_surname(personnel_surname),
-        sale_filters.filter_is_campaign(is_campaign)
+    serializer = SalesSerializer(queryset, many=True)
+    
+    return JsonResponse(serializer.data, safe=False)
+
+    # objects = list(Sales.objects.filter(*filters))
+    # return Response(list(map(model_to_dict, objects)))
+
+def export_sales(request):
+    """
+    keyler:
+        startdate: baslangic zamani  -- eklenmedigi durumlar: (None, 'null')
+        enddate: bitis zamani  -- eklenmedigi durumlar: (None, 'null')
+        location_id: bu lokasyondaki satislar -- eklenmedigi durumlar: (None, '')
+        personnel_name: personel adi -- eklenmedigi durumlar: (None, '')
+        personel_surname: personel soyadi -- eklenmedigi durumlar: (None, 'null')
+        is_campaign: is_campaign {'1', '0'} -- eklenmedigi durumlar {None, ''}
+        machine_id: bu makineden satislar {string olabilir}
+    """
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="sales.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Sale')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [
+        'Tarih', 
+        'Lokasyon', 
+        'Satis Elemani Adi',
+        'Satis Elemani Soy Adi',
+        'Makine',
+        'Musteri Adi',
+        'Musteri Soy Adi',
+        'Musteri tel',
+        'Musteri Email',
+        'Kampanyali'
     ]
+    
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
 
-    objects = list(Sales.objects.filter(*filters))
-    return Response(list(map(model_to_dict, objects)))
+    # get json data
+    data = request.data if request.POST else {}
+
+    filters = sale_filters.get_sale_filters(data)
+
+    objects = Sales.objects.filter(*filters).annotate(formatted_date=Cast('date', CharField()))
+    rows = objects.values_list(
+        'formatted_date',
+        'location__name',
+        'personnel__name',
+        'personnel__surname',
+        'machine__name',
+        'customer_name',
+        'customer_surname',
+        'customer_phone_number',
+        'customer_email',
+        'is_campaign'
+    )
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response
 
 class SalesListCreate(generics.ListCreateAPIView):
     serializer_class = SalesSerializer

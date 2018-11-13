@@ -49,3 +49,25 @@ def filter_is_campaign(is_campaign):
         return always_true
     
     return Q(is_campaign=bool(int(is_campaign)))
+
+def get_sale_filters(data):
+    # get post values or default values
+    start_date = data.get('startdate', 'null')
+    end_date = data.get('enddate', 'null')
+    machine_id = data.get('machine_id', 'null')
+    location_id = data.get('location_id', 'null')
+    personnel_name = data.get('personnel_name', 'null')
+    personnel_surname = data.get('personnel_surname', 'null')
+    is_campaign = data.get('is_campaign', 'null')
+
+    filters = [
+        filter_start_date(start_date),
+        filter_end_date(end_date),
+        filter_machine_id(machine_id),
+        filter_location_id(location_id),
+        filter_personnel_name(personnel_name),
+        filter_personnel_surname(personnel_surname),
+        filter_is_campaign(is_campaign)
+    ]
+
+    return filters

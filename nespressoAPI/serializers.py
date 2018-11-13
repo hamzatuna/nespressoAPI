@@ -157,7 +157,7 @@ class SalesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Sales
-        exclude=()
+        exclude=('location',)
 
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):
@@ -183,6 +183,12 @@ class TastingInformationsSerializer(serializers.ModelSerializer):
         exclude=()
 
 class StockSerializer(serializers.ModelSerializer):
+
+    machine = MachinesSerializer(read_only=True)
+    machine_id = serializers.PrimaryKeyRelatedField(
+        queryset = Machines.objects.all(),
+        source='machine',
+        write_only=True)
 
     def create(self, validated_data):
         user = self.context['request'].user

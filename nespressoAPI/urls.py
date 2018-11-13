@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('register', views.RegisterUser.as_view()),
     path('register/personnel', views.RegisterPersonnel.as_view()),
+    path('personnel/update/<int:pk>/', views.UpdatePersonnelView.as_view()),
     #path('insert_sales', views.insert_sales, name="insert_sales"),
     path(
         'insert_tastinginfo',
@@ -29,7 +30,6 @@ urlpatterns = [
 
     path('get_machines', views.MachinesListCreate.as_view(), name="get_machines"),
     path('get_locations', views.LocationsListCreate.as_view(), name="get_locations"),
-
     path('get_personnels',views.PersonnelsListCreate.as_view(),name="get_personnels"),
     path('locations/', views.LocationListCreate.as_view(), name="locations"),
     path('locations/<int:pk>/', views.LocationDetail.as_view(), name="locations_detail"),
@@ -52,6 +52,7 @@ urlpatterns = [
     path('goals', views.CustomerGoalListCreate.as_view()),
     path('goals/<int:pk>/', views.CustomerGoalDetail.as_view(), name="goals_detail"),
     path('stocks', views.StockListCreate.as_view()),
-    path('filter/sales', views.filter_sales)
+    path('filter/sales', views.filter_sales),
+    path('export/sales', views.export_sales),
 ]
 

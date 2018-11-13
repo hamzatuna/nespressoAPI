@@ -7,3 +7,4 @@ djangorestframework-datatables==0.4.0
 requests
 python-dateutil
 django-rest-swagger
+xlwt
