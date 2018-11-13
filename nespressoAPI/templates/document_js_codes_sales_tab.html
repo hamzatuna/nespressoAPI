@@ -42,10 +42,9 @@
 
     <!-- Date Picker Plugin JavaScript -->
     <script src="{% static 'assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
-    <script>
 
-
-    </script>
+    <!-- Plugin JavaScript -->
+    <script src="{% static 'assets/node_modules/moment/moment.js' %}"></script>
 
     <script>
         var MainModule = angular
@@ -55,16 +54,25 @@
                 $scope.filter = {};
                 this.$onInit = function () {
                     console.log("GEÇTİ");
+                    //render: $.fn.dataTable.render.moment('MM/DD/YYYY');
                     $('#albums').DataTable({
                         dom: 'Bfrtip',
                         'serverSide': true,
                         'ajax': '/admin_get_sales?format=datatables',
                         'columns': [
-                            {'data': 'date'},
-                            {'data': 'location_id.name'},
-                            {'data': 'personnel_id.name'},
-                            {'data': 'personnel_id.surname'},
-                            {'data': 'machine_id.name'},
+                            {
+                                'data': 'date',
+                                render: function (data, type, row) {
+                                    if (type === "sort" || type === "type") {
+                                        return data;
+                                    }
+                                    return moment(data).format("DD-MM-YYYY HH:mm");
+                                }
+                            },
+                            {'data': 'location.name'},
+                            {'data': 'personnel.name'},
+                            {'data': 'personnel.surname'},
+                            {'data': 'machine.name'},
                             {'data': 'customer_name'},
                             {'data': 'customer_surname'},
                             {'data': 'customer_phone_number'},

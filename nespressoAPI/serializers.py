@@ -128,11 +128,15 @@ class PersonnelsSerializer(serializers.ModelSerializer):
             return Personnels.objects.create(user=user, **validated_data)
 
 class SalesSerializer(serializers.ModelSerializer):
-    # Serializer Constructoru içerisine örneğin source='location_id' ekleyip,serializer'dan
-    # dönen field'ın ismini Location olarak değiştirebiliyoruz. Bu durumda API oluşturduğu
-    # JSON içerisinde location_id değil Location başlığı veriyor. Bununla beraber datatables
-    # ajax requesti bu yeniden isimlendirme olayına sıkıntı çıkardığı için field'ları Sales
-    # tablosundaki asli isimleriyle yolluyoruz.
+    #Read (Get)
+    location = LocationsSerializer(read_only=True)
+    personnel = PersonnelsSerializer(read_only=True)
+    machine = MachinesSerializer(read_only=True)
+
+    # Write (Post)
+    machine_id = serializers.PrimaryKeyRelatedField(queryset = Machines.objects.all(),source='machine',write_only=True)
+    personnel_id = serializers.PrimaryKeyRelatedField(queryset = Personnels.objects.all(),source='personnel',write_only=True)
+
 
     def create(self, validated_data):
         personnel = Personnels.objects.get(pk=validated_data['personnel'])
@@ -153,7 +157,7 @@ class SalesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Sales
-        exclude=('location',)
+        exclude=()
 
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):

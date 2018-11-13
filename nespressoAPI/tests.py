@@ -141,8 +141,8 @@ class SalesTestCases(APITestCase):
             "price": "23.000",
             "serial_number": "aweawe",
             "is_campaign": True,
-            "machine": machine,
-            "personnel": personnel,
+            "machine_id": machine,
+            "personnel_id": personnel,
     }
     url = '/sales'
 
