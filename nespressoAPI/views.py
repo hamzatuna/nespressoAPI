@@ -287,6 +287,15 @@ class UpdatePersonnelView(generics.UpdateAPIView):
     queryset = Personnels.objects.all()
     permission_classes = (IsManager,)
 
+class FilterSalesView(generics.ListAPIView):
+    serializer_class = SalesSerializer
+
+    def get_queryset(self):
+        data = self.request.data
+        filters = sale_filters.get_sale_filters(data)
+
+        return Sales.objects.filter(*filters)
+
 @api_view(['POST'])
 def insert_sales(request):
     sales = Sales()
@@ -317,9 +326,14 @@ def filter_sales(request):
     data = request.data
 
     filters = sale_filters.get_sale_filters(data)
+    queryset = Sales.objects.filter(*filters)
 
-    objects = list(Sales.objects.filter(*filters))
-    return Response(list(map(model_to_dict, objects)))
+    serializer = SalesSerializer(queryset, many=True)
+    
+    return JsonResponse(serializer.data, safe=False)
+
+    # objects = list(Sales.objects.filter(*filters))
+    # return Response(list(map(model_to_dict, objects)))
 
 def export_sales(request):
     """
