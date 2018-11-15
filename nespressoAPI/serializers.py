@@ -157,7 +157,7 @@ class SalesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Sales
-        exclude=('location',)
+        exclude=()
 
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):

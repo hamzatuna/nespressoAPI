@@ -54,8 +54,8 @@
                 $scope.filter = {};
                 this.$onInit = function () {
                     console.log("GEÇTİ");
-                    //render: $.fn.dataTable.render.moment('MM/DD/YYYY');
-                    $('#albums').DataTable({
+
+                    $('#sales_table').DataTable({
                         dom: 'Bfrtip',
                         'serverSide': true,
                         'ajax': '/admin_get_sales?format=datatables',
@@ -86,6 +86,87 @@
                     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
                 }
 
+                $scope.export_sales = function () {
+                    if ($scope.filter.hasOwnProperty("startdate")) {
+                        if ($scope.filter["startdate"] !== null) {
+                            $scope.filter["startdate"] = moment($scope.filter["startdate"]).format('DD/MM/YYYY');
+                        }
+                    }
+                    if ($scope.filter.hasOwnProperty("enddate")) {
+                        if ($scope.filter["enddate"] !== null) {
+                            $scope.filter["enddate"] = moment($scope.filter["enddate"]).format('DD/MM/YYYY');
+                        }
+                    }
+
+                    $http({
+                        url: '/export/sales',
+                        method: "POST",
+                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        responseType: 'arraybuffer',
+                        headers: {"X-CSRFToken": $crf_token, 'Content-Type': 'application/json'},
+                        data: $scope.filter,
+                    })
+                        .then(function (response) {
+                                var blob = new Blob([response.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                                var objectUrl = URL.createObjectURL(blob);
+                                window.open(objectUrl);
+                            },
+                            function (response) { // optional
+                                console.log("BAŞARISIZ RAPOR");
+                            });
+                };
+
+                $scope.filter_sales = function () {
+                    $('#sales_table').DataTable().clear().destroy();
+                    if ($scope.filter.hasOwnProperty("startdate")) {
+                        if ($scope.filter["startdate"] !== null) {
+                            $scope.filter["startdate"] = moment($scope.filter["startdate"]).format('DD/MM/YYYY');
+                        }
+                    }
+                    if ($scope.filter.hasOwnProperty("enddate")) {
+                        if ($scope.filter["enddate"] !== null) {
+                            $scope.filter["enddate"] = moment($scope.filter["enddate"]).format('DD/MM/YYYY');
+                        }
+                    }
+                    $('#sales_table').DataTable({
+                        dom: 'Bfrtip',
+                        serverSide: true,
+                        ajax: {
+                            url: '/filter/sales',
+                            type: 'POST',
+                            headers: {"X-CSRFToken": $crf_token, 'Content-Type': 'application/json'},
+                            data: function () {
+                                return JSON.stringify($scope.filter);
+                            }
+                            //data: $scope.filter,
+                        },
+                        'columns': [
+                            {
+                                'data': 'date',
+                                render: function (data, type, row) {
+                                    if (type === "sort" || type === "type") {
+                                        return data;
+                                    }
+                                    return moment(data).format("DD-MM-YYYY HH:mm");
+                                }
+                            },
+                            {'data': 'location.name'},
+                            {'data': 'personnel.name'},
+                            {'data': 'personnel.surname'},
+                            {'data': 'machine.name'},
+                            {'data': 'customer_name'},
+                            {'data': 'customer_surname'},
+                            {'data': 'customer_phone_number'},
+                            {'data': 'customer_email'},
+                            {'data': 'is_campaign'},
+                        ],
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        ]
+                    });
+                    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
+                };
+
 
                 $scope.machines = {};
                 $scope.locations = {};
@@ -100,59 +181,6 @@
                         $scope.locations = locations.data;
                         console.log($scope.locations);
                     });
-
-                $scope.get_filtered_sales = function () {
-                    $http({
-                        url: '/filter/sales',
-                        method: "POST",
-                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        headers: {"X-CSRFToken": $crf_token},
-                        data: $scope.filter,
-                    })
-                        .then(function (response) {
-                                //scope.initDatatable();
-                                console.log("BAŞARILI");
-                                console.log(response);
-                            },
-                            function (response) { // optional
-                                console.log("BAŞARISIZ");
-                                console.log(response);
-                            });
-                }
-
-
-                /*
-                $scope.get_filtered_sales = function () {
-                    console.log("YAZDIK");
-                    $('#albums').DataTable({
-                        dom: 'Bfrtip',
-                        "bDestroy": true,
-                        'serverSide': true,
-                        'ajax': {
-                            'url': '/get_filtered_sales',
-                            'type': "POST",
-                            'contentType': "application/json",
-                            'data': {'filterObject': JSON.stringify($scope.filter)},
-                        },
-                        'columns': [
-                            {'data': 'Date'},
-                            {'data': 'location_id.name'},
-                            {'data': 'personnel_id.name'},
-                            {'data': 'personnel_id.surname'},
-                            {'data': 'MachineId.'},
-                            {'data': 'CustomerName'},
-                            {'data': 'CustomerSurname'},
-                            {'data': 'CustomerPhoneNumber'},
-                            {'data': 'CustomerEmail'},
-                            {'data': 'IsCampaign'},
-                        ],
-                        buttons: [
-                            'copy', 'csv', 'excel', 'pdf', 'print'
-                        ]
-                    });
-                    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
-                };
-                */
             });
     </script>
 

@@ -413,7 +413,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 1)
+        self.assertEqual(len(json.loads(response.content)["data"]), 1)
 
     def test_sale_filter_success_null(self):
 
@@ -423,7 +423,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 1)
+        self.assertEqual(len(json.loads(response.content)["data"]), 1)
 
     def test_sale_filter_machine_fail(self):
         filter_object_machine_fail = {**self.filter_object, "machine_id": 1}
@@ -433,7 +433,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 0)
+        self.assertEqual(len(json.loads(response.content)["data"]), 0)
 
     def test_sale_filter_location_fail(self):
         filter_object_location_fail = {**self.filter_object, "location_id": 1}
@@ -443,7 +443,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 0)
+        self.assertEqual(len(json.loads(response.content)["data"]), 0)
 
     def test_sale_filter_startdate_fail(self):
         filter_object_fail = {**self.filter_object, "startdate": '2070-10-31T21:00:00.000Z'}
@@ -453,7 +453,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 0)
+        self.assertEqual(len(json.loads(response.content)["data"]), 0)
 
     def test_sale_filter_enddate_fail(self):
         filter_object_fail = {**self.filter_object, "enddate": '2000-10-31T21:00:00.000Z'}
@@ -463,7 +463,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 0)
+        self.assertEqual(len(json.loads(response.content)["data"]), 0)
 
     def test_sale_filter_is_campaign_fail(self):
         filter_object_fail = {**self.filter_object, "is_campaign": False}
@@ -473,7 +473,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 0)
+        self.assertEqual(len(json.loads(response.content)["data"]), 0)
 
     def test_sale_filter_personnel_name_fail(self):
         filter_object_fail = {**self.filter_object, "personnel_name": 'ddddddd'}
@@ -483,7 +483,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 0)
+        self.assertEqual(len(json.loads(response.content)["data"]), 0)
 
     def test_sale_filter_personnel_surname_fail(self):
         filter_object_fail = {**self.filter_object, "personnel_surname": 'ddddddd'}
@@ -493,4 +493,4 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(200, response.status_code)
 
         # check object is pass all filters
-        self.assertEqual(len(json.loads(response.content)), 0)
+        self.assertEqual(len(json.loads(response.content)["data"]), 0)

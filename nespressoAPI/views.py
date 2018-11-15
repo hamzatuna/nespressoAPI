@@ -168,7 +168,6 @@ def dashboard_add_personnel(request):
         elif request.method == "POST":
             personnels_form = PersonnelsForm(request.POST)
             user_form = AutoUserForm(request.POST)
-            print(form_to_json(personnels_form))
             if personnels_form.is_valid() and user_form.is_valid():
                 #personnel = personnels_form.save()
                 '''
@@ -330,11 +329,10 @@ def filter_sales(request):
 
     serializer = SalesSerializer(queryset, many=True)
     
-    return JsonResponse(serializer.data, safe=False)
+    return Response({"data":serializer.data})
 
-    # objects = list(Sales.objects.filter(*filters))
-    # return Response(list(map(model_to_dict, objects)))
 
+@api_view(['POST'])
 def export_sales(request):
     """
     keyler:
@@ -378,8 +376,12 @@ def export_sales(request):
     font_style = xlwt.XFStyle()
 
     # get json data
-    data = request.data if request.POST else {}
-
+    #data = request.data if request.POST else {}
+    if request.method == "POST":
+        print("İSTEĞİMİZ POST")
+        data = request.data
+    #print("İŞTEE O VERİ  ",data)
+    #data = {}
     filters = sale_filters.get_sale_filters(data)
 
     objects = Sales.objects.filter(*filters).annotate(formatted_date=Cast('date', CharField()))
