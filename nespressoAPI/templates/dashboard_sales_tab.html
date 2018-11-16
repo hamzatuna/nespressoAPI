@@ -100,15 +100,15 @@
                         <button type="submit" ng-click="filter_sales()" class="btn btn-info"><i
                                 class="fa fa-search"></i>Filtrele
                         </button>
-
-                        <button type="submit" ng-click="export_sales()" class="btn btn-info"><i
-                                class="fa fa-search"></i>Rapor Al
+                        <button type="submit" ng-click="export_sales()" class="btn btn-primary"><i
+                                class="fa fa-file"></i>Rapor Al
                         </button>
 
                     </div>
                 </div>
                 {{ filter }}
                 {% endverbatim %}
+
             </div>
         </div>
     </div>
@@ -117,8 +117,10 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+
                     <div class="table-responsive m-t-40">
-                        <table id="sales_table" class="display nowrap table table-hover table-striped table-bordered"
+                        <table id="sales_table"
+                               class="nowrap table table-hover table-striped table-bordered full-color-table full-info-table"
                                cellspacing="0" style="width:100%"
                                data-server-side="true"
                         >
@@ -134,8 +136,6 @@
                                 <th data-data="CustomerPhoneNumber">Müşteri Tel</th>
                                 <th data-data="CustomerEmail">Müşteri Email</th>
                                 <th data-data="IsCampaign">Kampanyalı Mı?</th>
-
-
                             </tr>
                             </thead>
                         </table>

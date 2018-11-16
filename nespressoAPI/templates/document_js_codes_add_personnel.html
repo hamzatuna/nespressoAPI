@@ -24,7 +24,8 @@
     <!-- Datatable Scripts -->
     <script src="{% static 'assets/node_modules/datatables/jquery.dataTables.min.js' %}"
             type="text/javascript"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.12/sorting/datetime-moment.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/plug-ins/1.10.12/sorting/datetime-moment.js"></script>
     <!-- Date range Plugin JavaScript -->
     <script src="{% static 'assets/node_modules/timepicker/bootstrap-timepicker.min.js' %}"></script>
     <script src="{% static 'assets/node_modules/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
@@ -47,6 +48,7 @@
     <!-- Plugin JavaScript -->
     <script src="{% static 'assets/node_modules/moment/moment.js' %}"></script>
 
+    <script src="{% static 'assets/node_modules/bootstrap/js/src/modal.js' %}"></script>
 
 
     <script>
@@ -61,8 +63,10 @@
                     $('#personnels').DataTable({
                         dom: 'Bfrtip',
                         'serverSide': true,
+                        'rowId': 'user.id',
                         'ajax': '/get_personnels?format=datatables',
                         'columns': [
+                            {'data': 'user.id'},
                             {'data': 'name'},
                             {'data': 'surname'},
                             {
@@ -73,13 +77,27 @@
                                 'data': 'phone_number',
                                 "defaultContent": "-"
                             },
+                            {
+                                mRender: function (data, type, row) {
+                                    return '<button onclick=\"angular.element(this).scope().click_test('+row.user.id+')\" class="btn btn-warning footable-edit"><span class="fas fa-pencil-alt" aria-hidden="true"></span></button>'
+                                },
+                                "className": "text-center",
+                            },
+                            {
+                                mRender: function (data, type, row) {
+                                    return '<button onclick=\"angular.element(this).scope().click_test('+row.user.id+')\" class="btn btn-danger footable-delete"><span class="fas fa-trash-alt" aria-hidden="true"></span></button>'
+                                },
+                                "className": "text-center",
+                            }
                         ],
-                        buttons: [
-                            'copy', 'csv', 'excel', 'pdf', 'print'
-                        ]
+                        buttons: []
                     });
                     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
-                }
+                };
+
+                $scope.click_test = function (sayi) {
+                    console.log("TIKLANDIM", sayi);
+                };
 
                 $scope.initDatatable = function () {
                     $('#personnels').DataTable().clear().destroy();

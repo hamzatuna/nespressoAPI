@@ -321,8 +321,8 @@ class SalesFilterTestCases(APITestCase):
 
     url = '/filter/sales'
     filter_object = {
-        'startdate': '2016-10-31T21:00:00.000Z', 
-        'enddate': '2019-10-31T21:00:00.000Z', 
+        'startdate': '31/10/2016',
+        'enddate': '31/10/2020',
         'machine_id': machine, 
         'location_id': location,
         'personnel_name': 'test', 
@@ -446,7 +446,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(len(json.loads(response.content)["data"]), 0)
 
     def test_sale_filter_startdate_fail(self):
-        filter_object_fail = {**self.filter_object, "startdate": '2070-10-31T21:00:00.000Z'}
+        filter_object_fail = {**self.filter_object, "startdate": '17/11/2070'}
         response = self.client.post(self.url, filter_object_fail, format='json')
 
         # expect to status code ok
@@ -456,7 +456,7 @@ class SalesFilterTestCases(APITestCase):
         self.assertEqual(len(json.loads(response.content)["data"]), 0)
 
     def test_sale_filter_enddate_fail(self):
-        filter_object_fail = {**self.filter_object, "enddate": '2000-10-31T21:00:00.000Z'}
+        filter_object_fail = {**self.filter_object, "enddate": '17/11/2000'}
         response = self.client.post(self.url, filter_object_fail, format='json')
 
         # expect to status code ok
