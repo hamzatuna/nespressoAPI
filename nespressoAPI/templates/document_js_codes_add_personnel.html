@@ -56,7 +56,11 @@
             .module("MainModule", [])
             .controller("MainCtrl", function ($scope, $http) {
                 $scope.personnel = {};
+                $scope.edit_personnel = {};
+                $scope.current_personnel_id = 0;
                 var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+
+
                 this.$onInit = function () {
                     console.log("GEÇTİ");
                     $.fn.dataTable.ext.errMode = 'none';
@@ -79,13 +83,13 @@
                             },
                             {
                                 mRender: function (data, type, row) {
-                                    return '<button onclick=\"angular.element(this).scope().click_test('+row.user.id+')\" class="btn btn-warning footable-edit"><span class="fas fa-pencil-alt" aria-hidden="true"></span></button>'
+                                    return '<button onclick=\"angular.element(this).scope().click_test(' + row.user.id + ')\" class="btn btn-warning footable-edit"><span class="fas fa-pencil-alt" aria-hidden="true"></span></button>'
                                 },
                                 "className": "text-center",
                             },
                             {
                                 mRender: function (data, type, row) {
-                                    return '<button onclick=\"angular.element(this).scope().click_test('+row.user.id+')\" class="btn btn-danger footable-delete"><span class="fas fa-trash-alt" aria-hidden="true"></span></button>'
+                                    return '<button onclick=\"angular.element(this).scope().click_test(' + row.user.id + ')\" class="btn btn-danger footable-delete"><span class="fas fa-trash-alt" aria-hidden="true"></span></button>'
                                 },
                                 "className": "text-center",
                             }
@@ -95,9 +99,43 @@
                     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
                 };
 
+
                 $scope.click_test = function (sayi) {
                     console.log("TIKLANDIM", sayi);
+                    var get_personnel_url = "/personnel/" + sayi + "/";
+                    $http.get(get_personnel_url)
+                        .then(function (personnel) {
+                            $scope.edit_personnel = personnel.data;
+                            $scope.current_personnel_id = sayi;
+
+                            console.log("DONEN VERİ : ", personnel.data);
+                            console.log("ID ŞUDUR", $scope.edit_personnel.location.id);
+                        });
+                    $('#testModal').modal('show');
+
                 };
+
+
+                $scope.edit_personnel_func = function () {
+                    update_url = '/personnel/update/' + $scope.current_personnel_id + '/'
+                    $scope.edit_personnel.user.user_type = 2;
+                    $http({
+                        url: update_url,
+                        method: "PATCH",
+                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        headers: {"X-CSRFToken": $crf_token},
+                        data: $scope.edit_personnel,
+                    })
+                        .then(function (response) {
+                                $scope.initDatatable();
+                                console.log("UPDATE EDİLDİ");
+                            },
+                            function (response) { // optional
+                                console.log("UPDATE BAŞARISIZ");
+                            });
+                };
+
+
 
                 $scope.initDatatable = function () {
                     $('#personnels').DataTable().clear().destroy();
@@ -178,7 +216,8 @@
                                 console.log("EKLEME BAŞARISIZ");
                             });
                 }
-            });
+            })
+        ;
     </script>
 
 {% endblock document_js_codes_add_personnel %}

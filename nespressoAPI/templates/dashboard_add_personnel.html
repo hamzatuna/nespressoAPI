@@ -5,6 +5,94 @@
 {% block document_container_fluid %}
 
     <div class="row" ng-controller="MainCtrl">
+        {% verbatim %}
+        <div class="modal fade" id="testModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h3 class="modal-title">{{ edit_personnel.name }} {{ edit_personnel.surname }}</h3>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <select ng-model="edit_personnel.location.id" class="form-control">
+                                    <option ng-repeat="location in locations.results"
+                                            ng-selected="location.id == edit_personnel.location.id"
+                                            value="{{ location.id }}">{{
+                                        location.name }}
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="id_name">İsim:</label> <input ng-model="edit_personnel.name" type="text"
+                                                                          name="name"
+                                                                          maxlength="200"
+                                                                          class="form-control" required="" id="id_name">
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="id_surname">Soyisim:</label> <input ng-model="edit_personnel.surname" type="text"
+                                                                                name="surname"
+                                                                                maxlength="200" class="form-control"
+                                                                                required="" id="id_surname">
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="id_phone_number">Telefon Numarası:</label> <input
+                                    ng-model="edit_personnel.phone_number" type="text"
+                                    name="phone_number"
+                                    maxlength="30"
+                                    class="form-control"
+                                    required=""
+                                    id="id_phone_number">
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="id_tc_no">Tc no:</label> <input ng-model="edit_personnel.tc_no" type="number"
+                                                                            name="tc_no" step="any"
+                                                                            class="form-control" required=""
+                                                                            id="id_tc_no">
+
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="id_email">Personel Email:</label> <input ng-model="edit_personnel.user.email"
+                                                                                     type="email" name="email"
+                                                                                     maxlength="255"
+                                                                                     class="form-control" required=""
+                                                                                     id="id_email">
+                            </div>
+
+
+                            <button ng-click="edit_personnel_func()" class="btn btn-success waves-effect waves-light m-r-10">
+                                Değiştir
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default " data-dismiss="modal">Apply!</button>
+                        <button type="button" class="btn btn-primary">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        {% endverbatim %}
+
+
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
@@ -117,34 +205,11 @@
         </div>
 
         <button ng-click="click_test()" class="btn btn-success waves-effect waves-light m-r-10">
-        TESTCLİCK
-    </button>
+            TESTCLİCK
+        </button>
 
     </div>
 
-
-    <div class="modal fade" id="DescModal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">�</button>
-                    <h3 class="modal-title">Job Requirements & Description</h3>
-
-                </div>
-                <div class="modal-body">
-                    <h5 class="text-center">Hello. Below is the descripton and/or requirements for hiring
-                        consideration.</h5>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default " data-dismiss="modal">Apply!</button>
-                    <button type="button" class="btn btn-primary">Close</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
 
     <!-- ============================================================== -->
     <!-- End Container fluid  -->
