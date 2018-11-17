@@ -126,8 +126,9 @@ class PersonnelsSerializer(serializers.ModelSerializer):
             user.set_password(user_data['password'])
             user.user_type = 2
             user.save()
-
             return Personnels.objects.create(user=user, **validated_data)
+
+        return instance
 
 class SalesSerializer(serializers.ModelSerializer):
     #Read (Get)

@@ -83,13 +83,13 @@
                             },
                             {
                                 mRender: function (data, type, row) {
-                                    return '<button onclick=\"angular.element(this).scope().click_test(' + row.user.id + ')\" class="btn btn-warning footable-edit"><span class="fas fa-pencil-alt" aria-hidden="true"></span></button>'
+                                    return '<button onclick=\"angular.element(this).scope().open_edit_modal(' + row.user.id + ')\" class="btn btn-warning footable-edit"><span class="fas fa-pencil-alt" aria-hidden="true"></span></button>'
                                 },
                                 "className": "text-center",
                             },
                             {
                                 mRender: function (data, type, row) {
-                                    return '<button onclick=\"angular.element(this).scope().click_test(' + row.user.id + ')\" class="btn btn-danger footable-delete"><span class="fas fa-trash-alt" aria-hidden="true"></span></button>'
+                                    return '<button onclick=\"angular.element(this).scope().open_edit_modal(' + row.user.id + ')\" class="btn btn-danger footable-delete"><span class="fas fa-trash-alt" aria-hidden="true"></span></button>'
                                 },
                                 "className": "text-center",
                             }
@@ -100,7 +100,7 @@
                 };
 
 
-                $scope.click_test = function (sayi) {
+                $scope.open_edit_modal = function (sayi) {
                     console.log("TIKLANDIM", sayi);
                     var get_personnel_url = "/personnel/" + sayi + "/";
                     $http.get(get_personnel_url)
@@ -112,7 +112,6 @@
                             console.log("ID ŞUDUR", $scope.edit_personnel.location.id);
                         });
                     $('#testModal').modal('show');
-
                 };
 
 
@@ -133,8 +132,8 @@
                             function (response) { // optional
                                 console.log("UPDATE BAŞARISIZ");
                             });
+                    $('#testModal').modal('hide');
                 };
-
 
 
                 $scope.initDatatable = function () {
@@ -142,8 +141,10 @@
                     $('#personnels').DataTable({
                         dom: 'Bfrtip',
                         'serverSide': true,
+                        'rowId': 'user.id',
                         'ajax': '/get_personnels?format=datatables',
                         'columns': [
+                            {'data': 'user.id'},
                             {'data': 'name'},
                             {'data': 'surname'},
                             {
@@ -154,10 +155,20 @@
                                 'data': 'phone_number',
                                 "defaultContent": "-"
                             },
+                            {
+                                mRender: function (data, type, row) {
+                                    return '<button onclick=\"angular.element(this).scope().open_edit_modal(' + row.user.id + ')\" class="btn btn-warning footable-edit"><span class="fas fa-pencil-alt" aria-hidden="true"></span></button>'
+                                },
+                                "className": "text-center",
+                            },
+                            {
+                                mRender: function (data, type, row) {
+                                    return '<button onclick=\"angular.element(this).scope().open_edit_modal(' + row.user.id + ')\" class="btn btn-danger footable-delete"><span class="fas fa-trash-alt" aria-hidden="true"></span></button>'
+                                },
+                                "className": "text-center",
+                            }
                         ],
-                        buttons: [
-                            'copy', 'csv', 'excel', 'pdf', 'print'
-                        ]
+                        buttons: []
                     });
                     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
                 };

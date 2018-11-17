@@ -266,7 +266,39 @@ def get_sales_count(request):
     except KeyError:
         return Response(KeyError)
 
+@api_view(['PUT', 'PATCH'])
+def update_personnel(request, pk):
+    try:
+        instance = Personnels.objects.get(user_id=pk)
+        validated_data = request.data
 
+        # updatelenebilir fieldlar
+        updated_keys = [
+            "name",
+            "surname",
+            "phone_number",
+            "tc_no"
+        ]
+
+        # update personnel fields
+        for field in updated_keys:
+            updated_value = validated_data.pop(field, getattr(instance, field))
+            setattr(instance, field, updated_value)
+
+        # check email changed
+        if 'email' in validated_data['user']:
+            instance.user.email = validated_data['user']['email']
+            instance.user.save()
+
+        # lokasyonu degistir
+        instance.location_id = validated_data['location']['id']
+
+        instance.save()
+
+        return Response({'status': 'ok'}, status=200)
+
+    except Personnels.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def home(request):
