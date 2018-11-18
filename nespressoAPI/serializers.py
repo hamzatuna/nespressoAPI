@@ -205,3 +205,4 @@ class StockSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stock
         exclude = ('user',)
+        read_only_fields = ('location',)
