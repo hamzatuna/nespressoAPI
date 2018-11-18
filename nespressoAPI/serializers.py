@@ -193,6 +193,10 @@ class StockSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         
+        # personnelse lokasyonu kullanma
+        if user.user_type==2:
+            validated_data['location'] = user.personnels.location
+        
         return Stock.objects.create(
             user=user,
             **validated_data
