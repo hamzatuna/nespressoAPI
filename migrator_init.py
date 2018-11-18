@@ -25,9 +25,34 @@ test_machine.save()
 # add location
 location_data = {
     "id": 1,
-    "latitude": 45.1,
-    "longitude": 34.12,
+    "latitude": 41.0850829,
+    "longitude": 29.0064543999994,
     "name": "SAFIR",
 }
 location = Locations(**location_data)
 location.save()
+
+
+
+# add personnel
+password_raw = "12345678."
+password_hashed = make_password(password_raw)
+test_user_data = {
+    "id": 2,
+    "username": "satici0",
+    "password": password_hashed,
+    "email": "satici0@nespresso.com",
+    "is_active": True,
+    "user_type": 2
+}
+test_user = User(**test_user_data)
+test_user.save()
+test_personnel_data = {
+    "user": test_user,
+    "name": "satici0",
+    "surname": "satici0",
+    "location": location,
+    "tc_no": 12345678901
+}
+test_personnel = Personnels(**test_personnel_data)
+test_personnel.save()
