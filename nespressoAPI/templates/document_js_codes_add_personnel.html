@@ -42,6 +42,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
 
+
     <!-- Date Picker Plugin JavaScript -->
     <script src="{% static 'assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
 
@@ -63,6 +64,7 @@
 
                 this.$onInit = function () {
                     console.log("GEÇTİ");
+
                     $.fn.dataTable.ext.errMode = 'none';
                     $('#personnels').DataTable({
                         dom: 'Bfrtip',
@@ -111,12 +113,12 @@
                             console.log("DONEN VERİ : ", personnel.data);
                             console.log("ID ŞUDUR", $scope.edit_personnel.location.id);
                         });
-                    $('#testModal').modal('show');
+                    $('#edit_personnel_modal').modal('show');
                 };
 
 
                 $scope.edit_personnel_func = function () {
-                    update_url = '/personnel/update/' + $scope.current_personnel_id + '/'
+                    var update_url = '/personnel/update/' + $scope.current_personnel_id + '/';
                     $scope.edit_personnel.user.user_type = 2;
                     $http({
                         url: update_url,
@@ -132,7 +134,7 @@
                             function (response) { // optional
                                 console.log("UPDATE BAŞARISIZ");
                             });
-                    $('#testModal').modal('hide');
+                    $('#edit_personnel_modal').modal('hide');
                 };
 
 
@@ -227,8 +229,8 @@
                                 console.log("EKLEME BAŞARISIZ");
                             });
                 }
-            })
-        ;
+
+            });
     </script>
 
 {% endblock document_js_codes_add_personnel %}

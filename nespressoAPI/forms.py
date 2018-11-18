@@ -6,9 +6,22 @@ class LocationsForm(ModelForm):
     class Meta:
         model = Locations
         labels = {
-            "name" : "Lokasyon Adı:"
+            "name" : "Lokasyon Adı:",
+            "latitude": "",
+            "longitude": ""
         }
-        fields = ['name']
+        fields = ['name','latitude','longitude']
+
+    def __init__(self, *args, **kwargs):
+        super(LocationsForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            if visible.name == "latitude" or visible.name == "longitude":
+                visible.field.widget.attrs['style'] = 'display:none;'
+                visible.field.widget.attrs['id'] = visible.name
+                #visible.label_tag.widget.attrs['style'] = 'display:none;'
+            #print("GÖRÜNÜR KANKAMIZ",visible.name)
+            #visible.field.widget.attrs['class'] = 'form-control'
+
 
 class MachinesForm(ModelForm):
     class Meta:

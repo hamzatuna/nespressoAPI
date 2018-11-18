@@ -63,6 +63,13 @@
                         'ajax': '/admin_get_sales?format=datatables',
                         'columns': [
                             {
+                                'data': 'id',
+                                render: function (data, type, row) {
+                                    return '<button onclick=\"angular.element(this).scope().open_map_modal(' + row.id + ')\" class="btn btn-warning footable-edit"><span class="fas fa-pencil-alt" aria-hidden="true"></span></button>'
+                                },
+                                "className": "text-center",
+                            },
+                            {
                                 'data': 'date',
                                 render: function (data, type, row) {
                                     if (type === "sort" || type === "type") {
@@ -84,6 +91,54 @@
                     });
                     //$('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
                 }
+
+
+                $scope.open_edit_modal = function (sayi) {
+                    var get_personnel_url = "/personnel/" + sayi + "/";
+                    $http.get(get_personnel_url)
+                        .then(function (personnel) {
+                            $scope.edit_personnel = personnel.data;
+                            $scope.current_personnel_id = sayi;
+
+                            console.log("DONEN VERİ : ", personnel.data);
+                            console.log("ID ŞUDUR", $scope.edit_personnel.location.id);
+                        });
+                    $('#testModal').modal('show');
+                };
+
+                $scope.open_map_modal = function (id) {
+                    var get_sale_url = '/sale/' + $scope.current_personnel_id + '/';
+                    $http.get(get_sale_url)
+                        .then(function (sale) {
+                            $scope.sale_coordinates = sale.data;
+                            $scope.current_sale_id = id;
+
+                            console.log("DONEN VERİ : ", $scope.sale_coordinates);
+                            console.log("ID ŞUDUR", $scope.current_sale_id);
+                        });
+                    $('#show_map_modal').modal('show');
+                };
+
+                $scope.edit_personnel_func = function () {
+                    update_url = '/personnel/update/' + $scope.current_personnel_id + '/'
+                    $scope.edit_personnel.user.user_type = 2;
+                    $http({
+                        url: update_url,
+                        method: "PATCH",
+                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        headers: {"X-CSRFToken": $crf_token},
+                        data: $scope.edit_personnel,
+                    })
+                        .then(function (response) {
+                                $scope.initDatatable();
+                                console.log("UPDATE EDİLDİ");
+                            },
+                            function (response) { // optional
+                                console.log("UPDATE BAŞARISIZ");
+                            });
+                    $('#testModal').modal('hide');
+                };
+
 
                 $scope.export_sales = function () {
                     if ($scope.filter.hasOwnProperty("startdate")) {

@@ -6,6 +6,23 @@
 
 
     <div class="row" ng-controller="MainCtrl">
+        {% verbatim %}
+        <div class="modal fade" id="show_map_modal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="col-md-6">
+
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        {% endverbatim %}
         <div class="col-lg-12">
             <div class="card">
                 {% csrf_token %}
@@ -126,6 +143,7 @@
                         >
                             <thead>
                             <tr>
+                                <th data-data="id">ID</th>
                                 <th data-data="Date">Tarih</th>
                                 <th data-data="location_id.name">Mağaza</th>
                                 <th data-data="personnel_id.name">Satış Elemanı Ad</th>

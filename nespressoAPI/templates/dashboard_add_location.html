@@ -14,10 +14,23 @@
                         <div class="col-md-6">
                             {% csrf_token %}
                             {% for field in locations_form %}
+                                {% if field.name != 'latitude' or field.name != 'longitude' %}
                                 <div class="form-group">
                                     {{ field.label_tag }} {{ field }} <br>
                                 </div>
+                                {% endif %}
                             {% endfor %}
+
+                        </div>
+
+                        <div class="col-md-12" style="height:300px;">
+                            <input id="pac-input" class="controls" type="text" placeholder="Search Box"
+                                   style="width: 400px;">
+                            <div id="map" class="col-md-12" style="height:100%;"></div>
+                        </div>
+
+
+                        <div class="col-md-6" style="margin-top:30px;">
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Kaydet
                             </button>
                         </div>
