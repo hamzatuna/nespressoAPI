@@ -156,9 +156,9 @@ class SalesSerializer(serializers.ModelSerializer):
             location=location)
 
     class Meta:
-        model=Sales
-        exclude=()
-
+        model = Sales
+        exclude = ()
+        read_only_fields = ('date',)
 
 class IntensiveHoursSerializer(serializers.ModelSerializer):
     class Meta:
