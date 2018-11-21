@@ -147,7 +147,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
     #'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesLimitOffsetPagination',
-    'PAGE_SIZE': 20,
+    #'PAGE_SIZE': 20,
 }
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

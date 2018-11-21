@@ -82,7 +82,7 @@
                                             data-placeholder="Choose a Category"
                                             tabindex="1">
                                         <option value="">Lokasyon Seçiniz</option>
-                                        <option ng-repeat="location in locations.results" value="{{ location.id }}">{{
+                                        <option ng-repeat="location in locations" value="{{ location.id }}">{{
                                             location.name }}
                                         </option>
                                     </select>
@@ -95,7 +95,7 @@
                                     <select class="form-control custom-select" data-placeholder="Makine Seçiniz"
                                             tabindex="1" ng-model="filter.machine_id">
                                         <option value="">Makine Seçiniz</option>
-                                        <option ng-repeat="machine in machines.results" value="{{ machine.id }}">{{
+                                        <option ng-repeat="machine in machines" value="{{ machine.id }}">{{
                                             machine.name }}
                                         </option>
                                     </select>

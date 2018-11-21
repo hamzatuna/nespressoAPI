@@ -165,7 +165,7 @@
                         <div class="form-group">
                             <select ng-model="personnel.location_id" class="form-control">
                                 <option value="">Lokasyon Seçiniz</option>
-                                <option ng-repeat="location in locations.results" value="{{ location.id }}">{{
+                                <option ng-repeat="location in locations" value="{{ location.id }}">{{
                                     location.name }}
                                 </option>
                             </select>
