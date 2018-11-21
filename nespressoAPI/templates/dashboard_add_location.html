@@ -28,8 +28,10 @@
                         </div>
 
                         <div class="col-md-12" style="height:400px;">
-                            <input id="pac-input" class="controls form-control input-sm" type="text" placeholder="Search Box"
-                                   style="width: 400px;">
+                            <div class="form-group">
+                                <input id="pac-input" class="controls form-control input-sm col-md-6 col-6" type="text"
+                                       placeholder="Search Box">
+                            </div>
                             <div id="map" class="col-md-12" style="height:100%;"></div>
                         </div>
 
@@ -42,7 +44,8 @@
 
 
                     <div class="table-responsive m-t-40">
-                        <table id="locations" class="cell-border nowrap table table-hover table-striped table-bordered full-color-table full-info-table"
+                        <table id="locations"
+                               class="cell-border nowrap table table-hover table-striped table-bordered full-color-table full-info-table"
                                cellspacing="0" style="width:100%"
                                data-server-side="true"
                         >
