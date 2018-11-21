@@ -72,7 +72,10 @@
                         'rowId': 'user.id',
                         'ajax': '/get_personnels?format=datatables',
                         'columns': [
-                            {'data': 'user.id'},
+                            {
+                                'data': 'user.id',
+                                'visible': false
+                            },
                             {'data': 'name'},
                             {'data': 'surname'},
                             {
@@ -146,7 +149,10 @@
                         'rowId': 'user.id',
                         'ajax': '/get_personnels?format=datatables',
                         'columns': [
-                            {'data': 'user.id'},
+                            {
+                                'data': 'user.id',
+                                'visible': false
+                            },
                             {'data': 'name'},
                             {'data': 'surname'},
                             {

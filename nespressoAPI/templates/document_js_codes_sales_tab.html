@@ -48,15 +48,27 @@
     <!-- Plugin JavaScript -->
     <script src="{% static 'assets/node_modules/moment/moment.js' %}"></script>
 
+    <!--GOOGLE MAPS-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUzflR34fji_bDzUlKE3z7OEzRM5qLu2E&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUzflR34fji_bDzUlKE3z7OEzRM5qLu2E&libraries=geometry"></script>
+
+
+
     <script>
         var MainModule = angular
             .module("MainModule", [])
-            .controller("MainCtrl", function ($scope, $http) {
+            .controller("MainCtrl", function ($scope, $http, $compile, HttpMethodları) {
                 var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
                 $scope.filter = {};
+                $scope.sales_coordinate = {};
+                $scope.locations_coordinate = {};
+                $scope.locations_name = "YOK";
+                $scope.distance = "TANIMSIZ ARALIK";
+                $scope.map_infos = {};
+
                 this.$onInit = function () {
                     console.log("GEÇTİ");
-
+                    $.fn.dataTable.ext.errMode = 'none';
                     $('#sales_table').DataTable({
                         dom: 'Bfrtip',
                         'serverSide': true,
@@ -64,8 +76,11 @@
                         'columns': [
                             {
                                 'data': 'id',
+                                'visible': false
+                            },
+                            {
                                 render: function (data, type, row) {
-                                    return '<button onclick=\"angular.element(this).scope().open_map_modal(' + row.id + ')\" class="btn btn-warning footable-edit"><span class="fas fa-pencil-alt" aria-hidden="true"></span></button>'
+                                    return '<button ng-click=\"open_map_modal(' + row.id + ')\" class="btn btn-primary footable-edit"><span class="fas fa-map-marker-alt" aria-hidden="true"></span></button>'
                                 },
                                 "className": "text-center",
                             },
@@ -87,36 +102,73 @@
                             {'data': 'customer_phone_number'},
                             {'data': 'customer_email'},
                             {'data': 'is_campaign'},
-                        ], buttons: []
+                        ],
+                        createdRow: function (row, data, dataIndex) {
+                            $compile(angular.element(row).contents())($scope);
+                        },
+                        buttons: []
                     });
                     //$('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
-                }
-
-
-                $scope.open_edit_modal = function (sayi) {
-                    var get_personnel_url = "/personnel/" + sayi + "/";
-                    $http.get(get_personnel_url)
-                        .then(function (personnel) {
-                            $scope.edit_personnel = personnel.data;
-                            $scope.current_personnel_id = sayi;
-
-                            console.log("DONEN VERİ : ", personnel.data);
-                            console.log("ID ŞUDUR", $scope.edit_personnel.location.id);
-                        });
-                    $('#testModal').modal('show');
                 };
 
-                $scope.open_map_modal = function (id) {
-                    var get_sale_url = '/sale/' + $scope.current_personnel_id + '/';
-                    $http.get(get_sale_url)
-                        .then(function (sale) {
-                            $scope.sale_coordinates = sale.data;
-                            $scope.current_sale_id = id;
 
-                            console.log("DONEN VERİ : ", $scope.sale_coordinates);
-                            console.log("ID ŞUDUR", $scope.current_sale_id);
-                        });
-                    $('#show_map_modal').modal('show');
+                $scope.init_map = function initMap() {
+                    //var map = new google.maps.Map(document.getElementById('map'), {zoom: 4, center: $scope.locations_coordinate});
+                    var map = new google.maps.Map(document.getElementById('map'));
+                    var distance_long = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng($scope.locations_coordinate.lat, $scope.locations_coordinate.lng), new google.maps.LatLng($scope.sales_coordinate.lat, $scope.sales_coordinate.lng));
+                    $scope.map_infos["distance"] = (distance_long).toFixed(2);
+
+                    var marker1, marker2, loc1, loc2;
+                    bounds = new google.maps.LatLngBounds();
+
+                    marker1 = new google.maps.Marker({
+                        position: $scope.locations_coordinate,
+                        map: map
+                    });
+                    loc1 = new google.maps.LatLng(marker1.position.lat(), marker1.position.lng());
+                    bounds.extend(loc1);
+
+                    marker2 = new google.maps.Marker({
+                        position: $scope.sales_coordinate,
+                        map: map,
+                        //icon:'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+                        icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+                        animation: google.maps.Animation.DROP
+                    });
+                    loc2 = new google.maps.LatLng(marker2.position.lat(), marker2.position.lng());
+                    bounds.extend(loc2);
+
+                    map.fitBounds(bounds); //auto - zoom
+                    map.panToBounds(bounds);   // auto-center
+                };
+
+
+                $scope.open_map_modal = function (id) {
+                    var get_sales_url = '/sales/' + id + '/';
+                    $scope.sales_coordinate = {};
+                    console.log("URL", get_sales_url);
+                    return $http.get(get_sales_url)
+                        .then(function (sales) {
+                                console.log("GELEN SALE VERİSİ", sales);
+                                console.log("GELEN LOKASYON İSMİ", sales.data.location.name);
+                                $scope.sales_coordinate["lat"] = sales.data.latitude;
+                                $scope.sales_coordinate["lng"] = sales.data.longitude;
+
+                                //$scope.locations_name = sales.data.location.name;
+                                $scope.map_infos.location = sales.data.location.name;
+                                console.log($scope.map_infos);
+                                $scope.locations_coordinate["lat"] = sales.data.location.latitude;
+                                $scope.locations_coordinate["lng"] = sales.data.location.longitude;
+
+                                $scope.current_sales_id = id;
+
+                                //console.log("ID ŞUDUR", $scope.current_sales_id);
+                                $scope.init_map();
+                                $('#show_map_modal').modal('show');
+                            },
+                            function (response) { // optional
+                                alert("Birtakım hatalarla karşılaşıldı.");
+                            });
                 };
 
                 $scope.edit_personnel_func = function () {
@@ -182,6 +234,55 @@
                             $scope.filter["enddate"] = moment($scope.filter["enddate"]).format('DD/MM/YYYY');
                         }
                     }
+
+                    $('#sales_table').DataTable({
+                        dom: 'Bfrtip',
+                        serverSide: true,
+                        ajax: {
+                            url: '/filter/sales',
+                            type: 'POST',
+                            headers: {"X-CSRFToken": $crf_token, 'Content-Type': 'application/json'},
+                            data: function () {
+                                return JSON.stringify($scope.filter);
+                            }
+                            //data: $scope.filter,
+                        },
+                        'columns': [
+                            {
+                                'data': 'id',
+                                'visible': false
+                            },
+                            {
+                                render: function (data, type, row) {
+                                    return '<button ng-click=\"open_map_modal(' + row.id + ')\" class="btn btn-primary footable-edit"><span class="fas fa-map-marker-alt" aria-hidden="true"></span></button>'
+                                },
+                                "className": "text-center",
+                            },
+                            {
+                                'data': 'date',
+                                render: function (data, type, row) {
+                                    if (type === "sort" || type === "type") {
+                                        return data;
+                                    }
+                                    return moment(data).format("DD-MM-YYYY HH:mm");
+                                }
+                            },
+                            {'data': 'location.name'},
+                            {'data': 'personnel.name'},
+                            {'data': 'personnel.surname'},
+                            {'data': 'machine.name'},
+                            {'data': 'customer_name'},
+                            {'data': 'customer_surname'},
+                            {'data': 'customer_phone_number'},
+                            {'data': 'customer_email'},
+                            {'data': 'is_campaign'},
+                        ],
+                        createdRow: function (row, data, dataIndex) {
+                            $compile(angular.element(row).contents())($scope);
+                        },
+                        buttons: []
+                    });
+                    /*
                     $('#sales_table').DataTable({
                         dom: 'Bfrtip',
                         serverSide: true,
@@ -215,7 +316,7 @@
                             {'data': 'is_campaign'}
                         ], buttons: []
                     });
-                    //$('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
+                    */
                 };
 
 
@@ -233,6 +334,24 @@
                         console.log($scope.locations);
                     });
             });
+
+
+        MainModule.factory('HttpMethodları', function ($http) {
+            return {
+                get_sale: function (id) {
+                    var get_sales_url = '/sales/' + id + '/';
+                    return $http.get(get_sales_url)
+                        .then(function (sales) {
+                                var donen_veri = sales.data
+                                return donen_veri;
+                            },
+                            function (response) { // optional
+                                alert("Birtakım hatalarla karşılaşıldı.");
+                            });
+                }
+            }
+        });
+
     </script>
 
 

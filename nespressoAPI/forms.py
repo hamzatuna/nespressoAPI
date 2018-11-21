@@ -14,6 +14,11 @@ class LocationsForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(LocationsForm, self).__init__(*args, **kwargs)
+        self.fields['latitude'].required = False
+        self.fields['longitude'].required = False
+        #self.fields['latitude'].label = None
+        #self.fields['longitude'].label = None
+
         for visible in self.visible_fields():
             if visible.name == "latitude" or visible.name == "longitude":
                 visible.field.widget.attrs['style'] = 'display:none;'

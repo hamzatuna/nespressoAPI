@@ -16,8 +16,13 @@
 
                 <ul class="navbar-nav mr-auto">
 
+                    <!-- This is  -->
+                    <li class="nav-item"><a class="nav-link nav-toggler d-block d-md-none waves-effect waves-dark"
+                                            href="javascript:void(0)"><i class="ti-menu"></i></a></li>
+                    <li class="nav-item"><a
+                            class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark"
+                            href="javascript:void(0)"><i class="icon-menu ti-menu"></i></a></li>
                 </ul>
-
 
 
                 <ul class="navbar-nav my-lg-0">
@@ -30,8 +35,9 @@
                     <!-- User Profile -->
                     <!-- ============================================================== -->
                     <li class="nav-item dropdown u-pro show">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="{% url 'logout' %}"
-                           ><span class="hidden-md-down">Logout &nbsp;<i
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic"
+                           href="{% url 'logout' %}"
+                        ><span class="hidden-md-down">Logout &nbsp;<i
                                 class="fa fa-power-off"></i></span> </a>
                     </li>
                 </ul>

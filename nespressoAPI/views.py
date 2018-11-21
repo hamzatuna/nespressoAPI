@@ -323,6 +323,11 @@ class PersonnelDetailView(generics.RetrieveAPIView):
     queryset = Personnels.objects.all()
     permission_classes = (IsManager,)
 
+class SaleDetailView(generics.RetrieveAPIView):
+    serializer_class = SalesSerializer
+    queryset = Sales.objects.all()
+    permission_classes = (IsManager,)
+
 class FilterSalesView(generics.ListAPIView):
     serializer_class = SalesSerializer
 

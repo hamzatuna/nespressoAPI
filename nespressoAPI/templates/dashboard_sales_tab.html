@@ -10,11 +10,13 @@
         <div class="modal fade" id="show_map_modal" role="dialog">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title">Gerçek Lokasyon: <span style="text-decoration: underline;font-weight: bold;">{{ map_infos.location }}</span> , Aradaki Mesafe: <span style="text-decoration: underline;font-weight: bold;">{{ map_infos.distance }} Metre</span></h4>
+                    </div>
 
                     <div class="modal-body">
-                        <div class="col-md-6">
-
-
+                        <div class="col-md-12" style="height:400px;">
+                            <div id="map" class="col-md-12" style="height:100%;"></div>
                         </div>
                     </div>
                 </div>
@@ -123,14 +125,13 @@
 
                     </div>
                 </div>
-                {{ filter }}
                 {% endverbatim %}
 
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" ng-controller="MainCtrl">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
@@ -143,17 +144,18 @@
                         >
                             <thead>
                             <tr>
-                                <th data-data="id">ID</th>
-                                <th data-data="Date">Tarih</th>
-                                <th data-data="location_id.name">Mağaza</th>
-                                <th data-data="personnel_id.name">Satış Elemanı Ad</th>
-                                <th data-data="personnel_id.surname">Satış Elemanı Soyad</th>
-                                <th data-data="machineId.name">Makine</th>
-                                <th data-data="CustomerName">Müşteri Ad</th>
-                                <th data-data="CustomerSurname">Müşteri Soyad</th>
-                                <th data-data="CustomerPhoneNumber">Müşteri Tel</th>
-                                <th data-data="CustomerEmail">Müşteri Email</th>
-                                <th data-data="IsCampaign">Kampanyalı Mı?</th>
+                                <th>ID</th>
+                                <th>Lokasyon</th>
+                                <th>Tarih</th>
+                                <th>Mağaza</th>
+                                <th>Satış Elemanı Ad</th>
+                                <th>Satış Elemanı Soyad</th>
+                                <th>Makine</th>
+                                <th>Müşteri Ad</th>
+                                <th>Müşteri Soyad</th>
+                                <th>Müşteri Tel</th>
+                                <th>Müşteri Email</th>
+                                <th>Kampanyalı Mı?</th>
                             </tr>
                             </thead>
                         </table>
