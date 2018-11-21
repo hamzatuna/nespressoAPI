@@ -35,7 +35,8 @@ ALLOWED_HOSTS = [
     "https://lanetliyer.com", 
     "http://www.lanetliyer.com", 
     "https://www.lanetliyer.com",
-    "127.0.0.1"
+    "127.0.0.1",
+    "192.168.1.6"
     ]
 
 
