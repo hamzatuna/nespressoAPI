@@ -1,13 +1,14 @@
 from datetime import datetime
 from django.db.models import Q
 
-DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
+#DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
+DATE_FORMAT = "%d/%m/%Y"
 always_true = ~Q(pk=None)
 
 def filter_start_date(start_date):
     if start_date in ('null', None):
         return always_true
-    
+
     date = datetime.strptime(start_date, DATE_FORMAT)
     
     return Q(date__gte=date)

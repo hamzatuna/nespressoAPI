@@ -15,7 +15,8 @@ urlpatterns = [
 
     path('register', views.RegisterUser.as_view()),
     path('register/personnel', views.RegisterPersonnel.as_view()),
-    path('personnel/update/<int:pk>/', views.UpdatePersonnelView.as_view()),
+    path('personnel/update/<int:pk>/', views.update_personnel),
+    path('personnel/<int:pk>/', views.PersonnelDetailView.as_view()),
     #path('insert_sales', views.insert_sales, name="insert_sales"),
     path(
         'insert_tastinginfo',
@@ -33,6 +34,7 @@ urlpatterns = [
     path('get_personnels',views.PersonnelsListCreate.as_view(),name="get_personnels"),
     path('locations/', views.LocationListCreate.as_view(), name="locations"),
     path('locations/<int:pk>/', views.LocationDetail.as_view(), name="locations_detail"),
+    path('sales/<int:pk>/', views.SaleDetailView.as_view(), name="sales_detail"),
     path('auth', include('rest_framework.urls', namespace='rest_framework')),
     path('get-token', views.CustomObtainAuthToken.as_view(), name="get-token"),
 
@@ -53,6 +55,6 @@ urlpatterns = [
     path('goals/<int:pk>/', views.CustomerGoalDetail.as_view(), name="goals_detail"),
     path('stocks', views.StockListCreate.as_view()),
     path('filter/sales', views.filter_sales),
-    path('export/sales', views.export_sales),
+    path('export/sales', views.export_sales)
 ]
 

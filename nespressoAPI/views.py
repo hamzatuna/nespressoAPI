@@ -168,7 +168,6 @@ def dashboard_add_personnel(request):
         elif request.method == "POST":
             personnels_form = PersonnelsForm(request.POST)
             user_form = AutoUserForm(request.POST)
-            print(form_to_json(personnels_form))
             if personnels_form.is_valid() and user_form.is_valid():
                 #personnel = personnels_form.save()
                 '''
@@ -267,7 +266,39 @@ def get_sales_count(request):
     except KeyError:
         return Response(KeyError)
 
+@api_view(['PUT', 'PATCH'])
+def update_personnel(request, pk):
+    try:
+        instance = Personnels.objects.get(user_id=pk)
+        validated_data = request.data
 
+        # updatelenebilir fieldlar
+        updated_keys = [
+            "name",
+            "surname",
+            "phone_number",
+            "tc_no"
+        ]
+
+        # update personnel fields
+        for field in updated_keys:
+            updated_value = validated_data.pop(field, getattr(instance, field))
+            setattr(instance, field, updated_value)
+
+        # check email changed
+        if 'email' in validated_data['user']:
+            instance.user.email = validated_data['user']['email']
+            instance.user.save()
+
+        # lokasyonu degistir
+        instance.location_id = validated_data['location']['id']
+
+        instance.save()
+
+        return Response({'status': 'ok'}, status=200)
+
+    except Personnels.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def home(request):
@@ -285,6 +316,16 @@ class RegisterPersonnel(CreateAPIView):
 class UpdatePersonnelView(generics.UpdateAPIView):
     serializer_class = PersonnelsSerializer
     queryset = Personnels.objects.all()
+    permission_classes = (IsManager,)
+
+class PersonnelDetailView(generics.RetrieveAPIView):
+    serializer_class = PersonnelsSerializer
+    queryset = Personnels.objects.all()
+    permission_classes = (IsManager,)
+
+class SaleDetailView(generics.RetrieveAPIView):
+    serializer_class = SalesSerializer
+    queryset = Sales.objects.all()
     permission_classes = (IsManager,)
 
 class FilterSalesView(generics.ListAPIView):
@@ -330,11 +371,10 @@ def filter_sales(request):
 
     serializer = SalesSerializer(queryset, many=True)
     
-    return JsonResponse(serializer.data, safe=False)
+    return Response({"data":serializer.data})
 
-    # objects = list(Sales.objects.filter(*filters))
-    # return Response(list(map(model_to_dict, objects)))
 
+@api_view(['POST'])
 def export_sales(request):
     """
     keyler:
@@ -378,8 +418,12 @@ def export_sales(request):
     font_style = xlwt.XFStyle()
 
     # get json data
-    data = request.data if request.POST else {}
-
+    #data = request.data if request.POST else {}
+    if request.method == "POST":
+        print("İSTEĞİMİZ POST")
+        data = request.data
+    #print("İŞTEE O VERİ  ",data)
+    #data = {}
     filters = sale_filters.get_sale_filters(data)
 
     objects = Sales.objects.filter(*filters).annotate(formatted_date=Cast('date', CharField()))

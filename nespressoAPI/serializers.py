@@ -57,6 +57,8 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'id', #Yeni Ekledim 16 Kasim 2018-Fatih
+
             'username',
             'email',
             'password',
@@ -127,6 +129,8 @@ class PersonnelsSerializer(serializers.ModelSerializer):
 
             return Personnels.objects.create(user=user, **validated_data)
 
+        return instance
+
 class SalesSerializer(serializers.ModelSerializer):
     #Read (Get)
     location = LocationsSerializer(read_only=True)
@@ -196,7 +200,7 @@ class StockSerializer(serializers.ModelSerializer):
         # personnelse lokasyonu kullanma
         if user.user_type==2:
             validated_data['location'] = user.personnels.location
-        
+
         return Stock.objects.create(
             user=user,
             **validated_data

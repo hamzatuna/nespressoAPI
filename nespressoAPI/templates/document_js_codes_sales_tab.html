@@ -36,8 +36,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
 
     <!-- Date Picker Plugin JavaScript -->
@@ -46,20 +48,42 @@
     <!-- Plugin JavaScript -->
     <script src="{% static 'assets/node_modules/moment/moment.js' %}"></script>
 
+    <!--GOOGLE MAPS-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUzflR34fji_bDzUlKE3z7OEzRM5qLu2E&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUzflR34fji_bDzUlKE3z7OEzRM5qLu2E&libraries=geometry"></script>
+
+
+
     <script>
         var MainModule = angular
             .module("MainModule", [])
-            .controller("MainCtrl", function ($scope, $http) {
+            .controller("MainCtrl", function ($scope, $http, $compile, HttpMethodları) {
                 var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
                 $scope.filter = {};
+                $scope.sales_coordinate = {};
+                $scope.locations_coordinate = {};
+                $scope.locations_name = "YOK";
+                $scope.distance = "TANIMSIZ ARALIK";
+                $scope.map_infos = {};
+
                 this.$onInit = function () {
                     console.log("GEÇTİ");
-                    //render: $.fn.dataTable.render.moment('MM/DD/YYYY');
-                    $('#albums').DataTable({
+                    $.fn.dataTable.ext.errMode = 'none';
+                    $('#sales_table').DataTable({
                         dom: 'Bfrtip',
                         'serverSide': true,
                         'ajax': '/admin_get_sales?format=datatables',
                         'columns': [
+                            {
+                                'data': 'id',
+                                'visible': false
+                            },
+                            {
+                                render: function (data, type, row) {
+                                    return '<button ng-click=\"open_map_modal(' + row.id + ')\" class="btn btn-primary footable-edit"><span class="fas fa-map-marker-alt" aria-hidden="true"></span></button>'
+                                },
+                                "className": "text-center",
+                            },
                             {
                                 'data': 'date',
                                 render: function (data, type, row) {
@@ -79,12 +103,221 @@
                             {'data': 'customer_email'},
                             {'data': 'is_campaign'},
                         ],
-                        buttons: [
-                            'copy', 'csv', 'excel', 'pdf', 'print'
-                        ]
+                        createdRow: function (row, data, dataIndex) {
+                            $compile(angular.element(row).contents())($scope);
+                        },
+                        buttons: []
                     });
-                    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
-                }
+                    //$('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
+                };
+
+
+                $scope.init_map = function initMap() {
+                    //var map = new google.maps.Map(document.getElementById('map'), {zoom: 4, center: $scope.locations_coordinate});
+                    var map = new google.maps.Map(document.getElementById('map'));
+                    var distance_long = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng($scope.locations_coordinate.lat, $scope.locations_coordinate.lng), new google.maps.LatLng($scope.sales_coordinate.lat, $scope.sales_coordinate.lng));
+                    $scope.map_infos["distance"] = (distance_long).toFixed(2);
+
+                    var marker1, marker2, loc1, loc2;
+                    bounds = new google.maps.LatLngBounds();
+
+                    marker1 = new google.maps.Marker({
+                        position: $scope.locations_coordinate,
+                        map: map
+                    });
+                    loc1 = new google.maps.LatLng(marker1.position.lat(), marker1.position.lng());
+                    bounds.extend(loc1);
+
+                    marker2 = new google.maps.Marker({
+                        position: $scope.sales_coordinate,
+                        map: map,
+                        //icon:'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+                        icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+                        animation: google.maps.Animation.DROP
+                    });
+                    loc2 = new google.maps.LatLng(marker2.position.lat(), marker2.position.lng());
+                    bounds.extend(loc2);
+
+                    map.fitBounds(bounds); //auto - zoom
+                    map.panToBounds(bounds);   // auto-center
+                };
+
+
+                $scope.open_map_modal = function (id) {
+                    var get_sales_url = '/sales/' + id + '/';
+                    $scope.sales_coordinate = {};
+                    console.log("URL", get_sales_url);
+                    return $http.get(get_sales_url)
+                        .then(function (sales) {
+                                console.log("GELEN SALE VERİSİ", sales);
+                                console.log("GELEN LOKASYON İSMİ", sales.data.location.name);
+                                $scope.sales_coordinate["lat"] = sales.data.latitude;
+                                $scope.sales_coordinate["lng"] = sales.data.longitude;
+
+                                //$scope.locations_name = sales.data.location.name;
+                                $scope.map_infos.location = sales.data.location.name;
+                                console.log($scope.map_infos);
+                                $scope.locations_coordinate["lat"] = sales.data.location.latitude;
+                                $scope.locations_coordinate["lng"] = sales.data.location.longitude;
+
+                                $scope.current_sales_id = id;
+
+                                //console.log("ID ŞUDUR", $scope.current_sales_id);
+                                $scope.init_map();
+                                $('#show_map_modal').modal('show');
+                            },
+                            function (response) { // optional
+                                alert("Birtakım hatalarla karşılaşıldı.");
+                            });
+                };
+
+                $scope.edit_personnel_func = function () {
+                    update_url = '/personnel/update/' + $scope.current_personnel_id + '/'
+                    $scope.edit_personnel.user.user_type = 2;
+                    $http({
+                        url: update_url,
+                        method: "PATCH",
+                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        headers: {"X-CSRFToken": $crf_token},
+                        data: $scope.edit_personnel,
+                    })
+                        .then(function (response) {
+                                $scope.initDatatable();
+                                console.log("UPDATE EDİLDİ");
+                            },
+                            function (response) { // optional
+                                console.log("UPDATE BAŞARISIZ");
+                            });
+                    $('#testModal').modal('hide');
+                };
+
+
+                $scope.export_sales = function () {
+                    if ($scope.filter.hasOwnProperty("startdate")) {
+                        if ($scope.filter["startdate"] !== null) {
+                            $scope.filter["startdate"] = moment($scope.filter["startdate"]).format('DD/MM/YYYY');
+                        }
+                    }
+                    if ($scope.filter.hasOwnProperty("enddate")) {
+                        if ($scope.filter["enddate"] !== null) {
+                            $scope.filter["enddate"] = moment($scope.filter["enddate"]).format('DD/MM/YYYY');
+                        }
+                    }
+
+                    $http({
+                        url: '/export/sales',
+                        method: "POST",
+                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        responseType: 'arraybuffer',
+                        headers: {"X-CSRFToken": $crf_token, 'Content-Type': 'application/json'},
+                        data: $scope.filter,
+                    })
+                        .then(function (response) {
+                                var blob = new Blob([response.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                                var objectUrl = URL.createObjectURL(blob);
+                                window.open(objectUrl);
+                            },
+                            function (response) { // optional
+                                console.log("BAŞARISIZ RAPOR");
+                            });
+                };
+
+                $scope.filter_sales = function () {
+                    $('#sales_table').DataTable().clear().destroy();
+                    if ($scope.filter.hasOwnProperty("startdate")) {
+                        if ($scope.filter["startdate"] !== null) {
+                            $scope.filter["startdate"] = moment($scope.filter["startdate"]).format('DD/MM/YYYY');
+                        }
+                    }
+                    if ($scope.filter.hasOwnProperty("enddate")) {
+                        if ($scope.filter["enddate"] !== null) {
+                            $scope.filter["enddate"] = moment($scope.filter["enddate"]).format('DD/MM/YYYY');
+                        }
+                    }
+
+                    $('#sales_table').DataTable({
+                        dom: 'Bfrtip',
+                        serverSide: true,
+                        ajax: {
+                            url: '/filter/sales',
+                            type: 'POST',
+                            headers: {"X-CSRFToken": $crf_token, 'Content-Type': 'application/json'},
+                            data: function () {
+                                return JSON.stringify($scope.filter);
+                            }
+                            //data: $scope.filter,
+                        },
+                        'columns': [
+                            {
+                                'data': 'id',
+                                'visible': false
+                            },
+                            {
+                                render: function (data, type, row) {
+                                    return '<button ng-click=\"open_map_modal(' + row.id + ')\" class="btn btn-primary footable-edit"><span class="fas fa-map-marker-alt" aria-hidden="true"></span></button>'
+                                },
+                                "className": "text-center",
+                            },
+                            {
+                                'data': 'date',
+                                render: function (data, type, row) {
+                                    if (type === "sort" || type === "type") {
+                                        return data;
+                                    }
+                                    return moment(data).format("DD-MM-YYYY HH:mm");
+                                }
+                            },
+                            {'data': 'location.name'},
+                            {'data': 'personnel.name'},
+                            {'data': 'personnel.surname'},
+                            {'data': 'machine.name'},
+                            {'data': 'customer_name'},
+                            {'data': 'customer_surname'},
+                            {'data': 'customer_phone_number'},
+                            {'data': 'customer_email'},
+                            {'data': 'is_campaign'},
+                        ],
+                        createdRow: function (row, data, dataIndex) {
+                            $compile(angular.element(row).contents())($scope);
+                        },
+                        buttons: []
+                    });
+                    /*
+                    $('#sales_table').DataTable({
+                        dom: 'Bfrtip',
+                        serverSide: true,
+                        ajax: {
+                            url: '/filter/sales',
+                            type: 'POST',
+                            headers: {"X-CSRFToken": $crf_token, 'Content-Type': 'application/json'},
+                            data: function () {
+                                return JSON.stringify($scope.filter);
+                            }
+                            //data: $scope.filter,
+                        },
+                        'columns': [
+                            {
+                                'data': 'date',
+                                render: function (data, type, row) {
+                                    if (type === "sort" || type === "type") {
+                                        return data;
+                                    }
+                                    return moment(data).format("DD-MM-YYYY HH:mm");
+                                }
+                            },
+                            {'data': 'location.name'},
+                            {'data': 'personnel.name'},
+                            {'data': 'personnel.surname'},
+                            {'data': 'machine.name'},
+                            {'data': 'customer_name'},
+                            {'data': 'customer_surname'},
+                            {'data': 'customer_phone_number'},
+                            {'data': 'customer_email'},
+                            {'data': 'is_campaign'}
+                        ], buttons: []
+                    });
+                    */
+                };
 
 
                 $scope.machines = {};
@@ -100,60 +333,25 @@
                         $scope.locations = locations.data;
                         console.log($scope.locations);
                     });
+            });
 
-                $scope.get_filtered_sales = function () {
-                    $http({
-                        url: '/filter/sales',
-                        method: "POST",
-                        //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        headers: {"X-CSRFToken": $crf_token},
-                        data: $scope.filter,
-                    })
-                        .then(function (response) {
-                                //scope.initDatatable();
-                                console.log("BAŞARILI");
-                                console.log(response);
+
+        MainModule.factory('HttpMethodları', function ($http) {
+            return {
+                get_sale: function (id) {
+                    var get_sales_url = '/sales/' + id + '/';
+                    return $http.get(get_sales_url)
+                        .then(function (sales) {
+                                var donen_veri = sales.data
+                                return donen_veri;
                             },
                             function (response) { // optional
-                                console.log("BAŞARISIZ");
-                                console.log(response);
+                                alert("Birtakım hatalarla karşılaşıldı.");
                             });
                 }
+            }
+        });
 
-
-                /*
-                $scope.get_filtered_sales = function () {
-                    console.log("YAZDIK");
-                    $('#albums').DataTable({
-                        dom: 'Bfrtip',
-                        "bDestroy": true,
-                        'serverSide': true,
-                        'ajax': {
-                            'url': '/get_filtered_sales',
-                            'type': "POST",
-                            'contentType': "application/json",
-                            'data': {'filterObject': JSON.stringify($scope.filter)},
-                        },
-                        'columns': [
-                            {'data': 'Date'},
-                            {'data': 'location_id.name'},
-                            {'data': 'personnel_id.name'},
-                            {'data': 'personnel_id.surname'},
-                            {'data': 'MachineId.'},
-                            {'data': 'CustomerName'},
-                            {'data': 'CustomerSurname'},
-                            {'data': 'CustomerPhoneNumber'},
-                            {'data': 'CustomerEmail'},
-                            {'data': 'IsCampaign'},
-                        ],
-                        buttons: [
-                            'copy', 'csv', 'excel', 'pdf', 'print'
-                        ]
-                    });
-                    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
-                };
-                */
-            });
     </script>
 
 

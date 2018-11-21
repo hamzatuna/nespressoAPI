@@ -6,6 +6,25 @@
 
 
     <div class="row" ng-controller="MainCtrl">
+        {% verbatim %}
+        <div class="modal fade" id="show_map_modal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title">Gerçek Lokasyon: <span style="text-decoration: underline;font-weight: bold;">{{ map_infos.location }}</span> , Aradaki Mesafe: <span style="text-decoration: underline;font-weight: bold;">{{ map_infos.distance }} Metre</span></h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="col-md-12" style="height:400px;">
+                            <div id="map" class="col-md-12" style="height:100%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        {% endverbatim %}
         <div class="col-lg-12">
             <div class="card">
                 {% csrf_token %}
@@ -63,7 +82,7 @@
                                             data-placeholder="Choose a Category"
                                             tabindex="1">
                                         <option value="">Lokasyon Seçiniz</option>
-                                        <option ng-repeat="location in locations.results" value="{{ location.id }}">{{
+                                        <option ng-repeat="location in locations" value="{{ location.id }}">{{
                                             location.name }}
                                         </option>
                                     </select>
@@ -76,7 +95,7 @@
                                     <select class="form-control custom-select" data-placeholder="Makine Seçiniz"
                                             tabindex="1" ng-model="filter.machine_id">
                                         <option value="">Makine Seçiniz</option>
-                                        <option ng-repeat="machine in machines.results" value="{{ machine.id }}">{{
+                                        <option ng-repeat="machine in machines" value="{{ machine.id }}">{{
                                             machine.name }}
                                         </option>
                                     </select>
@@ -97,40 +116,46 @@
                         </div>
                     </div>
                     <div class="form-actions offset-md-5">
-                        <button type="submit" ng-click="get_filtered_sales()" class="btn btn-info"><i
+                        <button type="submit" ng-click="filter_sales()" class="btn btn-info"><i
                                 class="fa fa-search"></i>Filtrele
                         </button>
+                        <button type="submit" ng-click="export_sales()" class="btn btn-primary"><i
+                                class="fa fa-file"></i>Rapor Al
+                        </button>
+
                     </div>
                 </div>
-                {{ filter }}
                 {% endverbatim %}
+
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" ng-controller="MainCtrl">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+
                     <div class="table-responsive m-t-40">
-                        <table id="albums" class="display nowrap table table-hover table-striped table-bordered"
+                        <table id="sales_table"
+                               class="cell-border nowrap table table-hover table-striped table-bordered full-color-table full-info-table"
                                cellspacing="0" style="width:100%"
                                data-server-side="true"
                         >
                             <thead>
                             <tr>
-                                <th data-data="Date">Tarih</th>
-                                <th data-data="location_id.name">Mağaza</th>
-                                <th data-data="personnel_id.name">Satış Elemanı Ad</th>
-                                <th data-data="personnel_id.surname">Satış Elemanı Soyad</th>
-                                <th data-data="machineId.name">Ürün</th>
-                                <th data-data="CustomerName">Müşteri Ad</th>
-                                <th data-data="CustomerSurname">Müşteri Soyad</th>
-                                <th data-data="CustomerPhoneNumber">Müşteri Tel</th>
-                                <th data-data="CustomerEmail">Müşteri Email</th>
-                                <th data-data="IsCampaign">Kampanyalı Mı?</th>
-
-
+                                <th>ID</th>
+                                <th>Lokasyon</th>
+                                <th>Tarih</th>
+                                <th>Mağaza</th>
+                                <th>Satış Elemanı Ad</th>
+                                <th>Satış Elemanı Soyad</th>
+                                <th>Makine</th>
+                                <th>Müşteri Ad</th>
+                                <th>Müşteri Soyad</th>
+                                <th>Müşteri Tel</th>
+                                <th>Müşteri Email</th>
+                                <th>Kampanyalı Mı?</th>
                             </tr>
                             </thead>
                         </table>

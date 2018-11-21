@@ -35,7 +35,8 @@ ALLOWED_HOSTS = [
     "https://lanetliyer.com", 
     "http://www.lanetliyer.com", 
     "https://www.lanetliyer.com",
-    "127.0.0.1"
+    "127.0.0.1",
+    "192.168.1.6"
     ]
 
 
@@ -147,7 +148,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
     #'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesLimitOffsetPagination',
-    'PAGE_SIZE': 20,
+    #'PAGE_SIZE': 20,
 }
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
