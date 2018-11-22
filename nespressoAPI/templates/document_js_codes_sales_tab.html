@@ -140,6 +140,30 @@
 
                     map.fitBounds(bounds); //auto - zoom
                     map.panToBounds(bounds);   // auto-center
+
+                    /*
+                google.maps.event.addListener(marker1, 'click', function () {
+                    map.panTo(this.getPosition());
+                });
+
+                google.maps.event.addListener(marker2, 'click', function () {
+                    map.panTo(this.getPosition());
+                });
+                */
+
+                    marker1.addListener('click', function () {
+                        var new_zoom_level = map.getZoom() + 3;
+                        map.setZoom(new_zoom_level);
+                        map.setCenter(marker1.getPosition());
+                    });
+
+                    marker2.addListener('click', function () {
+                        var new_zoom_level = map.getZoom() + 3;
+                        map.setZoom(new_zoom_level);
+                        map.setCenter(marker2.getPosition());
+                    });
+
+
                 };
 
 
@@ -213,9 +237,26 @@
                         data: $scope.filter,
                     })
                         .then(function (response) {
-                                var blob = new Blob([response.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-                                var objectUrl = URL.createObjectURL(blob);
-                                window.open(objectUrl);
+                                //var blob = new Blob([response.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                                //var blob = new Blob([response.data],{type:'application/vnd.ms-excel'});
+                                //var objectUrl = URL.createObjectURL(blob);
+                                //window.open(objectUrl);
+                                var today = new Date();
+                                var y = today.getFullYear();
+                                var m = today.getMonth() + 1;
+                                var d = today.getDate();
+                                var h = today.getHours();
+                                var mi = today.getMinutes();
+                                var s = today.getSeconds();
+                                current_time =  y + "_" + m + "_" + d + "_" + h + "-" + mi + "-" + s;
+
+                                let blob = new Blob([response.data]);
+                                let url = window.URL.createObjectURL(blob);
+                                let a = document.createElement('a');
+                                a.href = url;
+                                a.download = current_time + '.xls';
+                                a.target = '_blank';
+                                a.click();
                             },
                             function (response) { // optional
                                 console.log("BAŞARISIZ RAPOR");
