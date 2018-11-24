@@ -8,6 +8,11 @@ cd nespressoAPI/
 pip install -r requirements.txt
 ```
 
+loglama klasorunun olusturulmasi lazim:
+```
+mkdir ~/nespresso_logs
+```
+
 # 2-) Postgresql Kurulumu, Dev/Test db olusturulmasi
 ```
 sudo apt-get install postgresql postgresql-contrib
