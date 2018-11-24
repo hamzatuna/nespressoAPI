@@ -55,8 +55,7 @@ urlpatterns = [
     path('goals/<int:pk>/', views.CustomerGoalDetail.as_view(), name="goals_detail"),
     path('stocks', views.StockListCreate.as_view()),
     path('filter/sales', views.filter_sales),
-    path('export/sales', views.export_sales)
-    
-    path('check_token', views.check_token)
+    path('export/sales', views.export_sales),
+    path('validate_token', views.validate_token)
 ]
 
