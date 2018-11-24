@@ -152,7 +152,7 @@ class SalesSerializer(serializers.ModelSerializer):
 
         # personel yoksa hata don
         if not personnel:
-            
+            logging.error('satis ekleme gonderilen personel_id bulunamadi')
             raise serializers.ValidationError('Personel bulunamadi')
 
         location = personnel.location

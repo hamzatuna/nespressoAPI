@@ -1,5 +1,6 @@
 import re
 import operator
+import logging
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -106,8 +107,6 @@ class Machines(models.Model):
     #fields
     name = models.CharField(max_length=200, unique=True)
 
-
-
 class Locations(models.Model):
     #fields
     latitude = models.FloatField(null=True)
@@ -181,8 +180,6 @@ class Sales(models.Model):
         on_delete=models.CASCADE,
         null=True,
         related_name='%(class)s_Location')
-
-
 
 #Yoğun saatler tablosu
 class IntensiveHours(models.Model):
@@ -271,6 +268,7 @@ def log_stocks(sender, instance=None, created=False, **kwargs):
         note = 'created' if created else 'updated',
         **stock
     )
+    logging.info('eski stock basarili bir sekilde loglandi')
 
 
 
@@ -286,20 +284,23 @@ def decrease_stock(sender, instance=None, created=False, **kwargs):
             try:
                 stock = Stock.objects.get(machine=machine, location=location)
 
-                # stock birin altina donerse hata gonder
+                # stock birin altina duserse hata gonder
                 if stock.stock_count<=0:
+                    logging.error('%d idli lokasyondaki %d idli makine stok eklenmeden satilmaya calisildi',
+                        location.id, machine.id)
                     raise ValidationError('stokk 1 in altina dusuyor')
 
                 stock.stock_count -=1
                 stock.save()
+                logging.info('stoktan basirili bir sekilde dusuldu')
 
             except Stock.DoesNotExist:
                 # stock bulunamadiginda manager'e haber verilmesi lazim
                 # simdilik printliyorum ileride mail falan eklenebilir
 
-                print('lokasyonda olmayan bir makine satildi sale id:{}'.format(instance.id))
+                logging.warning('lokasyonda olmayan bir makine satildi sale id:{}'.format(instance.id))
         else:
             # stock bulunamadiginda manager'e haber verilmesi lazim
             # simdilik printliyorum ileride mail falan eklenebilir
 
-            print('lokasyonu veya makinesi olmayan bir satis eklendi sale id:{}'.format(instance.id))
+            logging.warning('lokasyonu veya makinesi olmayan bir satis eklendi sale id:{}'.format(instance.id))
