@@ -193,11 +193,10 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user_object = User.objects.get(id = token.user_id)
         return Response({'token': token.key, 'id': token.user_id, 'user_type':user_object.user_type})
 
-@api_view(['GET','POST'])
+@api_view(['GET', 'POST'])
 def login_site(request):
     try:
-        logout(request)
-        if request.POST:
+        if request.method=='POST':
             username = request.POST['username']
             password = request.POST['password']
 
@@ -207,34 +206,17 @@ def login_site(request):
                     if user.user_type == 1: #Dashboard'a sadece admin login olabilir.
                         login(request, user)
                         return HttpResponseRedirect(reverse('dashboard_main'))
-                        '''
-                        #Begin reCAPTCHA validation
-                        recaptcha_response = request.POST.get('g-recaptcha-response')
-                        url = 'https://www.google.com/recaptcha/api/siteverify'
-                        values = {
-                            'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
-                            'response': recaptcha_response
-                        }
-                        data = urllib.parse.urlencode(values).encode()
-                        req = urllib.request.Request(url, data=data)
-                        response = urllib.request.urlopen(req)
-                        result = json.loads(response.read().decode())
-                        #End reCAPTCHA validation
-
-                        if result['success']:
-                            login(request, user)
-                            return HttpResponseRedirect(reverse('dashboard_main'))
-                        else:
-                            login_context = {}
-                            login_context["is_failed"] = 1
-                            return render(request, 'login.html', login_context)
-                        '''
             else:
                 login_context = {}
                 login_context["is_failed"] = 1
                 return render(request, 'login.html', login_context)
-        #return HttpResponseRedirect(reverse("login"))
-        return render(request, 'login.html')
+        
+        elif request.method=='GET' and request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('dashboard_main'))
+        
+        else:
+            return render(request, 'login.html')
+    
     except KeyError:
         return Response(KeyError)
 
@@ -299,10 +281,6 @@ def update_personnel(request, pk):
 
     except Personnels.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
-@api_view(['GET'])
-def home(request):
-    return render(request,'home.html')
 
 class RegisterUser(CreateAPIView):
     serializer_class = UsersSerializer

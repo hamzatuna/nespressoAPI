@@ -9,9 +9,9 @@ urlpatterns = [
     #This url is to test some frontend things...
     path('test', TemplateView.as_view(template_name='dashboard_test.html'), name="test"),
 
-    path('', TemplateView.as_view(template_name='login.html')),
-    path('login', views.login_site,name="login"),
-    path('logout', views.logout_site,name="logout"),
+    path('', views.login_site),
+    path('login', views.login_site, name="login"),
+    path('logout', views.logout_site, name="logout"),
 
     path('register', views.RegisterUser.as_view()),
     path('register/personnel', views.RegisterPersonnel.as_view()),
@@ -37,10 +37,6 @@ urlpatterns = [
     path('sales/<int:pk>/', views.SaleDetailView.as_view(), name="sales_detail"),
     path('auth', include('rest_framework.urls', namespace='rest_framework')),
     path('get-token', views.CustomObtainAuthToken.as_view(), name="get-token"),
-
-
-
-    path('home',views.home,name="home"),
     #path('dashboard', TemplateView.as_view(template_name='dashboard_main.html'), name="dashboard_main"),
     path('dashboard', views.dashboard_main, name="dashboard_main"),
     path('dashboard_sales_tab',TemplateView.as_view(template_name='dashboard_sales_tab.html'),name="dashboard_sales_tab"),
