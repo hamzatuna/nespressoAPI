@@ -220,11 +220,24 @@ class StockSerializer(serializers.ModelSerializer):
         # personnelse lokasyonu kullanma
         if user.user_type==2:
             validated_data['location'] = user.personnels.location
+        
+        location = validated_data['location']
+        machine = validated_data['machine']
+        stock_count = validated_data['stock_count']
 
-        return Stock.objects.create(
-            user=user,
-            **validated_data
-        )
+        stock, created = Stock.objects.get_or_create(
+            machine=machine, 
+            location=location, 
+            defaults={
+                'stock_count': stock_count,
+                'user': user})
+        
+        # stock varsa uzerine ekle
+        if not created:
+            stock.stock_count +=stock_count
+            stock.save()
+
+        return stock
 
     class Meta:
         model = Stock
