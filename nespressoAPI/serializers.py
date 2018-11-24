@@ -1,3 +1,4 @@
+import logging
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth import get_user_model
@@ -5,7 +6,6 @@ from django.db import transaction
 from django.core import exceptions
 import django.contrib.auth.password_validation as validators
 from rest_framework.validators import UniqueValidator
-import logging
 from django.contrib.auth.hashers import make_password
 
 # UserModel = get_user_model()
@@ -50,6 +50,7 @@ class UsersSerializer(serializers.ModelSerializer):
              errors['password'] = list(e.messages)
 
          if errors:
+             logging.error()
              raise serializers.ValidationError(errors)
 
          return super(UsersSerializer, self).validate(data)
@@ -151,6 +152,7 @@ class SalesSerializer(serializers.ModelSerializer):
 
         # personel yoksa hata don
         if not personnel:
+            
             raise serializers.ValidationError('Personel bulunamadi')
 
         location = personnel.location
@@ -158,12 +160,15 @@ class SalesSerializer(serializers.ModelSerializer):
 
         # baskasinin yerine satis eklenemez
         if not personnel.user==user:
+            logging.error('satis eklerken personnel_id uyusmazligi yasandi')
             raise serializers.ValidationError('farkli kullanici icin eklenmeye calisildi')
 
         # location yoksa hata don
         if not location:
+            logging.error('lokasyonu eklenmeyen personle satis eklemeye calisti')
             raise serializers.ValidationError('lokasyon bulunamadi')
 
+        # signallerden gelen hatalari yakalamak icin
         try: 
             sale = Sales.objects.create(
                 **validated_data,
@@ -171,6 +176,7 @@ class SalesSerializer(serializers.ModelSerializer):
             return sale
 
         except Exception as e:
+            logging.error('satis eklerken validation hatasi %s', e)
             raise serializers.ValidationError(e.message)
 
     class Meta:

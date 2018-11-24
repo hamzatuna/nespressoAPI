@@ -87,7 +87,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'nespresso.wsgi.application'
 
-	
+
+# log dir olusturulacak
+LOG_DIR = os.path.expanduser('~/nespresso_logs')
+LOG_FILE = os.path.join(LOG_DIR, 'logs')
+
+os.makedirs(LOG_DIR, exist_ok=True)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -113,7 +119,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.expanduser('~/nespresso_logs/log'),
+            'filename': LOG_FILE,
             'mode': 'a+',
             'formatter': 'detailed',
             },
