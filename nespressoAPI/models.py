@@ -230,7 +230,9 @@ class Stock(models.Model):
     machine = models.ForeignKey(Machines, on_delete=models.CASCADE)
     location = models.ForeignKey(Locations, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    
+    class Meta:
+        unique_together = ("machine", "location")
 
 
 class StockHistory(models.Model):
