@@ -56,5 +56,7 @@ urlpatterns = [
     path('stocks', views.StockListCreate.as_view()),
     path('filter/sales', views.filter_sales),
     path('export/sales', views.export_sales)
+    
+    path('check_token', views.check_token)
 ]
 

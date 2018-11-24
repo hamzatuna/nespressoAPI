@@ -515,3 +515,10 @@ class StockListCreate(generics.ListCreateAPIView):
         personnel_location = user.personnels.location_id
 
         return Stock.objects.filter(location=personnel_location)
+
+
+def check_token(request):
+     if request.user.is_authenticated:
+        return Response({"status":"ok"})
+    else:
+        return Response({"status":"INVALID"})
