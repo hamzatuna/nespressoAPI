@@ -214,6 +214,12 @@ class StockSerializer(serializers.ModelSerializer):
         source='machine',
         write_only=True)
 
+    def validate_stock_count(self, value):
+        if value<=0:
+            raise serializers.ValidationError('eksili stok ekleniyor')
+        
+        return value
+
     def create(self, validated_data):
         user = self.context['request'].user
         
