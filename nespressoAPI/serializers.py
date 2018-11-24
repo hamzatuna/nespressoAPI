@@ -129,8 +129,6 @@ class PersonnelsSerializer(serializers.ModelSerializer):
 
             return Personnels.objects.create(user=user, **validated_data)
 
-        return instance
-
 class SalesSerializer(serializers.ModelSerializer):
     #Read (Get)
     location = LocationsSerializer(read_only=True)
@@ -138,8 +136,14 @@ class SalesSerializer(serializers.ModelSerializer):
     machine = MachinesSerializer(read_only=True)
 
     # Write (Post)
-    machine_id = serializers.PrimaryKeyRelatedField(queryset = Machines.objects.all(),source='machine',write_only=True)
-    personnel_id = serializers.PrimaryKeyRelatedField(queryset = Personnels.objects.all(),source='personnel',write_only=True)
+    machine_id = serializers.PrimaryKeyRelatedField(
+        queryset = Machines.objects.all(),
+        source='machine',
+        write_only=True)
+    personnel_id = serializers.PrimaryKeyRelatedField(
+        queryset = Personnels.objects.all(),
+        source='personnel',
+        write_only=True)
 
 
     def create(self, validated_data):
@@ -150,14 +154,24 @@ class SalesSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Personel bulunamadi')
 
         location = personnel.location
+        user = self.context['request'].user
+
+        # baskasinin yerine satis eklenemez
+        if not personnel.user==user:
+            raise serializers.ValidationError('farkli kullanici icin eklenmeye calisildi')
 
         # location yoksa hata don
         if not location:
             raise serializers.ValidationError('lokasyon bulunamadi')
 
-        return Sales.objects.create(
-            **validated_data,
-            location=location)
+        try: 
+            sale = Sales.objects.create(
+                **validated_data,
+                location=location)
+            return sale
+
+        except Exception as e:
+            raise serializers.ValidationError(e.message)
 
     class Meta:
         model = Sales

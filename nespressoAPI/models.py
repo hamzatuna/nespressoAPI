@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 from datetime import datetime
@@ -284,6 +285,11 @@ def decrease_stock(sender, instance=None, created=False, **kwargs):
         if machine and location:
             try:
                 stock = Stock.objects.get(machine=machine, location=location)
+
+                # stock birin altina donerse hata gonder
+                if stock.stock_count<=0:
+                    raise ValidationError('stokk 1 in altina dusuyor')
+
                 stock.stock_count -=1
                 stock.save()
 

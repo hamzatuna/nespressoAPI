@@ -87,6 +87,50 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'nespresso.wsgi.application'
 
+	
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '[%(asctime)s][%(levelname)s] %(name)s '
+                      '%(filename)s:%(funcName)s:%(lineno)d | %(message)s',
+            'datefmt': '%H:%M:%S',
+            },
+            'detailed': {
+                'class': 'logging.Formatter',
+                'format': '%(asctime)s %(name)-15s %(levelname)-8s %(processName)-10s %(message)s'
+            }
+        },
+	
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+            },
+	
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.expanduser('~/nespresso_logs/log'),
+            'mode': 'a+',
+            'formatter': 'detailed',
+            },
+        },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+            },
+	
+        'your_app': {
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
