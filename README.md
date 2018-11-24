@@ -38,7 +38,7 @@ tablolari olusturma
 python manage.py makemigrations nespressoAPI  
 python manage.py migrate
 ```
-test etme: 
+test etme onemli: 
 ```
 python manage.py test
 ```
