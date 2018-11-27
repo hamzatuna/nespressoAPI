@@ -16,7 +16,6 @@ User.objects.create(**test_user_data)
 
 # add machine
 test_machine_data = {
-    'id': 1,
     'name': 'BEYAZ_MAKINE',
 }
 test_machine = Machines(**test_machine_data)
@@ -24,7 +23,6 @@ test_machine.save()
 
 # add location
 location_data = {
-    "id": 1,
     "latitude": 41.0850829,
     "longitude": 29.0064543999994,
     "name": "SAFIR",
@@ -38,7 +36,6 @@ location.save()
 password_raw = "12345678."
 password_hashed = make_password(password_raw)
 test_user_data = {
-    "id": 2,
     "username": "satici0",
     "password": password_hashed,
     "email": "satici0@nespresso.com",
