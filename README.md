@@ -1,4 +1,4 @@
-# 1) Kurulum ve VirtualEnv Olusturma
+# 1) Installation and creating VirtualEnv
 ```
 git clone https://github.com/ermissa/nespressoAPI.git
 sudo apt-get install python3-venv
@@ -8,37 +8,37 @@ cd nespressoAPI/
 pip install -r requirements.txt
 ```
 
-loglama klasorunun olusturulmasi lazim:
+create logging directory (it can be change changed from settings.py file):
 ```
 mkdir ~/nespresso_logs
 ```
 
-# 2-) Postgresql Kurulumu, Dev/Test db olusturulmasi
+# 2-) Postgresql installation, Dev/Test db creation
 ```
 sudo apt-get install postgresql postgresql-contrib
 sudo -i -u postgres
 psql
 ```
-postgre terminalinde sifre degistirme
+postgre change password and update settings.py
 ```
 alter user postgres with password '1234';
 ```
 
-database olusturma
+create database
 ```
 create database "nespressoDB";
 ```
 
-test database olusturma
+create test database
 ```
 create database postgresTestDb;
 ```
-tablolari olusturma
+create tables (you can chase table changes from migrations directory)
 ```
 python manage.py makemigrations nespressoAPI  
 python manage.py migrate
 ```
-test etme onemli: 
+testing application: 
 ```
 python manage.py test
 ```
